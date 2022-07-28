@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Positive;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,7 +33,6 @@ public class BankTransfer {
 	private int id;
 
 	@Column(nullable = false, updatable = false)
-	@Positive(message = "Amount must be positive")
 	private double amount;
 
 	@Column(nullable = false, updatable = false)

@@ -44,20 +44,24 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 		Optional<User> user4 = userService.getUser(4);
 		LOG.info("User by id 4:\n{}", user4);
 
-		user1 = Optional.ofNullable(userService.addConnection(1, 4));
+		userService.addConnection(1, 4);
 		LOG.info("User by id 1 after adding user4 to user1's contacts:\n{}", user1);
 
 		Account account1 = accountService.addMoney(30, 1);
 		LOG.info("Account of user1 after adding 30€ and before 10€:\n{}", account1);
 //		Account account2 = accountService.addMoney(-30, 1);
 //		LOG.info("Account of user1 after adding -30€ and before 40€:\n{}", account2);
-		Optional<User> user1UpdatedWith30MoreEuros = userService.getUser(1);
-		LOG.info("User by id 1 after adding 30€ and before 10€:\n{}", user1UpdatedWith30MoreEuros);
+		LOG.info("User by id 1 after adding 30€ and before 10€:\n{}", user1);
 
 		Transaction transaction = transactionService.makeATransaction(1, 4, 10.2, null);
 		LOG.info("Transaction between user1 and user2:\n{}", transaction);
-		LOG.info("User by id 1 after transaction:\n{}", user1UpdatedWith30MoreEuros);
+		LOG.info("User by id 1 after transaction:\n{}", user1);
 		LOG.info("User by id 4 after transaction:\n{}", user4);
+
+		accountService.withdrawMoney(20, 1);
+//		accountService.withdrawMoney(40, 1);
+		LOG.info("User by id 1 after withdraw money:\n{}", user1);
+		LOG.info("Account of user1 after adding 30€ and before 10€:\n{}", account1);
 	}
 
 }

@@ -75,6 +75,7 @@ public class User {
 	}
 
 	public void addBankTransfer(BankTransfer bankTransfer) {
+		bankTransfers.add(bankTransfer);
 		bankTransfer.setUser(this);
 	}
 
