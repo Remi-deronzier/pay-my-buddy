@@ -14,8 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 
 import lombok.Data;
 
@@ -25,7 +25,6 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Positive(message = "Id must be positive")
 	private int id;
 
 	@Column(nullable = false, unique = true)
@@ -39,15 +38,17 @@ public class User {
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private boolean active;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
+	@OneToOne(mappedBy = "user")
+	Account account;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
 	List<BankTransfer> bankTransfers = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "sender_id")
 	List<Transaction> sentTransactions = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "receiver_id")
 	List<Transaction> receivedTransactions = new ArrayList<>();
 
@@ -65,11 +66,36 @@ public class User {
 	@JoinTable(name = "connection", joinColumns = @JoinColumn(name = "owner_id"), inverseJoinColumns = @JoinColumn(name = "connection_id"))
 	private List<User> connections = new ArrayList<>();
 
+	public void addConnection(User user) {
+		connections.add(user);
+	}
+
+	public void removeConnection(User user) {
+		connections.remove(user);
+	}
+
+	public void addBankTransfer(BankTransfer bankTransfer) {
+		bankTransfer.setUser(this);
+	}
+
+	private String connectionsToString() {
+		String res = "[";
+		for (int i = 0; i < connections.size(); i++) {
+			res = res + "User(id=" + connections.get(i).id + ", email=" + connections.get(i).email + ")";
+			if (i < connections.size() - 1) {
+				res += ", ";
+			}
+		}
+		res += "]";
+		return res;
+	}
+
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", email=" + email + ", password=" + password + ", active=" + active
-				+ ", bankTransfers=" + bankTransfers + ", sentTransactions=" + sentTransactions
-				+ ", receivedTransactions=" + receivedTransactions + ", roles=" + roles + "]";
+		return "User [id=" + id + ", email=" + email + ", password=" + password + ", active=" + active + ", account="
+				+ account + ", bankTransfers=" + bankTransfers + ", sentTransactions=" + sentTransactions
+				+ ", receivedTransactions=" + receivedTransactions + ", roles=" + roles + ", connections="
+				+ connectionsToString() + "]";
 	}
 
 }

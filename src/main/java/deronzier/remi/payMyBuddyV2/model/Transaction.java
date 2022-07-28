@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Positive;
 
 import lombok.Data;
 
@@ -18,7 +17,6 @@ public class Transaction {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Positive(message = "Id must be positive")
 	private int id;
 
 	@Column(nullable = false, updatable = false)

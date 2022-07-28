@@ -2,22 +2,36 @@ package deronzier.remi.payMyBuddyV2.model;
 
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Positive;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class BankTransfer {
+
+	public BankTransfer(double amount, Timestamp timeStamp) {
+		this.amount = amount;
+		this.timeStamp = timeStamp;
+	}
+
+	public BankTransfer() {
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Positive(message = "Id must be positive")
 	private int id;
 
 	@Column(nullable = false, updatable = false)
@@ -25,6 +39,15 @@ public class BankTransfer {
 	private double amount;
 
 	@Column(nullable = false, updatable = false)
-	private Timestamp timeStamp;
+	private Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id")
+	private User user;
+
+	@Override
+	public String toString() {
+		return "BankTransfer [id=" + id + ", amount=" + amount + ", timeStamp=" + timeStamp + "]";
+	}
 
 }

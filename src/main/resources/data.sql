@@ -32,9 +32,9 @@ INSERT INTO `user_role` (`user_id`, `role_id`) VALUES
 --
 
 INSERT INTO `bank_transfer` (`user_id`, `amount`, `time_stamp`) VALUES
-(1, 121.1,  "1970-01-01 00:00:01"),
-(2, 30.40,  "1998-01-01 00:00:01"),
-(3, 5000.76, "2003-01-01 00:00:01");
+(1, 10,  "1970-01-01 00:00:01"),
+(2, 30,  "1998-01-01 00:00:01"),
+(3, 500, "2003-01-01 00:00:01");
 
 --
 -- Dumping data for table `transaction`
@@ -43,16 +43,15 @@ INSERT INTO `bank_transfer` (`user_id`, `amount`, `time_stamp`) VALUES
 INSERT INTO `transaction` (`time_stamp`, `sender_id`, `receiver_id`, `amount`) VALUES
 ("1970-01-01 00:00:01", 1, 2, 20),
 ("1980-01-01 00:00:01", 1, 3, 30),
+("1990-01-01 00:00:01", 2, 1, 43.74),
 ("1970-01-01 00:00:01", 2, 3, 100);
 
 
 --
--- Dumping data for table `connection`
+-- Dumping data for table `account`
 --
 
-INSERT INTO `connection` (`owner_id`, `connection_id`) VALUES
-(1, 2),
-(1, 3),
-(2, 1),
-(2, 3),
-(3, 1);
+INSERT INTO `account` (`balance`, `user_id`) VALUES
+(10, 1),
+(30, 2),
+(500, 2);
