@@ -78,6 +78,14 @@ public class User {
 		bankTransfer.setUser(this);
 	}
 
+	public void addSentTransaction(Transaction transaction) {
+		sentTransactions.add(transaction);
+	}
+
+	public void addReceivedTransaction(Transaction transaction) {
+		receivedTransactions.add(transaction);
+	}
+
 	private String connectionsToString() {
 		String res = "[";
 		for (int i = 0; i < connections.size(); i++) {

@@ -1,6 +1,5 @@
 package deronzier.remi.payMyBuddyV2.service;
 
-import java.sql.Timestamp;
 import java.util.Optional;
 
 import javax.security.auth.login.AccountNotFoundException;
@@ -35,9 +34,7 @@ public class AccountService {
 
 	public Account addMoney(double amount, int userId)
 			throws NegativeAmountException, AccountNotFoundException, UserNotFoundException {
-		if (amount <= 0) {
-			throw new NegativeAmountException("Amount must be strictly positive");
-		}
+		// Check if account and user exist
 		Account account = findByUserId(userId).orElseThrow(() -> new AccountNotFoundException("Account not found"));
 		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
 
@@ -45,7 +42,7 @@ public class AccountService {
 		account.addMoney(amount);
 
 		// Save transfer in bank transfer table
-		BankTransfer bankTransfer = new BankTransfer(amount, new Timestamp(System.currentTimeMillis()));
+		BankTransfer bankTransfer = new BankTransfer(amount);
 		user.addBankTransfer(bankTransfer);
 		bankTransferRepository.save(bankTransfer);
 

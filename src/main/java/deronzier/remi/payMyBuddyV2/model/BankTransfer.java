@@ -22,9 +22,8 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class BankTransfer {
 
-	public BankTransfer(double amount, Timestamp timeStamp) {
+	public BankTransfer(double amount) {
 		this.amount = amount;
-		this.timeStamp = timeStamp;
 	}
 
 	public BankTransfer() {
@@ -39,7 +38,7 @@ public class BankTransfer {
 	private double amount;
 
 	@Column(nullable = false, updatable = false)
-	private Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
+	private final Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")

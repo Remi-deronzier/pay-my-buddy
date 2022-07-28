@@ -12,8 +12,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import deronzier.remi.payMyBuddyV2.model.Account;
+import deronzier.remi.payMyBuddyV2.model.Transaction;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.service.AccountService;
+import deronzier.remi.payMyBuddyV2.service.TransactionService;
 import deronzier.remi.payMyBuddyV2.service.UserService;
 
 @SpringBootApplication
@@ -26,6 +28,9 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 
 	@Autowired
 	private AccountService accountService;
+
+	@Autowired
+	private TransactionService transactionService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PayMyBuddyV2Application.class, args);
@@ -47,7 +52,12 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 //		Account account2 = accountService.addMoney(-30, 1);
 //		LOG.info("Account of user1 after adding -30€ and before 40€:\n{}", account2);
 		Optional<User> user1UpdatedWith30MoreEuros = userService.getUser(1);
-		LOG.info("User by id 1:\n{}", user1UpdatedWith30MoreEuros);
+		LOG.info("User by id 1 after adding 30€ and before 10€:\n{}", user1UpdatedWith30MoreEuros);
+
+		Transaction transaction = transactionService.makeATransaction(1, 4, 10.2, null);
+		LOG.info("Transaction between user1 and user2:\n{}", transaction);
+		LOG.info("User by id 1 after transaction:\n{}", user1UpdatedWith30MoreEuros);
+		LOG.info("User by id 4 after transaction:\n{}", user4);
 	}
 
 }

@@ -9,11 +9,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Min;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @Entity
+@ToString
 public class Transaction {
+
+	public Transaction() {
+
+	}
+
+	public Transaction(String description, double amount) {
+		this.description = description;
+		this.amount = amount;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +39,7 @@ public class Transaction {
 	private double amount;
 
 	@Column(nullable = false, updatable = false)
-	private Timestamp timeStamp;
+	private final Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
 
 	private String description;
 

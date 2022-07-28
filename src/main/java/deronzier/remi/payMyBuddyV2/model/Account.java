@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoney;
+import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import lombok.Data;
 
 @Data
@@ -27,8 +29,21 @@ public class Account {
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 
-	public void addMoney(double amount) {
+	public void addMoney(double amount) throws NegativeAmountException {
+		if (amount <= 0) {
+			throw new NegativeAmountException("Amount must be strictly positive");
+		}
 		balance += amount;
+	}
+
+	public void withdrawMoney(double amount) throws NegativeAmountException, AccountNotEnoughMoney {
+		if (amount <= 0) {
+			throw new NegativeAmountException("Amount must be strictly positive");
+		}
+		if (balance - amount < 0) {
+			throw new AccountNotEnoughMoney("The account has not enough money");
+		}
+		balance -= amount;
 	}
 
 	@Override
