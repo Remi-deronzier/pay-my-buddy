@@ -3,10 +3,13 @@ package deronzier.remi.payMyBuddyV2.service;
 import javax.security.auth.login.AccountNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoney;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
+import deronzier.remi.payMyBuddyV2.exception.TransactionSameAccountException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.model.Transaction;
@@ -27,8 +30,19 @@ public class TransactionService {
 	@Autowired
 	private AccountRepository accountRepository;
 
+	public Page<Transaction> findAllBySenderId(int senderId, Pageable pageable) {
+		return transactionRepository.findBySenderId(senderId, pageable);
+	}
+
 	public Transaction makeATransaction(int senderId, int receiverId, double amount, String description)
-			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney {
+			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney,
+			TransactionSameAccountException {
+		// Check senderId is different from receiverId
+		if (senderId == receiverId) {
+			throw new TransactionSameAccountException(
+					"Sender and Receiver are not different. It is not possible to make transfers to oneself");
+		}
+
 		// Get sender and receiver
 		User sender = userRepository.findById(senderId)
 				.orElseThrow(() -> new UserNotFoundException("Sender not found. This Account does not exist."));

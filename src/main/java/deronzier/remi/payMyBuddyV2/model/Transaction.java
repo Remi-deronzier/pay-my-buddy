@@ -2,23 +2,24 @@ package deronzier.remi.payMyBuddyV2.model;
 
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @EqualsAndHashCode
 @Entity
-@ToString
 public class Transaction {
 
 	public Transaction() {
@@ -42,5 +43,17 @@ public class Transaction {
 	private final Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
 
 	private String description;
+
+//	@JsonBackReference
+//	@ManyToOne(cascade = CascadeType.ALL, optional = false)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "sender_id")
+	private User sender;
+
+	@Override
+	public String toString() {
+		return "Transaction [id=" + id + ", amount=" + amount + ", timeStamp=" + timeStamp + ", description="
+				+ description + "]";
+	}
 
 }

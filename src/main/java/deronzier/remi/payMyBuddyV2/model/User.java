@@ -44,8 +44,8 @@ public class User {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
 	List<BankTransfer> bankTransfers = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumn(name = "sender_id")
+//	@JsonManagedReference
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "sender")
 	List<Transaction> sentTransactions = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -81,6 +81,7 @@ public class User {
 
 	public void addSentTransaction(Transaction transaction) {
 		sentTransactions.add(transaction);
+		transaction.setSender(this);
 	}
 
 	public void addReceivedTransaction(Transaction transaction) {

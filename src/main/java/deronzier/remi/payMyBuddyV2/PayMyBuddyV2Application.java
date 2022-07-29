@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.model.Transaction;
@@ -50,10 +54,10 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 		Account account1 = accountService.addMoney(30, 1);
 		LOG.info("Account of user1 after adding 30€ and before 10€:\n{}", account1);
 //		Account account2 = accountService.addMoney(-30, 1);
-//		LOG.info("Account of user1 after adding -30€ and before 40€:\n{}", account2);
 		LOG.info("User by id 1 after adding 30€ and before 10€:\n{}", user1);
 
 		Transaction transaction = transactionService.makeATransaction(1, 4, 10.2, null);
+//		transactionService.makeATransaction(1, 1, 30, null);
 		LOG.info("Transaction between user1 and user2:\n{}", transaction);
 		LOG.info("User by id 1 after transaction:\n{}", user1);
 		LOG.info("User by id 4 after transaction:\n{}", user4);
@@ -62,6 +66,11 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 //		accountService.withdrawMoney(40, 1);
 		LOG.info("User by id 1 after withdraw money:\n{}", user1);
 		LOG.info("Account of user1 after adding 30€ and before 10€:\n{}", account1);
+
+		Pageable pageable = PageRequest.of(0, 10, Sort.by("timeStamp").descending());
+		Page<Transaction> transactionsSender1Page1SortedByDateDsc = transactionService.findAllBySenderId(1, pageable);
+		LOG.info("Page 1 of transactions sender1 Sorted by date in Descending Order:");
+		transactionsSender1Page1SortedByDateDsc.forEach(transactionSender1 -> LOG.info(transactionSender1.toString()));
 	}
 
 }
