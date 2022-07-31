@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.repository.UserRepository;
@@ -22,7 +23,12 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findById(id);
 	}
 
-	public User addConnection(final int ownerId, final int newConnectionId) throws UserNotFoundException {
+	public User addConnection(final int ownerId, final int newConnectionId)
+			throws UserNotFoundException, ConnectionCreationException {
+		// Check that ownerId and newConnectionId are different
+		if (ownerId == newConnectionId) {
+			throw new ConnectionCreationException("You can't connect with yourself");
+		}
 		User owner = userRepository.findById(ownerId)
 				.orElseThrow(() -> new UserNotFoundException("User not found. This Account does not exist."));
 		User newConnection = userRepository.findById(newConnectionId)
