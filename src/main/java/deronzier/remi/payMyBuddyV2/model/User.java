@@ -27,7 +27,7 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	@NotBlank(message = "Email cannot be null")
 	private String email;
 
@@ -44,7 +44,6 @@ public class User {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
 	List<BankTransfer> bankTransfers = new ArrayList<>();
 
-//	@JsonManagedReference
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "sender")
 	List<Transaction> sentTransactions = new ArrayList<>();
 

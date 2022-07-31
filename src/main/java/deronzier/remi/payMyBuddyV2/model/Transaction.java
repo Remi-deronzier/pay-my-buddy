@@ -44,8 +44,6 @@ public class Transaction {
 
 	private String description;
 
-//	@JsonBackReference
-//	@ManyToOne(cascade = CascadeType.ALL, optional = false)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "sender_id")
 	private User sender;

@@ -28,6 +28,14 @@ INSERT INTO `user_role` (`user_id`, `role_id`) VALUES
 (4, 2);
 
 --
+-- Dumping data for table `connection`
+--
+
+INSERT INTO `connection` (`owner_id`, `connection_id`) VALUES
+(2, 3),
+(3, 4);
+
+--
 -- Dumping data for table `bank_transfer`
 --
 

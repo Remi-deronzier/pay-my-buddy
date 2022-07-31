@@ -2,8 +2,6 @@ package deronzier.remi.payMyBuddyV2;
 
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.model.Transaction;
 import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.service.AccountService;
-import deronzier.remi.payMyBuddyV2.service.TransactionService;
-import deronzier.remi.payMyBuddyV2.service.UserService;
+import deronzier.remi.payMyBuddyV2.service.impl.AccountServiceImpl;
+import deronzier.remi.payMyBuddyV2.service.impl.TransactionServiceImpl;
+import deronzier.remi.payMyBuddyV2.service.impl.UserServiceImpl;
 
 @SpringBootApplication
 public class PayMyBuddyV2Application implements CommandLineRunner {
@@ -28,13 +27,13 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 	private static final Logger LOG = LoggerFactory.getLogger(PayMyBuddyV2Application.class);
 
 	@Autowired
-	private UserService userService;
+	private UserServiceImpl userService;
 
 	@Autowired
-	private AccountService accountService;
+	private AccountServiceImpl accountService;
 
 	@Autowired
-	private TransactionService transactionService;
+	private TransactionServiceImpl transactionService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PayMyBuddyV2Application.class, args);
@@ -43,13 +42,14 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 	@Override
 	@Transactional
 	public void run(String... args) throws Exception {
-		Optional<User> user1 = userService.getUser(1);
+		Optional<User> user1 = userService.findById(1);
 		LOG.info("User by id 1:\n{}", user1);
-		Optional<User> user4 = userService.getUser(4);
+		Optional<User> user4 = userService.findById(4);
 		LOG.info("User by id 4:\n{}", user4);
 
 		userService.addConnection(1, 4);
-		LOG.info("User by id 1 after adding user4 to user1's contacts:\n{}", user1);
+		userService.addConnection(1, 3);
+		LOG.info("User by id 1 after adding user4 and user3 to user1's contacts:\n{}", user1);
 
 		Account account1 = accountService.addMoney(30, 1);
 		LOG.info("Account of user1 after adding 30€ and before 10€:\n{}", account1);
@@ -71,6 +71,12 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 		Page<Transaction> transactionsSender1Page1SortedByDateDsc = transactionService.findAllBySenderId(1, pageable);
 		LOG.info("Page 1 of transactions sender1 Sorted by date in Descending Order:");
 		transactionsSender1Page1SortedByDateDsc.forEach(transactionSender1 -> LOG.info(transactionSender1.toString()));
+
+		Pageable pageableConnection = PageRequest.of(0, 10);
+		Page<User> connectionsUser1Page1 = userService.findAllConnections(1, pageableConnection);
+		LOG.info("Page 1 of connections of user 1:");
+		connectionsUser1Page1.forEach(connection -> LOG.info(connection.toString()));
+
 	}
 
 }

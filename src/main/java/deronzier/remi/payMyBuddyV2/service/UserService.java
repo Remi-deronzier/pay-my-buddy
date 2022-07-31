@@ -2,30 +2,18 @@ package deronzier.remi.payMyBuddyV2.service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.repository.UserRepository;
 
-@Service
-public class UserService {
+public interface UserService {
 
-	@Autowired
-	private UserRepository userRepository;
+	Optional<User> findById(final int id);
 
-	public Optional<User> getUser(final int id) {
-		return userRepository.findById(id);
-	}
+	Page<User> findAllConnections(int ownerId, Pageable pageable);
 
-	public User addConnection(final int ownerId, final int newConnectionId) throws UserNotFoundException {
-		User owner = getUser(ownerId)
-				.orElseThrow(() -> new UserNotFoundException("User not found. This Account does not exist."));
-		User newConnection = getUser(newConnectionId)
-				.orElseThrow(() -> new UserNotFoundException("User not found. Your connection does not exist."));
-		owner.addConnection(newConnection);
-		return userRepository.save(owner);
-	}
+	User addConnection(final int ownerId, final int newConnectionId) throws UserNotFoundException;
 
 }
