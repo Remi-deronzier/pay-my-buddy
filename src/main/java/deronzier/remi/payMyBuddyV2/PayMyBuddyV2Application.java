@@ -9,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -67,13 +68,12 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 		LOG.info("User by id 1 after withdraw money:\n{}", user1);
 		LOG.info("Account of user1 after adding 30€ and before 10€:\n{}", account1);
 
-		Pageable pageable = PageRequest.of(0, 10, Sort.by("timeStamp").descending());
+		Pageable pageable = PageRequest.of(0, 2, Sort.by("timeStamp").descending());
 		Page<Transaction> transactionsSender1Page1SortedByDateDsc = transactionService.findAllBySenderId(1, pageable);
 		LOG.info("Page 1 of transactions sender1 Sorted by date in Descending Order:");
 		transactionsSender1Page1SortedByDateDsc.forEach(transactionSender1 -> LOG.info(transactionSender1.toString()));
 
-		Pageable pageableConnection = PageRequest.of(0, 10);
-		Page<User> connectionsUser1Page1 = userService.findAllConnections(1, pageableConnection);
+		Page<User> connectionsUser1Page1 = new PageImpl<User>(user1.get().getConnections());
 		LOG.info("Page 1 of connections of user 1:");
 		connectionsUser1Page1.forEach(connection -> LOG.info(connection.toString()));
 

@@ -33,6 +33,7 @@ INSERT INTO `user_role` (`user_id`, `role_id`) VALUES
 
 INSERT INTO `connection` (`owner_id`, `connection_id`) VALUES
 (2, 3),
+(1,2),
 (3, 4);
 
 --
