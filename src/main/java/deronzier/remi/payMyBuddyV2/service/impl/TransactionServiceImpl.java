@@ -37,7 +37,7 @@ public class TransactionServiceImpl implements TransactionService {
 		return transactionRepository.findBySenderId(senderId, pageable);
 	}
 
-	public Transaction makeATransaction(int senderId, int receiverId, double amount, String description)
+	public Transaction makeTransaction(int senderId, int receiverId, double amount, String description)
 			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney,
 			TransactionSameAccountException {
 		// Check senderId is different from receiverId

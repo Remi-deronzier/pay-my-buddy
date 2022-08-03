@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
 import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
+import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.repository.UserRepository;
 import deronzier.remi.payMyBuddyV2.service.UserService;
@@ -56,6 +57,21 @@ public class UserServiceImpl implements UserService {
 		} else {
 			throw new ConnectionNotFoundException("Connection not found");
 		}
+	}
+
+	@Override
+	public User create(User user) {
+		Account account = new Account(UserService.INITIAL_ACCOUNT_BALANCE);
+		user.setAccount(account);
+		account.setUser(user);
+		return userRepository.save(user);
+	}
+
+	@Override
+	public void delete(int id) throws UserNotFoundException {
+		userRepository.findById(id)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		userRepository.deleteById(id);
 	}
 
 }

@@ -18,27 +18,31 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
+@NoArgsConstructor(force = true)
+@RequiredArgsConstructor
 public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	@NotBlank(message = "Email cannot be null")
-	private String email;
+	final private String email;
 
 	@Column(nullable = false)
 	@NotBlank(message = "Password cannot be null")
-	private String password;
+	final private String password;
 
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private boolean active;
 
-	@OneToOne(mappedBy = "user")
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
 	Account account;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")

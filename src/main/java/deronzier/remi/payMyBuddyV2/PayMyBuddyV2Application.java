@@ -43,6 +43,12 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 	@Override
 	@Transactional
 	public void run(String... args) throws Exception {
+		User userTest = new User("test@gmail.com", "password");
+		User newUserTest = userService.create(userTest);
+		LOG.info("User test:\n{}", newUserTest);
+
+		userService.delete(5);
+
 		Optional<User> user1 = userService.findById(1);
 		LOG.info("User by id 1:\n{}", user1);
 		Optional<User> user4 = userService.findById(4);
@@ -57,7 +63,7 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 //		Account account2 = accountService.addMoney(-30, 1);
 		LOG.info("User by id 1 after adding 30€ and before 10€:\n{}", user1);
 
-		Transaction transaction = transactionService.makeATransaction(1, 4, 10.2, null);
+		Transaction transaction = transactionService.makeTransaction(1, 4, 10.2, null);
 //		transactionService.makeATransaction(1, 1, 30, null);
 		LOG.info("Transaction between user1 and user2:\n{}", transaction);
 		LOG.info("User by id 1 after transaction:\n{}", user1);

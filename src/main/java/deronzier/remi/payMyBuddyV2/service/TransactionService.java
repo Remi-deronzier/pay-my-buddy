@@ -15,7 +15,7 @@ public interface TransactionService {
 
 	Page<Transaction> findAllBySenderId(int senderId, Pageable pageable);
 
-	Transaction makeATransaction(int senderId, int receiverId, double amount, String description)
+	Transaction makeTransaction(int senderId, int receiverId, double amount, String description)
 			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney,
 			TransactionSameAccountException;
 

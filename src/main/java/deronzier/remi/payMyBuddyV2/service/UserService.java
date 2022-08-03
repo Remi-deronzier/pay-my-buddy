@@ -13,4 +13,9 @@ public interface UserService {
 	User addConnection(final int ownerId, final int newConnectionId)
 			throws UserNotFoundException, ConnectionCreationException;
 
+	User create(User user);
+
+	void delete(final int id) throws UserNotFoundException;
+
+	static final double INITIAL_ACCOUNT_BALANCE = 0;
 }
