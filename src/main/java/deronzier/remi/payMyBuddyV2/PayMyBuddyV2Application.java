@@ -77,6 +77,8 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 		LOG.info("Page 1 of connections of user 1:");
 		connectionsUser1Page1.forEach(connection -> LOG.info(connection.toString()));
 
+		userService.deleteConnection(1, 4);
+//		userService.deleteConnection(5, 4);
 	}
 
 }
