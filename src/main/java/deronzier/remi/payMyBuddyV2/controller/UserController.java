@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.controller.user;
+package deronzier.remi.payMyBuddyV2.controller;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class UserController {
 	private UserServiceImpl userService;
 
 	@GetMapping(value = "/contact")
-	public String getConnections(Model model) throws Exception {
+	public String getConnections(Model model) {
 		User user1 = userService.findById(OWNER_USER_ID).get();
 		List<User> connections = user1.getConnections();
 		model.addAttribute("connections", connections);
@@ -36,7 +36,7 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public String getConnections(@PathVariable final int id, Model model) throws Exception {
+	public String getUser(@PathVariable final int id, Model model) {
 		User user = userService.findById(id).get();
 		model.addAttribute("user", user);
 		return "users/profile";

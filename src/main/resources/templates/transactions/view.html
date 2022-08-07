@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-general}">
+      
+	<head>
+		<title>Transaction</title>
+	</head>
+	
+	<body>
+		<div layout:fragment="content" class="container">
+			<h1>Transaction</h1>
+			<div class="d-flex justify-content-between mb-2">
+				<h3>Send money</h3>
+				<a th:href="@{/users/contact/add}" class="btn btn-outline-primary" role="button">Add connection</a>
+			</div>
+			<div class="card bg-light">
+				<div class="card-body">
+					<form class="row row-cols-md-auto g-2 align-items-end justify-content-center"
+					th:if="${!connections.isEmpty}" action="#" th:action="@{/transactions/makeTransaction}"
+					th:object="${user}"  method="post">
+						<div class="col-12">
+							<label for="selectConnection" class="form-label" th:field="*{id}">Select a connection</label>
+							<select class="form-select" aria-label="Default select" id="selectConnection">
+				    			<option th:each="user: ${connections}" th:value="${user.id}" th:text="${user.userName} + ' - ' + ${user.firstName} + ' ' + ${user.lastName}"></option>
+							</select>
+						</div>
+						<div class="col-12">
+							<label for="amount" class="form-label">Enter the amount</label>
+							<div class="input-group">
+								<div class="input-group-text">€</div>
+								<input type="number" class="form-control" placeholder="Amount" id="amount">
+							</div>
+						</div>
+						<div class="col-12">
+							<button type="submit" class="btn btn-primary">Pay</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			
+			
+			<h3 class="mt-4">My transactions</h3>
+			<table th:if="${!page.getContent().isEmpty}" class="table table-striped table-bordered">
+				<thead>
+					<tr class="table-primary">
+						<th>Connection</th>
+						<th>Description</th>
+						<th>Date</th>
+						<th>Amount</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="transaction : ${page.getContent()}">
+						<td>
+							<strong th:if="${transaction.getSender().getId() == 1}" th:text="'Sent to: '"></strong>
+							<strong th:unless="${transaction.getSender().getId() == 1}" th:text="'Received from: '"></strong>
+							<span th:if="${transaction.getSender().getId() == 1}" th:text="${transaction.getReceiver().getUserName()}"></span>
+							<span th:unless="${transaction.getSender().getId() == 1}" th:text="${transaction.getSender().getUserName()}"></span>
+						</td>
+						<td th:text="${transaction.description}"></td>
+						<td th:text="${transaction.timeStamp}"></td>
+						<td>
+							<span th:if="${transaction.getSender().getId() == 1}" th:text="'-' + ${transaction.amount} + ' €'"></span>
+							<span th:unless="${transaction.getSender().getId() == 1}" th:text="${transaction.amount} + ' €'"></span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<p th:unless="${!page.getContent().isEmpty}">No transaction to display</p>
+			
+		  <nav aria-label="Search results pages">
+		    <ul class="pagination justify-content-center">
+		      <li th:class="${page.firstPage}? 'disabled page-item' : 'page-item'">
+		        <span th:if='${page.firstPage}' class="page-link">← First</span>
+		        <a th:if='${not page.firstPage}' class="page-link" th:href='@{${page.url}(page=1,size=${page.size})}'>← First</a>
+		      </li>
+		      <li th:class="${page.hasPreviousPage}? 'page-item' : 'disabled page-item'">
+		        <span th:if='${not page.hasPreviousPage}' class="page-link">«</span>
+		        <a th:if='${page.hasPreviousPage}' th:href='@{${page.url}(page=${page.number-1},size=${page.size})}' title='Go to previous page' class="page-link">«</a>
+		      </li>
+		      <li th:each="item : ${page.items}" th:class="${item.current} ? 'page-item active' : 'page-item'">
+		        <span th:if='${item.current}' th:text='${item.number}' class="page-link">1</span>
+		        <a th:if='${not item.current}' th:href='@{${page.url}(page=${item.number},size=${page.size})}' class="page-link"><span th:text='${item.number}'>1</span></a>
+		      </li>
+		      <li th:class="${page.hasNextPage}? 'page-item' : 'disabled page-item'">
+		        <span th:if='${not page.hasNextPage}' class="page-link">»</span>
+		        <a th:if='${page.hasNextPage}' th:href='@{${page.url}(page=${page.number+1},size=${page.size})}' title='Go to next page' class="page-link">»</a>
+		      </li>
+		      <li th:class="${page.lastPage}? 'disabled page-item' : 'page-item'">
+		        <span th:if='${page.lastPage}' class="page-link">Last →</span>
+		        <a th:if='${not page.lastPage}' th:href='@{${page.url}(page=${page.totalPages},size=${page.size})}' class="page-link">Last →</a>
+		      </li>
+		    </ul>
+		  </nav>
+		</div>
+	</body>
+	
+</html>

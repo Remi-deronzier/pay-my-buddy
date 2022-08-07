@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.controller.error;
+package deronzier.remi.payMyBuddyV2.controller;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
