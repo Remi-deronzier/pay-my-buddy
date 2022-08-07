@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-error(statusCode='404')}">
+      
+	<head>
+		<title>404 page</title>
+	</head>
+	
+	<body>
+		<div layout:fragment="error-content">
+			<p class="fs-3"> <span class="text-danger">Opps!</span> Page not found.</p>
+			<p class="lead">
+			    The page you’re looking for doesn’t exist.
+			</p>
+		</div>
+	</body>
+	
+</html>

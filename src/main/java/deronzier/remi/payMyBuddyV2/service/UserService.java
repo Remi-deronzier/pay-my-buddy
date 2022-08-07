@@ -1,5 +1,6 @@
 package deronzier.remi.payMyBuddyV2.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
@@ -22,6 +23,8 @@ public interface UserService {
 	User save(User user);
 
 	void delete(final int id) throws UserNotFoundException;
+
+	List<User> findFuturePotentialConnections(final int ownerId) throws UserNotFoundException;
 
 	static final double INITIAL_ACCOUNT_BALANCE = 0;
 }

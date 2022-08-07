@@ -47,7 +47,7 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 	@Override
 	@Transactional
 	public void run(String... args) throws Exception {
-//		User userTest = new User("test@gmail.com", "password");
+//		User userTest = new User("test@gmail.com", "password", null, null);
 //		User newUserTest = userService.create(userTest);
 //		LOG.info("User test:\n{}", newUserTest);
 //
@@ -55,7 +55,7 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 //
 		Optional<User> user1 = userService.findById(1);
 //		LOG.info("User by id 1:\n{}", user1);
-		Optional<User> user4 = userService.findById(4);
+//		Optional<User> user4 = userService.findById(4);
 //		LOG.info("User by id 4:\n{}", user4);
 //
 //		userService.addConnection(1, 4);

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <head>
+   	    <meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Pay My buddy</title>
+	
+	    <!-- Bootstrap CSS -->
+	    <link th:rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    </head>
+
+    <body>
+        <div class="d-flex align-items-center justify-content-center vh-100">
+            <div class="text-center" layout:fragment="error(statusCode)">
+                <h1 class="display-1 fw-bold" th:text="${statusCode}">Status code goes here</h1>
+                
+                <!-- Content Section -->
+				<div layout:fragment="error-content">
+					Content goes here
+				</div>
+
+                <a th:href="@{/}" class="btn btn-primary" role="button">Go Home</a>
+            </div>
+        </div>
+    </body>
+
+</html>

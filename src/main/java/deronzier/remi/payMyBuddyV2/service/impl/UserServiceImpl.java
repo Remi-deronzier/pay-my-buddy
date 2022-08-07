@@ -1,5 +1,7 @@
 package deronzier.remi.payMyBuddyV2.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +89,32 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User save(User user) {
 		return userRepository.save(user);
+	}
+
+	@Override
+	public List<User> findFuturePotentialConnections(int ownerId) throws UserNotFoundException {
+		// Get all users
+		Iterable<User> allUsers = userRepository.findAll();
+
+		// Convert users iterable to list and delete user logged in
+		List<User> futurePotentialConnections = new ArrayList<User>();
+		allUsers.forEach((user) -> {
+			if (user.getId() != ownerId) {
+				futurePotentialConnections.add(user);
+			}
+		});
+
+		// Find owner
+		User owner = userRepository.findById(ownerId)
+				.orElseThrow(() -> new UserNotFoundException("User not found."));
+
+		// Get owner's connections
+		List<User> connections = owner.getConnections();
+
+		// Keep only users that are not in his connections
+		futurePotentialConnections.removeAll(connections);
+
+		return futurePotentialConnections;
 	}
 
 }

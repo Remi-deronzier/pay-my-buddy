@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,6 +36,18 @@ public class User {
 	@NotBlank(message = "Email cannot be null")
 	private String email;
 
+	@Column(nullable = false, unique = true)
+	@NotBlank(message = "User name cannot be null")
+	private String userName;
+
+	@Column(nullable = false)
+	@NotBlank(message = "First name cannot be null")
+	private String firstName;
+
+	@Column(nullable = false)
+	@NotBlank(message = "Last name cannot be null")
+	private String lastName;
+
 	@Column(nullable = false)
 	@NotBlank(message = "Password cannot be null")
 	private String password;
@@ -43,6 +57,14 @@ public class User {
 
 	@Transient
 	private int age;
+
+	private String description;
+
+	private String phoneNumber;
+
+	@Column(nullable = false, columnDefinition = "varchar(32) default 'AWAY'")
+	@Enumerated(value = EnumType.STRING)
+	private UserStatus status = UserStatus.AWAY;
 
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private boolean active;
