@@ -64,7 +64,7 @@ public class TransactionController {
 	}
 
 	@PostMapping("/makeTransaction")
-	public String addConntactSendForm(@ModelAttribute Transaction transaction, @ModelAttribute User receiver,
+	public String makeTransaction(@ModelAttribute Transaction transaction, @ModelAttribute User receiver,
 			Model model)
 			throws UserNotFoundException, ConnectionCreationException, AccountNotFoundException,
 			NegativeAmountException, AccountNotEnoughMoney, TransactionSameAccountException {

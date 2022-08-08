@@ -15,10 +15,10 @@
 				<div class="card-body">
 					<h5 class="card-title">Pay My Buddy balance</h5>
 					<p class="card-text" th:text="${account.balance} + ' €'"></p>
-					<a th:href="@{/transfers}" class="btn btn-primary" role="button">
+					<a th:href="@{/bankTransfers}" class="btn btn-primary" role="button">
 						<i class="bi bi-plus"></i> Top up
 					</a>
-					<a th:href="@{/transfers}" class="btn btn-outline-primary" role="button">
+					<a th:href="@{/bankTransfers}" class="btn btn-outline-primary" role="button">
 						<i class="bi bi-arrow-right"></i> Use
 					</a>
 				</div>
