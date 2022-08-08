@@ -48,9 +48,9 @@ public class TransactionServiceImpl implements TransactionService {
 
 		// Get sender and receiver
 		User sender = userRepository.findById(senderId)
-				.orElseThrow(() -> new UserNotFoundException("Sender not found. This Account does not exist."));
+				.orElseThrow(() -> new UserNotFoundException("Sender not found"));
 		User receiver = userRepository.findById(receiverId)
-				.orElseThrow(() -> new UserNotFoundException("Receiver not found. This Account does not exist."));
+				.orElseThrow(() -> new UserNotFoundException("Receiver not found"));
 
 		// Get sender and receiver accounts
 		Account senderAccount = accountRepository.findByUserId(senderId)
