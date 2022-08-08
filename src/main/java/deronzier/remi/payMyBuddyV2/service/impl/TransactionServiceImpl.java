@@ -60,12 +60,11 @@ public class TransactionServiceImpl implements TransactionService {
 
 		// Debit the sender
 		senderAccount.withdrawMoney(amount);
-		accountRepository.save(senderAccount);
 
 		// Credit the receiver
 		receiverAccount.addMoney(amount);
-		accountRepository.save(receiverAccount);
 
+		// Update sent and received transactions for the sender and the receiver
 		Transaction transaction = new Transaction(description, amount);
 		sender.addSentTransaction(transaction);
 		receiver.addReceivedTransaction(transaction);

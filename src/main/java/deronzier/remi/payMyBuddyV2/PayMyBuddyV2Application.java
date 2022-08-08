@@ -53,7 +53,7 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 //
 		Optional<User> user1 = userService.findById(1);
 //		LOG.info("User by id 1:\n{}", user1);
-//		Optional<User> user4 = userService.findById(4);
+		Optional<User> user4 = userService.findById(4);
 //		LOG.info("User by id 4:\n{}", user4);
 //
 //		userService.addConnection(1, 4);
@@ -67,13 +67,14 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 //
 //		Transaction transaction = transactionService.makeTransaction(1, 4, 10.2, null);
 ////		transactionService.makeATransaction(1, 1, 30, null);
-//		LOG.info("Transaction between user1 and user2:\n{}", transaction);
+//		LOG.info("Transaction between user1 and user4:\n{}", transaction);
 //		LOG.info("User by id 1 after transaction:\n{}", user1);
 //		LOG.info("User by id 4 after transaction:\n{}", user4);
 
-		bankTransferService.makeBankTransfer(10, 1, false); // use
+		BankTransfer bankTransferUse = bankTransferService.makeBankTransfer(10, 1, false); // use
 		LOG.info("User by id 1 after bank transfer of 10€ type use:\n{}", user1);
 		LOG.info("All bank transfers:\n{}", user1.get().getBankTransfers());
+		LOG.info("Bank transfer top up of 10€:\n{}", bankTransferUse);
 //		BankTransfer bankTransferTopUp = bankTransferService.makeBankTransfer(10, 1, true); // top up
 //		LOG.info("User by id 1 after bank transfer of 10€ type top up:\n{}", user1);
 //		LOG.info("Bank transfer top up of 10€:\n{}", bankTransferTopUp);
@@ -88,7 +89,7 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 //		LOG.info("User by id 1 after withdraw money:\n{}", user1);
 //		LOG.info("Account of user1 after adding 30€ and before 10€:\n{}", account1);
 //
-//		Pageable pageable = PageRequest.of(0, 2, Sort.by("timeStamp").descending());
+//		Pageable pageable = PageRequest.of(0, 3, Sort.by("timeStamp").descending());
 //		Page<Transaction> transactionsSender1Page1SortedByDateDsc = transactionService.findAllBySenderId(1, pageable);
 //		LOG.info("Page 1 of transactions sender1 Sorted by date in Descending Order:");
 //		transactionsSender1Page1SortedByDateDsc.forEach(transactionSender1 -> LOG.info(transactionSender1.toString()));

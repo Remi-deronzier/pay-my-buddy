@@ -14,7 +14,7 @@ public interface BankTransferService {
 
 	Page<BankTransfer> findAllByUserId(int userId, Pageable pageable);
 
-	void makeBankTransfer(double amount, int userId, boolean isTopUp)
+	BankTransfer makeBankTransfer(double amount, int userId, boolean isTopUp)
 			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney;
 
 }

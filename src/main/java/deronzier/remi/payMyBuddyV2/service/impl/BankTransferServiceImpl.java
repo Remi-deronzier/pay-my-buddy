@@ -38,7 +38,7 @@ public class BankTransferServiceImpl implements BankTransferService {
 	}
 
 	@Override
-	public void makeBankTransfer(double amount, int userId, boolean isTopUp)
+	public BankTransfer makeBankTransfer(double amount, int userId, boolean isTopUp)
 			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney {
 		BankTransfer bankTransfer;
 		// Get user
@@ -60,7 +60,8 @@ public class BankTransferServiceImpl implements BankTransferService {
 
 		// Save data in DB
 		user.addBankTransfer(bankTransfer);
-		accountRepository.save(userAccount);
+
+		return bankTransferRepository.save(bankTransfer);
 	}
 
 }
