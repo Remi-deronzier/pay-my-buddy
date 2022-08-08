@@ -56,7 +56,7 @@ public class TransactionController {
 
 		// Get all current user's transactions
 		Page<Transaction> transactions = transactionService
-				.findAllSentAndReceivedTransactions(UserController.OWNER_USER_ID, pageable);
+				.findAllSentAndReceivedTransactionsForSpecificUser(UserController.OWNER_USER_ID, pageable);
 		PageWrapper<Transaction> page = new PageWrapper<Transaction>(transactions, "/transactions");
 		model.addAttribute("page", page);
 

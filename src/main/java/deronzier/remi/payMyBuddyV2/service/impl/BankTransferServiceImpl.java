@@ -3,6 +3,8 @@ package deronzier.remi.payMyBuddyV2.service.impl;
 import javax.security.auth.login.AccountNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +43,10 @@ public class BankTransferServiceImpl implements BankTransferService {
 //	public Page<BankTransfer> findAllByUserId(int userId, Pageable pageable) {
 //		return bankTransferRepository.findByUserId(userId, pageable);
 //	}
+	@Override
+	public Page<BankTransfer> findAllBankTransfersForSpecificUser(int userId, Pageable pageable) {
+		return bankTransferRepository.findByUserId(userId, pageable);
+	}
 
 	@Override
 	public BankTransfer makeBankTransfer(double amount, int userId, boolean isTopUp, int externalAccountId)

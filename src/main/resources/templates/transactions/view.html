@@ -73,31 +73,6 @@
 			</table>
 			
 			<p th:unless="${!page.getContent().isEmpty}">No transaction to display</p>
-			
-		  <nav aria-label="Search results pages">
-		    <ul class="pagination justify-content-center">
-		      <li th:class="${page.firstPage}? 'disabled page-item' : 'page-item'">
-		        <span th:if='${page.firstPage}' class="page-link">← First</span>
-		        <a th:if='${not page.firstPage}' class="page-link" th:href='@{${page.url}(page=1,size=${page.size})}'>← First</a>
-		      </li>
-		      <li th:class="${page.hasPreviousPage}? 'page-item' : 'disabled page-item'">
-		        <span th:if='${not page.hasPreviousPage}' class="page-link">«</span>
-		        <a th:if='${page.hasPreviousPage}' th:href='@{${page.url}(page=${page.number-1},size=${page.size})}' title='Go to previous page' class="page-link">«</a>
-		      </li>
-		      <li th:each="item : ${page.items}" th:class="${item.current} ? 'page-item active' : 'page-item'">
-		        <span th:if='${item.current}' th:text='${item.number}' class="page-link">1</span>
-		        <a th:if='${not item.current}' th:href='@{${page.url}(page=${item.number},size=${page.size})}' class="page-link"><span th:text='${item.number}'>1</span></a>
-		      </li>
-		      <li th:class="${page.hasNextPage}? 'page-item' : 'disabled page-item'">
-		        <span th:if='${not page.hasNextPage}' class="page-link">»</span>
-		        <a th:if='${page.hasNextPage}' th:href='@{${page.url}(page=${page.number+1},size=${page.size})}' title='Go to next page' class="page-link">»</a>
-		      </li>
-		      <li th:class="${page.lastPage}? 'disabled page-item' : 'page-item'">
-		        <span th:if='${page.lastPage}' class="page-link">Last →</span>
-		        <a th:if='${not page.lastPage}' th:href='@{${page.url}(page=${page.totalPages},size=${page.size})}' class="page-link">Last →</a>
-		      </li>
-		    </ul>
-		  </nav>
 		</div>
 
 	</body>

@@ -13,9 +13,7 @@ import deronzier.remi.payMyBuddyV2.model.Transaction;
 
 public interface TransactionService {
 
-//	Page<Transaction> findAllSentTransactions(int senderId, Pageable pageable);
-
-	Page<Transaction> findAllSentAndReceivedTransactions(int ownerId, Pageable pageable);
+	Page<Transaction> findAllSentAndReceivedTransactionsForSpecificUser(int ownerId, Pageable pageable);
 
 	Transaction makeTransaction(int senderId, int receiverId, double amount, String description)
 			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney,

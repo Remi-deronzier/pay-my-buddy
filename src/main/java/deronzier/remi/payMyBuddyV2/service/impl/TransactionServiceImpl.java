@@ -33,10 +33,6 @@ public class TransactionServiceImpl implements TransactionService {
 	@Autowired
 	private AccountRepository accountRepository;
 
-//	public Page<Transaction> findAllSentTransactions(int senderId, Pageable pageable) {
-//		return transactionRepository.findBySenderId(senderId, pageable);
-//	}
-
 	@Override
 	public Transaction makeTransaction(int senderId, int receiverId, double amount, String description)
 			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney,
@@ -76,7 +72,7 @@ public class TransactionServiceImpl implements TransactionService {
 	}
 
 	@Override
-	public Page<Transaction> findAllSentAndReceivedTransactions(int ownerId, Pageable pageable) {
+	public Page<Transaction> findAllSentAndReceivedTransactionsForSpecificUser(int ownerId, Pageable pageable) {
 		return transactionRepository.findBySenderIdOrReceiverId(ownerId, ownerId, pageable);
 	}
 
