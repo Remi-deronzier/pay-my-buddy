@@ -65,7 +65,7 @@ INSERT INTO `transaction` (`time_stamp`, `sender_id`, `receiver_id`, `amount`) V
 --
 
 INSERT INTO `account` (`balance`, `user_id`) VALUES
-(10, 1),
+(100, 1),
 (30, 2),
 (500, 3),
 (600, 4);

@@ -32,9 +32,9 @@ public class UserServiceImpl implements UserService {
 			throw new ConnectionCreationException("You can't connect with yourself");
 		}
 		User owner = userRepository.findById(ownerId)
-				.orElseThrow(() -> new UserNotFoundException("User not found. This Account does not exist."));
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
 		User newConnection = userRepository.findById(newConnectionId)
-				.orElseThrow(() -> new UserNotFoundException("User not found. Your connection does not exist."));
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
 		owner.addConnection(newConnection);
 		return userRepository.save(owner);
 	}
@@ -46,9 +46,9 @@ public class UserServiceImpl implements UserService {
 			throw new ConnectionCreationException("You can't connect with yourself");
 		}
 		User owner = userRepository.findById(ownerId)
-				.orElseThrow(() -> new UserNotFoundException("User not found. This Account does not exist."));
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
 		User newConnection = userRepository.findById(newConnectionId)
-				.orElseThrow(() -> new UserNotFoundException("User not found. Your connection does not exist."));
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
 
 		// Check if connection exists before deleting it
 		if (owner.getConnections().contains(newConnection)) {
