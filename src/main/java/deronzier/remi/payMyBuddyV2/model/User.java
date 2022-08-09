@@ -1,5 +1,7 @@
 package deronzier.remi.payMyBuddyV2.model;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 
 import lombok.Data;
 
@@ -33,6 +37,12 @@ public class User {
 	@Column(nullable = false)
 	@NotBlank(message = "Password cannot be null")
 	private String password;
+
+	@Past
+	private LocalDate dateOfBirth;
+
+	@Transient
+	private int age;
 
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private boolean active;
@@ -67,6 +77,10 @@ public class User {
 	@JoinTable(name = "connection", joinColumns = @JoinColumn(name = "owner_id"), inverseJoinColumns = @JoinColumn(name = "connection_id"))
 	private List<User> connections = new ArrayList<>();
 
+	public int getAge() {
+		return calculateAge(dateOfBirth);
+	}
+
 	public void addConnection(User user) {
 		connections.add(user);
 	}
@@ -98,6 +112,19 @@ public class User {
 	public void addAcount(Account account) {
 		this.account = account;
 		account.setUser(this);
+	}
+
+	public int calculateAge(LocalDate dob) {
+		// creating an instance of the LocalDate class and invoking the now() method
+		// now() method obtains the current date from the system clock in the default
+		// time zone
+		LocalDate curDate = LocalDate.now();
+		// calculates the amount of time between two dates and returns the years
+		if ((dob != null) && (curDate != null)) {
+			return Period.between(dob, curDate).getYears();
+		} else {
+			return 0;
+		}
 	}
 
 }
