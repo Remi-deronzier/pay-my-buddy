@@ -3,8 +3,6 @@ package deronzier.remi.payMyBuddyV2.service.impl;
 import javax.security.auth.login.AccountNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,16 +37,15 @@ public class BankTransferServiceImpl implements BankTransferService {
 	@Autowired
 	private ExternalAccountRepository externalAccountRepository;
 
-	@Override
-	public Page<BankTransfer> findAllByUserId(int userId, Pageable pageable) {
-		return bankTransferRepository.findByUserId(userId, pageable);
-	}
+//	@Override
+//	public Page<BankTransfer> findAllByUserId(int userId, Pageable pageable) {
+//		return bankTransferRepository.findByUserId(userId, pageable);
+//	}
 
 	@Override
 	public BankTransfer makeBankTransfer(double amount, int userId, boolean isTopUp, int externalAccountId)
 			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney,
 			ExternalAccountNotFoundException, ExternalAccountNotBelongGoodUserException {
-		BankTransfer bankTransfer;
 		// Get user
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -68,12 +65,14 @@ public class BankTransferServiceImpl implements BankTransferService {
 		}
 
 		// Debit or credit user's account
+		BankTransfer bankTransfer = new BankTransfer();
+		bankTransfer.setExternalAccount(externalAccount);
 		if (isTopUp) { // Top up
 			userAccount.addMoney(amount);
-			bankTransfer = new BankTransfer(amount, externalAccount);
+			bankTransfer.setAmount(amount);
 		} else { // Use
 			userAccount.withdrawMoney(amount);
-			bankTransfer = new BankTransfer(-amount, externalAccount);
+			bankTransfer.setAmount(-amount);
 		}
 
 		// Save data in DB

@@ -108,11 +108,12 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 		LOG.info("External accounts of user 1:");
 		externalAccountsUser1.forEach(externalAccount -> LOG.info(externalAccount.toString()));
 
-		ExternalAccount newExternalAccount = new ExternalAccount("LCLO");
+		ExternalAccount newExternalAccount = new ExternalAccount();
+		newExternalAccount.setLabel("Boursorama");
 //		user1.get().addExternalAccount(newExternalAccount);
 //		userService.save(user1.get());
 		newExternalAccount.setUser(user1.get());
-		externalAccountService.create(newExternalAccount);
+		externalAccountService.save(newExternalAccount);
 
 		BankTransfer bankTransferUse = bankTransferService.makeBankTransfer(10, 1, false, 2); // use
 	}

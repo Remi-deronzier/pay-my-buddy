@@ -1,9 +1,7 @@
 package deronzier.remi.payMyBuddyV2.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,14 +11,9 @@ import javax.persistence.OneToOne;
 import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoney;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
-@NoArgsConstructor(force = true)
-@RequiredArgsConstructor
 public class Account {
 
 	@Id
@@ -28,10 +21,9 @@ public class Account {
 	private int id;
 
 	@Column(nullable = false, columnDefinition = "double default 0")
-	@NonNull
 	private double balance;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 
@@ -50,11 +42,6 @@ public class Account {
 			throw new AccountNotEnoughMoney("The account has not enough money");
 		}
 		balance -= amount;
-	}
-
-	@Override
-	public String toString() {
-		return "Account [id=" + id + ", balance=" + balance + "]";
 	}
 
 }

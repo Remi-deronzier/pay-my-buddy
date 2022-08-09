@@ -12,14 +12,9 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
-@NoArgsConstructor
-@RequiredArgsConstructor
 @Table(uniqueConstraints = { @UniqueConstraint(name = "unique_label_and_user", columnNames = { "label", "user_id" }) })
 public class ExternalAccount {
 
@@ -29,10 +24,9 @@ public class ExternalAccount {
 
 	@Column(nullable = false)
 	@NotBlank(message = "Label cannot be null")
-	@NonNull
 	private String label;
 
-	@ManyToOne
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "user_id")
 	private User user;
 

@@ -16,7 +16,7 @@ public class ExternalAccountServiceImpl implements ExternalAccountService {
 	private ExternalAccountRepository externalAccountRepository;
 
 	@Override
-	public ExternalAccount create(ExternalAccount externalAccount) {
+	public ExternalAccount save(ExternalAccount externalAccount) {
 		return externalAccountRepository.save(externalAccount);
 	}
 

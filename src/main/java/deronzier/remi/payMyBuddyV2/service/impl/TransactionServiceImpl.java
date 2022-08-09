@@ -3,8 +3,6 @@ package deronzier.remi.payMyBuddyV2.service.impl;
 import javax.security.auth.login.AccountNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,10 +31,12 @@ public class TransactionServiceImpl implements TransactionService {
 	@Autowired
 	private AccountRepository accountRepository;
 
-	public Page<Transaction> findAllBySenderId(int senderId, Pageable pageable) {
-		return transactionRepository.findBySenderId(senderId, pageable);
-	}
+//	@Override
+//	public Page<Transaction> findAllBySenderId(int senderId, Pageable pageable) {
+//		return transactionRepository.findBySenderId(senderId, pageable);
+//	}
 
+	@Override
 	public Transaction makeTransaction(int senderId, int receiverId, double amount, String description)
 			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney,
 			TransactionSameAccountException {
@@ -65,7 +65,9 @@ public class TransactionServiceImpl implements TransactionService {
 		receiverAccount.addMoney(amount);
 
 		// Update sent and received transactions for the sender and the receiver
-		Transaction transaction = new Transaction(description, amount);
+		Transaction transaction = new Transaction();
+		transaction.setDescription(description);
+		transaction.setAmount(amount);
 		sender.addSentTransaction(transaction);
 		receiver.addReceivedTransaction(transaction);
 
