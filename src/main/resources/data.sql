@@ -37,15 +37,6 @@ INSERT INTO `connection` (`owner_id`, `connection_id`) VALUES
 (3, 4);
 
 --
--- Dumping data for table `bank_transfer`
---
-
-INSERT INTO `bank_transfer` (`user_id`, `amount`, `time_stamp`) VALUES
-(1, 10,  "1970-01-01 00:00:01"),
-(2, 30,  "1998-01-01 00:00:01"),
-(3, 500, "2003-01-01 00:00:01");
-
---
 -- Dumping data for table `transaction`
 --
 
@@ -59,7 +50,6 @@ INSERT INTO `transaction` (`time_stamp`, `sender_id`, `receiver_id`, `amount`) V
 ("2000-01-01 00:00:01", 3, 4, 12.74),
 ("1971-01-01 00:00:03", 2, 3, 100);
 
-
 --
 -- Dumping data for table `account`
 --
@@ -69,3 +59,26 @@ INSERT INTO `account` (`balance`, `user_id`) VALUES
 (30, 2),
 (500, 3),
 (600, 4);
+
+--
+-- Dumping data for table `external_account`
+--
+
+INSERT INTO `external_account` (`label`, `user_id`) VALUES
+("Societe generale", 1),
+("LCL", 1),
+("CIC", 1),
+("Credit agricole", 2),
+("Banque populaire", 2),
+("Lydia", 3),
+("Revolut", 3);
+
+
+--
+-- Dumping data for table `bank_transfer`
+--
+
+INSERT INTO `bank_transfer` (`user_id`, `amount`, `time_stamp`, `external_account_id`) VALUES
+(1, 10,  "1970-01-01 00:00:01", 1),
+(2, 30,  "1998-01-01 00:00:01", 4),
+(3, 500, "2003-01-01 00:00:01", 6);

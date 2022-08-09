@@ -25,6 +25,7 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findById(id);
 	}
 
+	@Override
 	public User addConnection(final int ownerId, final int newConnectionId)
 			throws UserNotFoundException, ConnectionCreationException {
 		// Check that ownerId and newConnectionId are different
@@ -39,6 +40,7 @@ public class UserServiceImpl implements UserService {
 		return userRepository.save(owner);
 	}
 
+	@Override
 	public User deleteConnection(final int ownerId, final int newConnectionId)
 			throws UserNotFoundException, ConnectionCreationException, ConnectionNotFoundException {
 		// Check that ownerId and newConnectionId are different
@@ -60,11 +62,19 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User create(User user) {
-		Account account = new Account(UserService.INITIAL_ACCOUNT_BALANCE);
-		user.setAccount(account);
-		account.setUser(user);
-		return userRepository.save(user);
+	public User create() {
+		// Create new user
+		User newUser = new User();
+
+		// Create new account and set balance of account to 0
+		Account newAccount = new Account();
+		newAccount.setBalance(INITIAL_ACCOUNT_BALANCE);
+
+		// Synchronize relation between account and user
+		newUser.addAcount(newAccount);
+
+		// Save new user
+		return userRepository.save(newUser);
 	}
 
 	@Override
@@ -72,6 +82,11 @@ public class UserServiceImpl implements UserService {
 		userRepository.findById(id)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
 		userRepository.deleteById(id);
+	}
+
+	@Override
+	public User save(User user) {
+		return userRepository.save(user);
 	}
 
 }

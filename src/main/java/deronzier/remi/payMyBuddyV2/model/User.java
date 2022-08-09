@@ -1,12 +1,13 @@
 package deronzier.remi.payMyBuddyV2.model;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,16 +16,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
-@NoArgsConstructor(force = true)
-@RequiredArgsConstructor
 public class User {
 
 	@Id
@@ -33,41 +32,54 @@ public class User {
 
 	@Column(nullable = false, unique = true)
 	@NotBlank(message = "Email cannot be null")
-	final private String email;
+	private String email;
 
 	@Column(nullable = false)
 	@NotBlank(message = "Password cannot be null")
-	final private String password;
+	private String password;
+
+	@Past
+	private LocalDate dateOfBirth;
+
+	@Transient
+	private int age;
 
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private boolean active;
 
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-	Account account;
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
+	private Account account;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
-	List<BankTransfer> bankTransfers = new ArrayList<>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+	private List<ExternalAccount> externalAccounts = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "sender")
-	List<Transaction> sentTransactions = new ArrayList<>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+	private List<BankTransfer> bankTransfers = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "sender")
+	private List<Transaction> sentTransactions = new ArrayList<>();
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "receiver")
 	@JoinColumn(name = "receiver_id")
-	List<Transaction> receivedTransactions = new ArrayList<>();
+	private List<Transaction> receivedTransactions = new ArrayList<>();
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = {
+	@ManyToMany(cascade = {
 			CascadeType.PERSIST,
 			CascadeType.MERGE
 	})
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id", nullable = false), inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false, columnDefinition = "integer default 1"))
 	private List<Role> roles = new ArrayList<>();
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = {
+	@ManyToMany(cascade = {
 			CascadeType.PERSIST,
 			CascadeType.MERGE
 	})
 	@JoinTable(name = "connection", joinColumns = @JoinColumn(name = "owner_id"), inverseJoinColumns = @JoinColumn(name = "connection_id"))
 	private List<User> connections = new ArrayList<>();
+
+	public int getAge() {
+		return calculateAge(dateOfBirth);
+	}
 
 	public void addConnection(User user) {
 		connections.add(user);
@@ -82,6 +94,11 @@ public class User {
 		bankTransfer.setUser(this);
 	}
 
+	public void addExternalAccount(ExternalAccount externalAccount) {
+		externalAccounts.add(externalAccount);
+		externalAccount.setUser(this);
+	}
+
 	public void addSentTransaction(Transaction transaction) {
 		sentTransactions.add(transaction);
 		transaction.setSender(this);
@@ -89,26 +106,25 @@ public class User {
 
 	public void addReceivedTransaction(Transaction transaction) {
 		receivedTransactions.add(transaction);
+		transaction.setReceiver(this);
 	}
 
-	private String connectionsToString() {
-		String res = "[";
-		for (int i = 0; i < connections.size(); i++) {
-			res = res + "User(id=" + connections.get(i).id + ", email=" + connections.get(i).email + ")";
-			if (i < connections.size() - 1) {
-				res += ", ";
-			}
+	public void addAcount(Account account) {
+		this.account = account;
+		account.setUser(this);
+	}
+
+	public int calculateAge(LocalDate dob) {
+		// creating an instance of the LocalDate class and invoking the now() method
+		// now() method obtains the current date from the system clock in the default
+		// time zone
+		LocalDate curDate = LocalDate.now();
+		// calculates the amount of time between two dates and returns the years
+		if ((dob != null) && (curDate != null)) {
+			return Period.between(dob, curDate).getYears();
+		} else {
+			return 0;
 		}
-		res += "]";
-		return res;
-	}
-
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", email=" + email + ", password=" + password + ", active=" + active + ", account="
-				+ account + ", bankTransfers=" + bankTransfers + ", sentTransactions=" + sentTransactions
-				+ ", receivedTransactions=" + receivedTransactions + ", roles=" + roles + ", connections="
-				+ connectionsToString() + "]";
 	}
 
 }
