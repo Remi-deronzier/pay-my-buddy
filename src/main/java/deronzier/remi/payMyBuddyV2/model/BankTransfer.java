@@ -21,8 +21,9 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class BankTransfer {
 
-	public BankTransfer(double amount) {
+	public BankTransfer(double amount, ExternalAccount externalAccount) {
 		this.amount = amount;
+		this.externalAccount = externalAccount;
 	}
 
 	public BankTransfer() {
@@ -41,6 +42,13 @@ public class BankTransfer {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private User user;
+
+	@ManyToOne(cascade = {
+			CascadeType.PERSIST,
+			CascadeType.MERGE
+	})
+	@JoinColumn(name = "external_account_id")
+	private ExternalAccount externalAccount;
 
 	@Override
 	public String toString() {

@@ -43,17 +43,20 @@ public class User {
 	private boolean active;
 
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-	Account account;
+	private Account account;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+	private List<ExternalAccount> externalAccounts = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "user")
-	List<BankTransfer> bankTransfers = new ArrayList<>();
+	private List<BankTransfer> bankTransfers = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "sender")
-	List<Transaction> sentTransactions = new ArrayList<>();
+	private List<Transaction> sentTransactions = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "receiver_id")
-	List<Transaction> receivedTransactions = new ArrayList<>();
+	private List<Transaction> receivedTransactions = new ArrayList<>();
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {
 			CascadeType.PERSIST,
@@ -80,6 +83,10 @@ public class User {
 	public void addBankTransfer(BankTransfer bankTransfer) {
 		bankTransfers.add(bankTransfer);
 		bankTransfer.setUser(this);
+	}
+
+	public void addExternalAccount(ExternalAccount externalAccount) {
+		externalAccounts.add(externalAccount);
 	}
 
 	public void addSentTransaction(Transaction transaction) {

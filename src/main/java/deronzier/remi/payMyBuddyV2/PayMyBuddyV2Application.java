@@ -1,5 +1,6 @@
 package deronzier.remi.payMyBuddyV2;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -8,16 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import deronzier.remi.payMyBuddyV2.model.BankTransfer;
+import deronzier.remi.payMyBuddyV2.model.ExternalAccount;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.service.impl.AccountServiceImpl;
 import deronzier.remi.payMyBuddyV2.service.impl.BankTransferServiceImpl;
+import deronzier.remi.payMyBuddyV2.service.impl.ExternalAccountServiceImpl;
 import deronzier.remi.payMyBuddyV2.service.impl.TransactionServiceImpl;
 import deronzier.remi.payMyBuddyV2.service.impl.UserServiceImpl;
 
@@ -37,6 +36,9 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 
 	@Autowired
 	private BankTransferServiceImpl bankTransferService;
+
+	@Autowired
+	private ExternalAccountServiceImpl externalAccountService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PayMyBuddyV2Application.class, args);
@@ -71,18 +73,18 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 //		LOG.info("User by id 1 after transaction:\n{}", user1);
 //		LOG.info("User by id 4 after transaction:\n{}", user4);
 
-		BankTransfer bankTransferUse = bankTransferService.makeBankTransfer(10, 1, false); // use
-		LOG.info("User by id 1 after bank transfer of 10€ type use:\n{}", user1);
-		LOG.info("All bank transfers:\n{}", user1.get().getBankTransfers());
-		LOG.info("Bank transfer top up of 10€:\n{}", bankTransferUse);
+//		BankTransfer bankTransferUse = bankTransferService.makeBankTransfer(10, 1, false); // use
+//		LOG.info("User by id 1 after bank transfer of 10€ type use:\n{}", user1);
+//		LOG.info("All bank transfers:\n{}", user1.get().getBankTransfers());
+//		LOG.info("Bank transfer top up of 10€:\n{}", bankTransferUse);
 //		BankTransfer bankTransferTopUp = bankTransferService.makeBankTransfer(10, 1, true); // top up
 //		LOG.info("User by id 1 after bank transfer of 10€ type top up:\n{}", user1);
 //		LOG.info("Bank transfer top up of 10€:\n{}", bankTransferTopUp);
 
-		Pageable pageable = PageRequest.of(0, 4, Sort.by("timeStamp").descending());
-		Page<BankTransfer> bankTransfersUser1SortedByDateDsc = bankTransferService.findAllByUserId(1, pageable);
-		LOG.info("Page 1 of bankTransfers sender1 Sorted by date in Descending Order:");
-		bankTransfersUser1SortedByDateDsc.forEach(bankTransfer -> LOG.info(bankTransfer.toString()));
+//		Pageable pageable = PageRequest.of(0, 4, Sort.by("timeStamp").descending());
+//		Page<BankTransfer> bankTransfersUser1SortedByDateDsc = bankTransferService.findAllByUserId(1, pageable);
+//		LOG.info("Page 1 of bankTransfers sender1 Sorted by date in Descending Order:");
+//		bankTransfersUser1SortedByDateDsc.forEach(bankTransfer -> LOG.info(bankTransfer.toString()));
 
 //		accountService.withdrawMoney(20, 1);
 ////		accountService.withdrawMoney(40, 1);
@@ -100,6 +102,19 @@ public class PayMyBuddyV2Application implements CommandLineRunner {
 //
 //		userService.deleteConnection(1, 4);
 ////		userService.deleteConnection(5, 4);
+		System.out.println("coucou");
+
+		List<ExternalAccount> externalAccountsUser1 = user1.get().getExternalAccounts();
+		LOG.info("External accounts of user 1:");
+		externalAccountsUser1.forEach(externalAccount -> LOG.info(externalAccount.toString()));
+
+		ExternalAccount newExternalAccount = new ExternalAccount("LCLO");
+//		user1.get().addExternalAccount(newExternalAccount);
+//		userService.save(user1.get());
+		newExternalAccount.setUser(user1.get());
+		externalAccountService.create(newExternalAccount);
+
+		BankTransfer bankTransferUse = bankTransferService.makeBankTransfer(10, 1, false, 2); // use
 	}
 
 }

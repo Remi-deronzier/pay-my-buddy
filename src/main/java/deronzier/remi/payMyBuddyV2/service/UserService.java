@@ -15,6 +15,8 @@ public interface UserService {
 
 	User create(User user);
 
+	User save(User user);
+
 	void delete(final int id) throws UserNotFoundException;
 
 	static final double INITIAL_ACCOUNT_BALANCE = 0;
