@@ -7,5 +7,4 @@ import deronzier.remi.payMyBuddyV2.model.ExternalAccount;
 
 @Repository
 public interface ExternalAccountRepository extends CrudRepository<ExternalAccount, Integer> {
-
 }

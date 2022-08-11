@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoney;
+import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import lombok.Data;
 
@@ -34,12 +34,12 @@ public class Account {
 		balance += amount;
 	}
 
-	public void withdrawMoney(double amount) throws NegativeAmountException, AccountNotEnoughMoney {
+	public void withdrawMoney(double amount) throws NegativeAmountException, AccountNotEnoughMoneyException {
 		if (amount <= 0) {
 			throw new NegativeAmountException("Amount must be strictly positive");
 		}
 		if (balance - amount < 0) {
-			throw new AccountNotEnoughMoney("The account has not enough money");
+			throw new AccountNotEnoughMoneyException("The account has not enough money");
 		}
 		balance -= amount;
 	}

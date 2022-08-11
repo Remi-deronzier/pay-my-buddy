@@ -3,10 +3,12 @@ package deronzier.remi.payMyBuddyV2.service.impl;
 import javax.security.auth.login.AccountNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoney;
+import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import deronzier.remi.payMyBuddyV2.exception.TransactionSameAccountException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
@@ -31,14 +33,9 @@ public class TransactionServiceImpl implements TransactionService {
 	@Autowired
 	private AccountRepository accountRepository;
 
-//	@Override
-//	public Page<Transaction> findAllBySenderId(int senderId, Pageable pageable) {
-//		return transactionRepository.findBySenderId(senderId, pageable);
-//	}
-
 	@Override
 	public Transaction makeTransaction(int senderId, int receiverId, double amount, String description)
-			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney,
+			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoneyException,
 			TransactionSameAccountException {
 		// Check senderId is different from receiverId
 		if (senderId == receiverId) {
@@ -72,6 +69,11 @@ public class TransactionServiceImpl implements TransactionService {
 		receiver.addReceivedTransaction(transaction);
 
 		return transactionRepository.save(transaction);
+	}
+
+	@Override
+	public Page<Transaction> findAllSentAndReceivedTransactionsForSpecificUser(int ownerId, Pageable pageable) {
+		return transactionRepository.findBySenderIdOrReceiverId(ownerId, ownerId, pageable);
 	}
 
 }

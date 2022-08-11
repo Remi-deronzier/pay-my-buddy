@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-error(statusCode='400')}">
+      
+	<head>
+		<title>400 page</title>
+	</head>
+	
+	<body>
+		<div layout:fragment="error-content">
+			<p class="fs-3"> <span class="text-danger">Opps!</span> Bad request.</p>
+			<p class="lead">
+			    You've sent a bad request.
+			</p>
+		</div>
+	</body>
+	
+</html>

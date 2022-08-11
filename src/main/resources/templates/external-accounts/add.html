@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-general}">
+      
+	<head>
+		<title>Add an account</title>
+		
+		<link th:rel="stylesheet" th:href="@{/css/form-validation-styles.css}">
+		
+	    <!-- below we are including the jQuery and jQuery plugin .js files -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+	    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+	    <script th:src="@{/js/external-account-form.js}"></script>
+	</head>
+	
+	<body>
+		<th:block layout:fragment="content">
+			<h1>Add an account</h1>
+			<div th:if="${(param.isNewExternalAccountAddedSuccessfully != null) and (!param.isNewExternalAccountAddedSuccessfully)}" class="alert alert-danger dismissible fade show" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+				<strong>Error!</strong> Account addition failed
+			</div>
+			<form id="externalAccountForm" action="#" th:action="@{/externalAccounts/add}" th:object="${newExternalAccount}"  method="post">
+				<label for="accountName" class="form-label">Account name</label>
+				<input type="text" class="form-control w-50" name="accountName" id="accountName" placeholder="Account name" th:field="*{label}">
+				<p class="text-danger" th:if="${labelExternalAccountError != null}">Account name is mandatory</p>
+				<p class="text-danger" th:if="${dataIntegrityViolationException != null}">Sorry, you've already registered an account with this name</p>
+				<button type="submit" class="btn btn-primary mt-2">Save</button>
+			</form>
+		</th:block>
+	</body>
+	
+</html>

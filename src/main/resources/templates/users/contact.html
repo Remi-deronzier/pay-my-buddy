@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-general}">
+      
+	<head>
+		<title>Contact</title>
+	</head>
+	
+	<body>
+		<th:block layout:fragment="content">
+			<h1>All your contacts</h1>
+			<div th:if="${(param.isNewConnectionAddedSuccessfully != null) and (param.isNewConnectionAddedSuccessfully)}" class="alert alert-success dismissible fade show" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+				<strong>Success!</strong> Contact successfully added
+			</div>
+			<div th:if="${(param.isConnectionDeletedSuccessfully != null) and (param.isConnectionDeletedSuccessfully)}" class="alert alert-success dismissible fade show" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+				<strong>Success!</strong> Contact successfully deleted
+			</div>
+			<table th:if="${!connections.isEmpty}" class="table table-striped table-bordered">
+				<thead>
+					<tr class="table-primary">
+						<th>User name</th>
+						<th>Email</th>
+						<th>First name</th>
+						<th>Last name</th>
+						<th>Phone number</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="connection : ${connections}">
+						<td th:text="${connection.userName}"></td>
+						<td th:text="${connection.email}"></td>
+						<td th:text="${connection.firstName}"></td>
+						<td th:text="${connection.lastName}"></td>
+						<td th:text="${connection.phoneNumber}"></td>
+						<td>
+							<div class="d-flex justify-content-between">
+								<a th:href="@{'/users/{id}'(id=${connection.id})}" class="btn btn-primary" role="button">
+									<i class="bi bi-eye text-light"></i> Visit profile
+								</a>
+						        <form action="#" th:action="@{'/users/contact/delete/{id}'(id=${connection.id})}" th:method="delete" >
+							        <button type="submit" class="btn btn-danger">
+							          <i class="bi bi-trash text-light"></i> Delete
+							        </button>
+								</form>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<p th:unless="${!connections.isEmpty}">You do not have any contact at the moment</p>
+			<a th:href="@{/users/contact/add}" class="btn btn-outline-primary" role="button">Add a contact</a>
+		</th:bloc>
+	</body>
+	
+</html>

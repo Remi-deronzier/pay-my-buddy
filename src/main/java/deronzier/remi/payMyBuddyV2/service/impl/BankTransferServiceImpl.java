@@ -3,16 +3,19 @@ package deronzier.remi.payMyBuddyV2.service.impl;
 import javax.security.auth.login.AccountNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoney;
+import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotBelongGoodUserException;
 import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.model.BankTransfer;
+import deronzier.remi.payMyBuddyV2.model.BankTransferType;
 import deronzier.remi.payMyBuddyV2.model.ExternalAccount;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.repository.AccountRepository;
@@ -37,14 +40,16 @@ public class BankTransferServiceImpl implements BankTransferService {
 	@Autowired
 	private ExternalAccountRepository externalAccountRepository;
 
-//	@Override
-//	public Page<BankTransfer> findAllByUserId(int userId, Pageable pageable) {
-//		return bankTransferRepository.findByUserId(userId, pageable);
-//	}
+	@Override
+	public Page<BankTransfer> findAllBankTransfersForSpecificUser(int userId, Pageable pageable) {
+		return bankTransferRepository.findByUserId(userId, pageable);
+	}
 
 	@Override
-	public BankTransfer makeBankTransfer(double amount, int userId, boolean isTopUp, int externalAccountId)
-			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney,
+	public BankTransfer makeBankTransfer(double amount, int userId, BankTransferType bankTransferType,
+			int externalAccountId)
+			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException,
+			AccountNotEnoughMoneyException,
 			ExternalAccountNotFoundException, ExternalAccountNotBelongGoodUserException {
 		// Get user
 		User user = userRepository.findById(userId)
@@ -67,10 +72,12 @@ public class BankTransferServiceImpl implements BankTransferService {
 		// Debit or credit user's account
 		BankTransfer bankTransfer = new BankTransfer();
 		bankTransfer.setExternalAccount(externalAccount);
-		if (isTopUp) { // Top up
+		switch (bankTransferType) {
+		case TOP_UP:
 			userAccount.addMoney(amount);
 			bankTransfer.setAmount(amount);
-		} else { // Use
+			break;
+		case USE:
 			userAccount.withdrawMoney(amount);
 			bankTransfer.setAmount(-amount);
 		}
@@ -79,6 +86,11 @@ public class BankTransferServiceImpl implements BankTransferService {
 		user.addBankTransfer(bankTransfer);
 
 		return bankTransferRepository.save(bankTransfer);
+	}
+
+	@Override
+	public Iterable<BankTransfer> findAllBankTransfersForSpecificExternalAccount(int externalAccountId) {
+		return bankTransferRepository.findByExternalAccountId(externalAccountId);
 	}
 
 }

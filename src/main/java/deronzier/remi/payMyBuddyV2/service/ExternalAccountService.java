@@ -6,4 +6,6 @@ public interface ExternalAccountService {
 
 	ExternalAccount save(ExternalAccount externalAccount);
 
+	void delete(int externalAccountId);
+
 }

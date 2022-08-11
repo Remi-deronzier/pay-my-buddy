@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-general}">
+      
+	<head>
+		<title>Home</title>
+	</head>
+	
+	<body>
+		<th:block layout:fragment="content">
+			<h1>Your Account</h1>
+			<div class="card">
+				<img src="https://picsum.photos/1500/300" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Random image">
+				<div class="card-body">
+					<h5 class="card-title">Pay My Buddy balance</h5>
+					<p class="card-text" th:text="${account.balance} + ' €'"></p>
+					<a th:href="@{/bankTransfers}" class="btn btn-primary" role="button">
+						<i class="bi bi-plus"></i> Top up
+					</a>
+					<a th:href="@{/bankTransfers}" class="btn btn-outline-primary" role="button">
+						<i class="bi bi-arrow-right"></i> Use
+					</a>
+				</div>
+			</div>
+		</th:block>
+	</body>
+	
+</html>
