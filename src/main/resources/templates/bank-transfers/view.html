@@ -5,6 +5,14 @@
       
 	<head>
 		<title>Transfer</title>
+		
+		<link th:rel="stylesheet" th:href="@{/css/form-validation-styles.css}">
+		
+	    <!-- below we are including the jQuery and jQuery plugin .js files -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+	    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+   	    <script th:src="@{/js/bank-transfer-form.js}"></script>
 	</head>
 	
 	<body>
@@ -31,7 +39,7 @@
 			<div class="card bg-light">
 				<div class="card-body">
 					<form th:if="${!externalAccounts.isEmpty}" class="row row-cols-md-auto g-2 align-items-end justify-content-center"
-					action="#" th:action="@{/bankTransfers/makeBankTransfer}" method="post">
+					action="#" th:action="@{/bankTransfers/makeBankTransfer}" method="post" id="bankTransferTopUpForm">
 						<div class="col-12" th:object="${externalAccountTopUp}">
 							<label for="selectExternalAccountTopUp" class="form-label">Select an account</label>
 							<select class="form-select" aria-label="Default select" id="selectExternalAccountTopUp" th:field="*{id}">
@@ -53,6 +61,7 @@
 						<a th:href="@{/externalAccounts}">add accounts</a>
 					to be able to do a bank transfer</p>
 					<p class="text-danger text-center card-text mt-1" th:if="${negativeAmountExceptionTopUp != null}">Amount must be strictly positive</p>
+					<p class="text-danger text-center card-text mt-1" th:if="${tooLowAmountErrorTopUp != null}">Amount must be greater than or equal to 10</p>
 				</div>
 			</div>
 			
@@ -60,7 +69,7 @@
 			<div class="card bg-light">
 				<div class="card-body">
 					<form th:if="${!externalAccounts.isEmpty}" class="row row-cols-md-auto g-2 align-items-end justify-content-center"
-					action="#" th:action="@{/bankTransfers/makeBankTransfer}" method="post">
+					action="#" th:action="@{/bankTransfers/makeBankTransfer}" method="post" id="bankTransferUseForm">
 						<div class="col-12" th:object="${externalAccountUse}">
 							<label for="selectExternalAccountUse" class="form-label">Select an account</label>
 							<select class="form-select" aria-label="Default select" id="selectExternalAccountUse" th:field="*{id}">
@@ -86,6 +95,7 @@
 					 	to your account and try again to make your transaction.
 					</p>
 					<p class="text-danger text-center card-text mt-1" th:if="${negativeAmountExceptionUse != null}">Amount must be strictly positive</p>
+					<p class="text-danger text-center card-text mt-1" th:if="${tooLowAmountErrorUse != null}">Amount must be greater than or equal to 10</p>
 				</div>
 			</div>
 			
@@ -102,7 +112,7 @@
 					<tr th:each="bankTransfer : ${page.getContent()}">
 						<td th:text="${bankTransfer.externalAccount != null} ? ${bankTransfer.externalAccount.label} : 'UNKNOWN'"></td>
 						<td th:text="${bankTransfer.timeStamp}"></td>
-						<td th:text="${bankTransfer.amount}"></td>
+						<td th:text="${bankTransfer.bankTransferType.name() == 'USE'} ? ${-bankTransfer.amount} : ${bankTransfer.amount}"></td>
 					</tr>
 				</tbody>
 			</table>

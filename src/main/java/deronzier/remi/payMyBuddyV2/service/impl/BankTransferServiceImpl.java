@@ -72,14 +72,15 @@ public class BankTransferServiceImpl implements BankTransferService {
 		// Debit or credit user's account
 		BankTransfer bankTransfer = new BankTransfer();
 		bankTransfer.setExternalAccount(externalAccount);
+		bankTransfer.setAmount(amount);
 		switch (bankTransferType) {
 		case TOP_UP:
 			userAccount.addMoney(amount);
-			bankTransfer.setAmount(amount);
+			bankTransfer.setBankTransferType(bankTransferType);
 			break;
 		case USE:
 			userAccount.withdrawMoney(amount);
-			bankTransfer.setAmount(-amount);
+			bankTransfer.setBankTransferType(bankTransferType);
 		}
 
 		// Save data in DB

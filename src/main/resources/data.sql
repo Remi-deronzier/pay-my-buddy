@@ -44,7 +44,6 @@ INSERT INTO `connection` (`owner_id`, `connection_id`) VALUES
 (1,5),
 (3, 4);
 
-
 --
 -- Dumping data for table `account`
 --
@@ -58,6 +57,3 @@ INSERT INTO `account` (`balance`, `user_id`) VALUES
 (640, 6),
 (156, 7),
 (300, 8);
-
-
-
