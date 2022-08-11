@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head>
+	    <meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Pay My buddy</title>
+	
+	    <!-- Bootstrap CSS -->
+	    <link th:rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+	    
+	    <!-- Bootstrap icons -->
+	    <link
+	      rel="stylesheet"
+	      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+	    />
+	    
+	    <!-- Bootstrap JS -->
+	    <script th:src="@{/js/bootstrap.min.js}"></script>
+	    
+	</head>
+	
+	<body>
+		
+		<!-- Main Navigation -->
+		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+		  <div class="container">
+		    <a class="navbar-brand" th:href="@{/}">Pay My Buddy</a>
+		    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+		      <span class="navbar-toggler-icon"></span>
+		    </button>
+		    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+		      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+		        <li class="nav-item">
+		          <a class="nav-link" th:href="@{/}">Home</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" th:href="@{/transactions}">Transaction</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" th:href="@{/bankTransfers}">Transfer</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" th:href="@{/externalAccounts}">External account</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" th:href="@{/users/contact}">Contact</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" th:href="@{/users/1}">Profile</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link">Log off</a>
+		        </li>
+		      </ul>
+		    </div>
+		  </div>
+		</nav>
+		
+		
+		<!-- Content Section -->
+		<div class="container mt-3">
+			<section layout:fragment="content">
+				    <p>This is filled by the content template.</p>
+			</section>
+		</div>
+		
+		<!-- Optional Pagination Section -->
+		<nav aria-label="Search results pages" layout:fragment="pagination">
+			<ul th:if="${page != null}" class="pagination justify-content-center">
+				<li th:class="${page.firstPage}? 'disabled page-item' : 'page-item'">
+					<span th:if='${page.firstPage}' class="page-link">← First</span>
+					<a th:if='${not page.firstPage}' class="page-link" th:href='@{${page.url}(page=1,size=${page.size})}'>← First</a>
+				</li>
+				<li th:class="${page.hasPreviousPage}? 'page-item' : 'disabled page-item'">
+					<span th:if='${not page.hasPreviousPage}' class="page-link">«</span>
+					<a th:if='${page.hasPreviousPage}' th:href='@{${page.url}(page=${page.number-1},size=${page.size})}' title='Go to previous page' class="page-link">«</a>
+				</li>
+				<li th:each="item : ${page.items}" th:class="${item.current} ? 'page-item active' : 'page-item'">
+					<span th:if='${item.current}' th:text='${item.number}' class="page-link">1</span>
+					<a th:if='${not item.current}' th:href='@{${page.url}(page=${item.number},size=${page.size})}' class="page-link"><span th:text='${item.number}'>1</span></a>
+				</li>
+				<li th:class="${page.hasNextPage}? 'page-item' : 'disabled page-item'">
+					<span th:if='${not page.hasNextPage}' class="page-link">»</span>
+					<a th:if='${page.hasNextPage}' th:href='@{${page.url}(page=${page.number+1},size=${page.size})}' title='Go to next page' class="page-link">»</a>
+				</li>
+				<li th:class="${page.lastPage}? 'disabled page-item' : 'page-item'">
+					<span th:if='${page.lastPage}' class="page-link">Last →</span>
+					<a th:if='${not page.lastPage}' th:href='@{${page.url}(page=${page.totalPages},size=${page.size})}' class="page-link">Last →</a>
+				</li>
+			</ul>
+		</nav>
+		
+		
+		<!-- Footer -->
+		<footer class="container py-5">
+		    <div class="row">
+		        <div class="col-md-12" align="center">
+		            <p class="text-muted">&copy; 2022 Pay My Buddy. All rights reserved.</p>
+		        </div>
+		    </div>
+		</footer>
+	
+	</body>
+</html>

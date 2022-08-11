@@ -9,5 +9,7 @@ import deronzier.remi.payMyBuddyV2.model.Transaction;
 
 @Repository
 public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Integer> {
-	Page<Transaction> findBySenderId(int senderId, Pageable pageabe);
+//	Page<Transaction> findBySenderId(int senderId, Pageable pageabe);
+
+	Page<Transaction> findBySenderIdOrReceiverId(int senderId, int receiverId, Pageable pageabe);
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+      
+	<head>
+	</head>
+	
+	<body>
+		<div th:fragment="form-content (title, externalAccountObject, bankTransferType, newBankTransfer)">
+			<h3 th:text="${title}">Form title</h3>
+			<div class="card bg-light">
+				<div class="card-body">
+					<form th:if="${!externalAccounts.isEmpty}" class="row row-cols-md-auto g-2 align-items-end justify-content-center"
+					action="#" th:action="@{/bankTransfers/makeBankTransfer}" method="post">
+						<div class="col-12" th:object="${__${externalAccountObject}__}">
+							<label th:for="'selectExternalAccount' + ${bankTransferType}" class="form-label">Select an account</label>
+							<select class="form-select" aria-label="Default select" th:id="'selectExternalAccount' + ${bankTransferType}" th:field="*{id}">
+				    			<option th:each="externalAccount : ${externalAccounts}" th:value="${externalAccount.id}" th:text="${externalAccount.label}"></option>
+							</select>
+						</div>
+						<div class="col-12" th:object="${__${newBankTransfer}__}">
+							<label th:for="'amount' + ${bankTransferType}" class="form-label">Enter the amount</label>
+							<div class="input-group">
+								<div class="input-group-text">€</div>
+								<input type="number" step="any" class="form-control" placeholder="Amount" th:id="'amount' + ${bankTransferType}" th:field="*{amount}">
+							</div>
+						</div>
+						<div class="col-12">
+							<button type="submit" class="btn btn-primary" th:name="bankTransferType" th:value="${bankTransferType}">Top up</button>
+						</div>
+					</form>
+					<p th:unless="${!externalAccounts.isEmpty}">First, you need to 
+						<a th:href="@{/externalAccounts}">add accounts</a>
+					to be able to do a bank transfer</p>
+					<p class="text-danger text-center card-text mt-1" th:if="${'negativeAmountException' + ${bankTransferType} != null}">Amount must be strictly positive</p>
+				</div>
+			</div>
+		</div>
+	</body>
+	
+</html>

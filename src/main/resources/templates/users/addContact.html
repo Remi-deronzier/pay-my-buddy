@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-general}">
+      
+	<head>
+		<title>Add a contact</title>
+	</head>
+	
+	<body>
+		<th:block layout:fragment="content">
+			<h1>Add a contact</h1>
+			<form th:if="${!futurePotentialConnections.isEmpty}" action="#" th:action="@{/users/contact/add}" th:object="${newConnection}"  method="post">
+				<label for="addConnection" class="form-label">Choose a connection</label>
+				<select class="form-select" aria-label="Default select" id="addConnection" th:field="*{id}">
+				    <option th:each="user: ${futurePotentialConnections}" th:value="${user.id}" th:text="${user.userName} + ' - ' + ${user.firstName} + ' ' + ${user.lastName}"></option>
+				</select>
+				<div class="mt-2">
+					<button type="submit" class="btn btn-primary">Save</button>
+				</div>
+			</form>
+			<p th:unless="${!futurePotentialConnections.isEmpty}">You have already added all the users of the application in your contacts</p>
+		</th:block>
+	</body>
+	
+</html>

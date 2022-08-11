@@ -1,8 +1,7 @@
 package deronzier.remi.payMyBuddyV2.model;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,24 +11,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 @Entity
 public class Transaction {
-
-	public Transaction() {
-
-	}
-
-	public Transaction(String description, double amount) {
-		this.description = description;
-		this.amount = amount;
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,18 +26,16 @@ public class Transaction {
 	private double amount;
 
 	@Column(nullable = false, updatable = false)
-	private final Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
+	private LocalDateTime timeStamp = LocalDateTime.now();
 
 	private String description;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "sender_id")
 	private User sender;
 
-	@Override
-	public String toString() {
-		return "Transaction [id=" + id + ", amount=" + amount + ", timeStamp=" + timeStamp + ", description="
-				+ description + "]";
-	}
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "receiver_id")
+	private User receiver;
 
 }

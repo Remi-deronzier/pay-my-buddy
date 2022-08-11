@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-general}">
+      
+	<head>
+		<title>External account</title>
+	</head>
+	
+	<body>
+		<th:block layout:fragment="content">
+			<h1>All your external accounts</h1>
+			<div th:if="${(param.isNewExternalAccountAddedSuccessfully != null) and (param.isNewExternalAccountAddedSuccessfully)}" class="alert alert-success dismissible fade show" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+				<strong>Success!</strong> Account successfully added
+			</div>
+			<div th:if="${(param.isExternalAccountDeletedSuccessfully != null) and (param.isExternalAccountDeletedSuccessfully)}" class="alert alert-success dismissible fade show" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+				<strong>Success!</strong> Account successfully deleted
+			</div>
+			
+			<div class="row row-cols-3" th:if="${!externalAccounts.isEmpty}">
+				<div class="col" th:each="externalAccount : ${externalAccounts}">
+					<div class="card my-2">
+						<div class="card-body">
+							<h5 class="card-title" th:text="${externalAccount.label}"></h5>
+							<form action="#" th:action="@{'/externalAccounts/delete/{id}'(id=${externalAccount.id})}" th:method="delete" >
+						        <button type="submit" class="btn btn-danger">
+						        	<i class="bi bi-trash text-light"></i> Delete
+						        </button>
+							</form>
+						</div>
+					</div>
+			    </div>
+			</div>
+			
+			<p th:unless="${!externalAccounts.isEmpty}">You do not have any external account at the moment</p>
+			<a th:href="@{/externalAccounts/add}" class="btn btn-outline-primary" role="button">Add an account</a>
+		</th:bloc>
+	</body>
+	
+</html>

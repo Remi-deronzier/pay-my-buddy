@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoney;
+import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import deronzier.remi.payMyBuddyV2.exception.TransactionSameAccountException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
@@ -33,12 +33,9 @@ public class TransactionServiceImpl implements TransactionService {
 	@Autowired
 	private AccountRepository accountRepository;
 
-	public Page<Transaction> findAllBySenderId(int senderId, Pageable pageable) {
-		return transactionRepository.findBySenderId(senderId, pageable);
-	}
-
+	@Override
 	public Transaction makeTransaction(int senderId, int receiverId, double amount, String description)
-			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney,
+			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoneyException,
 			TransactionSameAccountException {
 		// Check senderId is different from receiverId
 		if (senderId == receiverId) {
@@ -48,9 +45,9 @@ public class TransactionServiceImpl implements TransactionService {
 
 		// Get sender and receiver
 		User sender = userRepository.findById(senderId)
-				.orElseThrow(() -> new UserNotFoundException("Sender not found. This Account does not exist."));
+				.orElseThrow(() -> new UserNotFoundException("Sender not found"));
 		User receiver = userRepository.findById(receiverId)
-				.orElseThrow(() -> new UserNotFoundException("Receiver not found. This Account does not exist."));
+				.orElseThrow(() -> new UserNotFoundException("Receiver not found"));
 
 		// Get sender and receiver accounts
 		Account senderAccount = accountRepository.findByUserId(senderId)
@@ -60,17 +57,23 @@ public class TransactionServiceImpl implements TransactionService {
 
 		// Debit the sender
 		senderAccount.withdrawMoney(amount);
-		accountRepository.save(senderAccount);
 
 		// Credit the receiver
 		receiverAccount.addMoney(amount);
-		accountRepository.save(receiverAccount);
 
-		Transaction transaction = new Transaction(description, amount);
+		// Update sent and received transactions for the sender and the receiver
+		Transaction transaction = new Transaction();
+		transaction.setDescription(description);
+		transaction.setAmount(amount);
 		sender.addSentTransaction(transaction);
 		receiver.addReceivedTransaction(transaction);
 
 		return transactionRepository.save(transaction);
+	}
+
+	@Override
+	public Page<Transaction> findAllSentAndReceivedTransactionsForSpecificUser(int ownerId, Pageable pageable) {
+		return transactionRepository.findBySenderIdOrReceiverId(ownerId, ownerId, pageable);
 	}
 
 }
