@@ -11,6 +11,7 @@ import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.BankTransfer;
+import deronzier.remi.payMyBuddyV2.model.BankTransferType;
 
 public interface BankTransferService {
 
@@ -18,7 +19,7 @@ public interface BankTransferService {
 
 	Iterable<BankTransfer> findAllBankTransfersForSpecificExternalAccount(int externalAccountId);
 
-	BankTransfer makeBankTransfer(double amount, int userId, boolean isTopUp, int externalAccountId)
+	BankTransfer makeBankTransfer(double amount, int userId, BankTransferType bankTransferType, int externalAccountId)
 			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException,
 			AccountNotEnoughMoneyException,
 			ExternalAccountNotFoundException, ExternalAccountNotBelongGoodUserException;

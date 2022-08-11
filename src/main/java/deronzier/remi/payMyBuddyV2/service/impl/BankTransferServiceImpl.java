@@ -15,6 +15,7 @@ import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.model.BankTransfer;
+import deronzier.remi.payMyBuddyV2.model.BankTransferType;
 import deronzier.remi.payMyBuddyV2.model.ExternalAccount;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.repository.AccountRepository;
@@ -45,7 +46,8 @@ public class BankTransferServiceImpl implements BankTransferService {
 	}
 
 	@Override
-	public BankTransfer makeBankTransfer(double amount, int userId, boolean isTopUp, int externalAccountId)
+	public BankTransfer makeBankTransfer(double amount, int userId, BankTransferType bankTransferType,
+			int externalAccountId)
 			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException,
 			AccountNotEnoughMoneyException,
 			ExternalAccountNotFoundException, ExternalAccountNotBelongGoodUserException {
@@ -70,10 +72,12 @@ public class BankTransferServiceImpl implements BankTransferService {
 		// Debit or credit user's account
 		BankTransfer bankTransfer = new BankTransfer();
 		bankTransfer.setExternalAccount(externalAccount);
-		if (isTopUp) { // Top up
+		switch (bankTransferType) {
+		case TOP_UP:
 			userAccount.addMoney(amount);
 			bankTransfer.setAmount(amount);
-		} else { // Use
+			break;
+		case USE:
 			userAccount.withdrawMoney(amount);
 			bankTransfer.setAmount(-amount);
 		}

@@ -27,6 +27,7 @@ import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.BankTransfer;
+import deronzier.remi.payMyBuddyV2.model.BankTransferType;
 import deronzier.remi.payMyBuddyV2.model.ExternalAccount;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.service.impl.BankTransferServiceImpl;
@@ -95,32 +96,34 @@ public class BankTransferController {
 			@ModelAttribute("newBankTransferUse") BankTransfer newBankTransferUse,
 			@ModelAttribute("externalAccountTopUp") ExternalAccount externalAccountTopUp,
 			@ModelAttribute("externalAccountUse") ExternalAccount externalAccountUse,
-			Model model, @RequestParam(value = "bankTransferType", required = true) String bankTransferType,
+			Model model, @RequestParam(value = "bankTransferType", required = true) BankTransferType bankTransferType,
 			RedirectAttributes redirectAttributes)
 			throws UserNotFoundException, AccountNotFoundException,
 			ExternalAccountNotFoundException, ExternalAccountNotBelongGoodUserException {
 		try {
-			try {
-				if (bankTransferType.equals("topUp")) {
+			switch (bankTransferType) {
+			case TOP_UP:
+				try {
 					bankTransferService.makeBankTransfer(newBankTransferTopUp.getAmount(), UserController.OWNER_USER_ID,
-							true,
+							BankTransferType.TOP_UP,
 							externalAccountTopUp.getId());
+				} catch (NegativeAmountException nae) {
+					redirectAttributes.addFlashAttribute("negativeAmountExceptionTopUp", nae);
+					return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
 				}
-			} catch (NegativeAmountException nae) {
-				redirectAttributes.addFlashAttribute("negativeAmountExceptionTopUp", nae);
-				return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
-			}
-			try {
-				if (bankTransferType.equals("use")) {
-					bankTransferService.makeBankTransfer(newBankTransferUse.getAmount(), UserController.OWNER_USER_ID,
-							false,
-							externalAccountUse.getId());
+				break;
+			case USE:
+				try {
+					bankTransferService.makeBankTransfer(newBankTransferTopUp.getAmount(), UserController.OWNER_USER_ID,
+							BankTransferType.USE,
+							externalAccountTopUp.getId());
+				} catch (NegativeAmountException nae) {
+					redirectAttributes.addFlashAttribute("negativeAmountExceptionUse", nae);
+					return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
 				}
-				return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=true";
-			} catch (NegativeAmountException nae) {
-				redirectAttributes.addFlashAttribute("negativeAmountExceptionUse", nae);
-				return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
+				break;
 			}
+			return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=true";
 		} catch (AccountNotEnoughMoneyException aneme) {
 			redirectAttributes.addFlashAttribute("accountNotEnoughMoneyException", aneme);
 			return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
