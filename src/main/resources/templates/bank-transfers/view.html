@@ -112,7 +112,7 @@
 					<tr th:each="bankTransfer : ${page.getContent()}">
 						<td th:text="${bankTransfer.externalAccount != null} ? ${bankTransfer.externalAccount.label} : 'UNKNOWN'"></td>
 						<td th:text="${bankTransfer.timeStamp}"></td>
-						<td th:text="${bankTransfer.bankTransferType.name() == 'USE'} ? ${-bankTransfer.amount} : ${bankTransfer.amount}"></td>
+						<td th:text="${bankTransfer.bankTransferType.name() == 'USE'} ? ${-bankTransfer.amount} + ' €' : ${bankTransfer.amount} + ' €'"></td>
 					</tr>
 				</tbody>
 			</table>
