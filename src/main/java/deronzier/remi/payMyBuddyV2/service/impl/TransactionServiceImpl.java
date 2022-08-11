@@ -35,8 +35,9 @@ public class TransactionServiceImpl implements TransactionService {
 
 	@Override
 	public Transaction makeTransaction(int senderId, int receiverId, double amount, String description)
-			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoneyException,
-			TransactionSameAccountException {
+			throws AccountNotFoundException, NegativeAmountException,
+			AccountNotEnoughMoneyException,
+			TransactionSameAccountException, UserNotFoundException {
 		// Check senderId is different from receiverId
 		if (senderId == receiverId) {
 			throw new TransactionSameAccountException(
@@ -65,8 +66,8 @@ public class TransactionServiceImpl implements TransactionService {
 		Transaction transaction = new Transaction();
 		transaction.setDescription(description);
 		transaction.setAmount(amount);
-		sender.addSentTransaction(transaction);
-		receiver.addReceivedTransaction(transaction);
+		transaction.setSender(sender);
+		transaction.setReceiver(receiver);
 
 		return transactionRepository.save(transaction);
 	}

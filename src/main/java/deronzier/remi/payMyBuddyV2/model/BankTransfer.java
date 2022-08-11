@@ -2,6 +2,7 @@ package deronzier.remi.payMyBuddyV2.model;
 
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,11 +16,8 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
+@DiscriminatorValue("bank_transfer")
 public class BankTransfer extends BankFlow {
-
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "user_id")
-	private User user;
 
 	@ManyToOne
 	@JoinColumn(name = "external_account_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))

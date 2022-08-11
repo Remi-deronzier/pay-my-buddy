@@ -23,6 +23,38 @@
 					</a>
 				</div>
 			</div>
+			
+<!-- 			<h3 class="mt-4">All my bank flows</h3> -->
+<!-- 			<table th:if="${!page.getContent().isEmpty}" class="table table-striped table-bordered"> -->
+<!-- 				<thead> -->
+<!-- 					<tr class="table-primary"> -->
+<!-- 						<th>Connection</th> -->
+<!-- 						<th>Description</th> -->
+<!-- 						<th>Date</th> -->
+<!-- 						<th>Amount</th> -->
+<!-- 					</tr> -->
+<!-- 				</thead> -->
+<!-- 				<tbody> -->
+<!-- 					<tr th:each="bankFlow : ${page.getContent()}"> -->
+<!-- 						<td> -->
+<!-- 							<strong th:if="${bankFlow.discriminatorValue == transaction}" th:text="${bankFlow.transacti.getSender().getId() == 1} 'Sent to: '"></strong> -->
+<!-- 							<strong th:unless="${transaction.getSender().getId() == 1}" th:text="'Received from: '"></strong> -->
+<!-- 							<span th:if="${transaction.getSender().getId() == 1}" th:text="${transaction.getReceiver().getUserName()}"></span> -->
+<!-- 							<span th:unless="${transaction.getSender().getId() == 1}" th:text="${transaction.getSender().getUserName()}"></span> -->
+<!-- 						</td> -->
+<!-- 						<td th:text="${bankFlow.description}"></td> -->
+<!-- 						<td th:text="${bankFlow.timeStamp}"></td> -->
+<!-- 						<td> -->
+<!-- 							<span th:if="${transaction.getSender().getId() == 1}" th:text="'-' + ${transaction.amount} + ' €'"></span> -->
+<!-- 							<span th:unless="${transaction.getSender().getId() == 1}" th:text="${transaction.amount} + ' €'"></span> -->
+<!-- 						</td> -->
+<!-- 					</tr> -->
+<!-- 				</tbody> -->
+<!-- 			</table> -->
+			
+<!-- 			<p th:unless="${!page.getContent().isEmpty}">No transaction to display</p> -->
+		</th:block>
+			
 		</th:block>
 	</body>
 	
