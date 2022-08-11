@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.security.auth.login.AccountNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +37,7 @@ import deronzier.remi.payMyBuddyV2.service.impl.BankTransferServiceImpl;
 import deronzier.remi.payMyBuddyV2.service.impl.UserServiceImpl;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
+@ControllerAdvice
 @Controller
 @RequestMapping(value = "/bankTransfers")
 public class BankTransferController {
@@ -56,6 +60,10 @@ public class BankTransferController {
 					.get("negativeAmountExceptionTopUp");
 			NegativeAmountException negativeAmountExceptionUse = (NegativeAmountException) inputFlashMap
 					.get("negativeAmountExceptionUse");
+			String tooLowAmountErrorTopUp = (String) inputFlashMap.get("tooLowAmountErrorTopUp");
+			String tooLowAmountErrorUse = (String) inputFlashMap.get("tooLowAmountErrorUse");
+			model.addAttribute("tooLowAmountErrorUse", tooLowAmountErrorUse);
+			model.addAttribute("tooLowAmountErrorTopUp", tooLowAmountErrorTopUp);
 			model.addAttribute("accountNotEnoughMoneyException", accountNotEnoughMoneyException);
 			model.addAttribute("negativeAmountExceptionTopUp", negativeAmountExceptionTopUp);
 			model.addAttribute("negativeAmountExceptionUse", negativeAmountExceptionUse);
@@ -92,10 +100,10 @@ public class BankTransferController {
 	}
 
 	@PostMapping("/makeBankTransfer")
-	public String makeBankTransfer(@ModelAttribute("newBankTransferTopUp") BankTransfer newBankTransferTopUp,
-			@ModelAttribute("newBankTransferUse") BankTransfer newBankTransferUse,
-			@ModelAttribute("externalAccountTopUp") ExternalAccount externalAccountTopUp,
-			@ModelAttribute("externalAccountUse") ExternalAccount externalAccountUse,
+	public String makeBankTransfer(
+			@Valid @ModelAttribute(value = "newBankTransferUse") BankTransfer newBankTransfer,
+			BindingResult bindingResultBankTransfer,
+			@ModelAttribute("externalAccountUse") ExternalAccount externalAccount,
 			Model model, @RequestParam(value = "bankTransferType", required = true) BankTransferType bankTransferType,
 			RedirectAttributes redirectAttributes)
 			throws UserNotFoundException, AccountNotFoundException,
@@ -103,20 +111,30 @@ public class BankTransferController {
 		try {
 			switch (bankTransferType) {
 			case TOP_UP:
+				if (bindingResultBankTransfer.hasErrors()) { // if amount is lower than 10€ for Use form
+					redirectAttributes.addFlashAttribute("tooLowAmountErrorTopUp",
+							bindingResultBankTransfer.getFieldError("amount").getDefaultMessage());
+					return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
+				}
 				try {
-					bankTransferService.makeBankTransfer(newBankTransferTopUp.getAmount(), UserController.OWNER_USER_ID,
+					bankTransferService.makeBankTransfer(newBankTransfer.getAmount(), UserController.OWNER_USER_ID,
 							BankTransferType.TOP_UP,
-							externalAccountTopUp.getId());
+							externalAccount.getId());
 				} catch (NegativeAmountException nae) {
 					redirectAttributes.addFlashAttribute("negativeAmountExceptionTopUp", nae);
 					return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
 				}
 				break;
 			case USE:
+				if (bindingResultBankTransfer.hasErrors()) { // if amount is lower than 10€ for Use form
+					redirectAttributes.addFlashAttribute("tooLowAmountErrorUse",
+							bindingResultBankTransfer.getFieldError("amount").getDefaultMessage());
+					return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
+				}
 				try {
-					bankTransferService.makeBankTransfer(newBankTransferTopUp.getAmount(), UserController.OWNER_USER_ID,
+					bankTransferService.makeBankTransfer(newBankTransfer.getAmount(), UserController.OWNER_USER_ID,
 							BankTransferType.USE,
-							externalAccountTopUp.getId());
+							externalAccount.getId());
 				} catch (NegativeAmountException nae) {
 					redirectAttributes.addFlashAttribute("negativeAmountExceptionUse", nae);
 					return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
