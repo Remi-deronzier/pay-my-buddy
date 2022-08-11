@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-error(statusCode='403')}">
+      
+	<head>
+		<title>403 page</title>
+	</head>
+	
+	<body>
+		<div layout:fragment="error-content">
+			<p class="fs-3"> <span class="text-danger">Opps!</span> Access forbidden.</p>
+			<p class="lead">
+			    You are not allowed to enter here.
+			</p>
+		</div>
+	</body>
+	
+</html>

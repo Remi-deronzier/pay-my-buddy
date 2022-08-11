@@ -1,0 +1,9 @@
+label.error {
+	color: #dc3545;
+	display: flex;
+	align-items: center;
+}
+
+#amount-error {
+	padding-left: 1rem;
+}

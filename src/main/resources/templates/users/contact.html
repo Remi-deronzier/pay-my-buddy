@@ -8,13 +8,13 @@
 	</head>
 	
 	<body>
-		<div layout:fragment="content" class="container">
+		<th:block layout:fragment="content">
 			<h1>All your contacts</h1>
-			<div th:if="${(param.isNewConnectionAddedSuccessfully != null) and (param.isNewConnectionAddedSuccessfully)}" class="alert alert-success alert dismissible fade show" role="alert">
+			<div th:if="${(param.isNewConnectionAddedSuccessfully != null) and (param.isNewConnectionAddedSuccessfully)}" class="alert alert-success dismissible fade show" role="alert">
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
 				<strong>Success!</strong> Contact successfully added
 			</div>
-			<div th:if="${(param.isConnectionDeletedSuccessfully != null) and (param.isConnectionDeletedSuccessfully)}" class="alert alert-success alert dismissible fade show" role="alert">
+			<div th:if="${(param.isConnectionDeletedSuccessfully != null) and (param.isConnectionDeletedSuccessfully)}" class="alert alert-success dismissible fade show" role="alert">
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
 				<strong>Success!</strong> Contact successfully deleted
 			</div>
@@ -52,8 +52,8 @@
 				</tbody>
 			</table>
 			<p th:unless="${!connections.isEmpty}">You do not have any contact at the moment</p>
-			<a th:href="@{/users/contact/add}" class="btn btn-primary" role="button">Add a contact</a>
-		</div>
+			<a th:href="@{/users/contact/add}" class="btn btn-outline-primary" role="button">Add a contact</a>
+		</th:bloc>
 	</body>
 	
 </html>

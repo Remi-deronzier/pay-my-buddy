@@ -10,4 +10,6 @@ import deronzier.remi.payMyBuddyV2.model.BankTransfer;
 @Repository
 public interface BankTransferRepository extends PagingAndSortingRepository<BankTransfer, Integer> {
 	Page<BankTransfer> findByUserId(int userId, Pageable pageabe);
+
+	Iterable<BankTransfer> findByExternalAccountId(int externalAccountId);
 }

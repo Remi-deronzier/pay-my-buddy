@@ -3,6 +3,7 @@ package deronzier.remi.payMyBuddyV2.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
 import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
@@ -37,22 +39,31 @@ public class UserController {
 
 	@GetMapping(value = "/{id}")
 	public String getUser(@PathVariable final int id, Model model) {
+		User user1 = userService.findById(OWNER_USER_ID).get();
+		List<User> connections = user1.getConnections();
 		User user = userService.findById(id).get();
-		model.addAttribute("user", user);
-		return "users/profile";
+
+		if (connections.contains(user) || user == user1) { // Check user is allowed to watch the profile of this
+															// specific user
+			model.addAttribute("user", user);
+			return "users/profile";
+		} else {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+		}
+
 	}
 
 	@GetMapping(value = "/contact/add")
 	public String addContactView(Model model) throws UserNotFoundException {
-		User user = new User();
-		model.addAttribute("user", user);
+		User newConnection = new User();
+		model.addAttribute("newConnection", newConnection);
 		List<User> futurePotentialConnections = userService.findFuturePotentialConnections(OWNER_USER_ID);
 		model.addAttribute("futurePotentialConnections", futurePotentialConnections);
 		return "users/addContact";
 	}
 
 	@PostMapping("/contact/add")
-	public String addConntactSendForm(@ModelAttribute User newConnection, Model model)
+	public String addConntactSendForm(@ModelAttribute("newConnection") User newConnection, Model model)
 			throws UserNotFoundException, ConnectionCreationException {
 		userService.addConnection(OWNER_USER_ID, newConnection.getId());
 		return "redirect:/users/contact?isNewConnectionAddedSuccessfully=true";

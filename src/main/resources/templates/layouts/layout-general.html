@@ -41,10 +41,13 @@
 		          <a class="nav-link" th:href="@{/bankTransfers}">Transfer</a>
 		        </li>
 		        <li class="nav-item">
-		          <a class="nav-link" th:href="@{/users/1}">Profile</a>
+		          <a class="nav-link" th:href="@{/externalAccounts}">External account</a>
 		        </li>
 		        <li class="nav-item">
 		          <a class="nav-link" th:href="@{/users/contact}">Contact</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" th:href="@{/users/1}">Profile</a>
 		        </li>
 		        <li class="nav-item">
 		          <a class="nav-link">Log off</a>
@@ -56,9 +59,11 @@
 		
 		
 		<!-- Content Section -->
-		<section layout:fragment="content">
-		    <p>This is filled by the content template.</p>
-		</section>
+		<div class="container mt-3">
+			<section layout:fragment="content">
+				    <p>This is filled by the content template.</p>
+			</section>
+		</div>
 		
 		<!-- Optional Pagination Section -->
 		<nav aria-label="Search results pages" layout:fragment="pagination">

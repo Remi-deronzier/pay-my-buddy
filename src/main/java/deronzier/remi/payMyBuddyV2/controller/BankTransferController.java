@@ -1,6 +1,10 @@
 package deronzier.remi.payMyBuddyV2.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.security.auth.login.AccountNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,14 +18,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoney;
-import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
+import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
+import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotBelongGoodUserException;
+import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
-import deronzier.remi.payMyBuddyV2.exception.TransactionSameAccountException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.BankTransfer;
+import deronzier.remi.payMyBuddyV2.model.ExternalAccount;
+import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.service.impl.BankTransferServiceImpl;
+import deronzier.remi.payMyBuddyV2.service.impl.UserServiceImpl;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
 @Controller
@@ -31,9 +40,31 @@ public class BankTransferController {
 	@Autowired
 	private BankTransferServiceImpl bankTransferService;
 
+	@Autowired
+	private UserServiceImpl userService;
+
 	@GetMapping()
-	public String getBankTransfers(Model model,
+	public String getBankTransfers(Model model, HttpServletRequest request,
 			@SortDefault(sort = "timeStamp", direction = Sort.Direction.DESC) Pageable pageable) {
+		// Check validation form server side
+		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+		if (inputFlashMap != null) {
+			AccountNotEnoughMoneyException accountNotEnoughMoneyException = (AccountNotEnoughMoneyException) inputFlashMap
+					.get("accountNotEnoughMoneyException");
+			NegativeAmountException negativeAmountExceptionTopUp = (NegativeAmountException) inputFlashMap
+					.get("negativeAmountExceptionTopUp");
+			NegativeAmountException negativeAmountExceptionUse = (NegativeAmountException) inputFlashMap
+					.get("negativeAmountExceptionUse");
+			model.addAttribute("accountNotEnoughMoneyException", accountNotEnoughMoneyException);
+			model.addAttribute("negativeAmountExceptionTopUp", negativeAmountExceptionTopUp);
+			model.addAttribute("negativeAmountExceptionUse", negativeAmountExceptionUse);
+		}
+
+		// Add external accounts of the user
+		User user1 = userService.findById(UserController.OWNER_USER_ID).get();
+		List<ExternalAccount> externalAccounts = user1.getExternalAccounts();
+		model.addAttribute("externalAccounts", externalAccounts);
+
 		// Create empty bank transfer for use for the bank transfer of type use
 		BankTransfer newBankTransferUse = new BankTransfer();
 		model.addAttribute("newBankTransferUse", newBankTransferUse);
@@ -41,6 +72,14 @@ public class BankTransferController {
 		// Create empty bank transfer for top up for the bank transfer of type top up
 		BankTransfer newBankTransferTopUp = new BankTransfer();
 		model.addAttribute("newBankTransferTopUp", newBankTransferTopUp);
+
+		// Create empty external account for top up for the bank transfer of type top up
+		ExternalAccount externalAccountTopUp = new ExternalAccount();
+		model.addAttribute("externalAccountTopUp", externalAccountTopUp);
+
+		// Create empty external account for use for the bank transfer of type top up
+		ExternalAccount externalAccountUse = new ExternalAccount();
+		model.addAttribute("externalAccountUse", externalAccountUse);
 
 		// Get all current user's transactions
 		Page<BankTransfer> bankTransfers = bankTransferService
@@ -52,19 +91,39 @@ public class BankTransferController {
 	}
 
 	@PostMapping("/makeBankTransfer")
-	public String makeBankTransfer(@ModelAttribute BankTransfer newBankTransferTopUp,
-			@ModelAttribute BankTransfer newBankTransferUse,
-			Model model, @RequestParam(value = "bankTransferType", required = true) String bankTransferType)
-			throws UserNotFoundException, ConnectionCreationException, AccountNotFoundException,
-			NegativeAmountException, AccountNotEnoughMoney, TransactionSameAccountException {
-		System.out.println(bankTransferType);
-		System.out.println(bankTransferType.equals("topUp"));
-		if (bankTransferType.equals("topUp")) {
-			bankTransferService.makeBankTransfer(newBankTransferTopUp.getAmount(), UserController.OWNER_USER_ID, true);
+	public String makeBankTransfer(@ModelAttribute("newBankTransferTopUp") BankTransfer newBankTransferTopUp,
+			@ModelAttribute("newBankTransferUse") BankTransfer newBankTransferUse,
+			@ModelAttribute("externalAccountTopUp") ExternalAccount externalAccountTopUp,
+			@ModelAttribute("externalAccountUse") ExternalAccount externalAccountUse,
+			Model model, @RequestParam(value = "bankTransferType", required = true) String bankTransferType,
+			RedirectAttributes redirectAttributes)
+			throws UserNotFoundException, AccountNotFoundException,
+			ExternalAccountNotFoundException, ExternalAccountNotBelongGoodUserException {
+		try {
+			try {
+				if (bankTransferType.equals("topUp")) {
+					bankTransferService.makeBankTransfer(newBankTransferTopUp.getAmount(), UserController.OWNER_USER_ID,
+							true,
+							externalAccountTopUp.getId());
+				}
+			} catch (NegativeAmountException nae) {
+				redirectAttributes.addFlashAttribute("negativeAmountExceptionTopUp", nae);
+				return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
+			}
+			try {
+				if (bankTransferType.equals("use")) {
+					bankTransferService.makeBankTransfer(newBankTransferUse.getAmount(), UserController.OWNER_USER_ID,
+							false,
+							externalAccountUse.getId());
+				}
+				return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=true";
+			} catch (NegativeAmountException nae) {
+				redirectAttributes.addFlashAttribute("negativeAmountExceptionUse", nae);
+				return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
+			}
+		} catch (AccountNotEnoughMoneyException aneme) {
+			redirectAttributes.addFlashAttribute("accountNotEnoughMoneyException", aneme);
+			return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
 		}
-		if (bankTransferType.equals("use")) {
-			bankTransferService.makeBankTransfer(newBankTransferUse.getAmount(), UserController.OWNER_USER_ID, false);
-		}
-		return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=true";
 	}
 }

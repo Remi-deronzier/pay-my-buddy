@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoney;
+import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotBelongGoodUserException;
 import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
@@ -39,10 +39,6 @@ public class BankTransferServiceImpl implements BankTransferService {
 	@Autowired
 	private ExternalAccountRepository externalAccountRepository;
 
-//	@Override
-//	public Page<BankTransfer> findAllByUserId(int userId, Pageable pageable) {
-//		return bankTransferRepository.findByUserId(userId, pageable);
-//	}
 	@Override
 	public Page<BankTransfer> findAllBankTransfersForSpecificUser(int userId, Pageable pageable) {
 		return bankTransferRepository.findByUserId(userId, pageable);
@@ -50,7 +46,8 @@ public class BankTransferServiceImpl implements BankTransferService {
 
 	@Override
 	public BankTransfer makeBankTransfer(double amount, int userId, boolean isTopUp, int externalAccountId)
-			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney,
+			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException,
+			AccountNotEnoughMoneyException,
 			ExternalAccountNotFoundException, ExternalAccountNotBelongGoodUserException {
 		// Get user
 		User user = userRepository.findById(userId)
@@ -85,6 +82,11 @@ public class BankTransferServiceImpl implements BankTransferService {
 		user.addBankTransfer(bankTransfer);
 
 		return bankTransferRepository.save(bankTransfer);
+	}
+
+	@Override
+	public Iterable<BankTransfer> findAllBankTransfersForSpecificExternalAccount(int externalAccountId) {
+		return bankTransferRepository.findByExternalAccountId(externalAccountId);
 	}
 
 }

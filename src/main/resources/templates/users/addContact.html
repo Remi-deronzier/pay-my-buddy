@@ -8,9 +8,9 @@
 	</head>
 	
 	<body>
-		<div layout:fragment="content" class="container">
+		<th:block layout:fragment="content">
 			<h1>Add a contact</h1>
-			<form th:if="${!futurePotentialConnections.isEmpty}" action="#" th:action="@{/users/contact/add}" th:object="${user}"  method="post">
+			<form th:if="${!futurePotentialConnections.isEmpty}" action="#" th:action="@{/users/contact/add}" th:object="${newConnection}"  method="post">
 				<label for="addConnection" class="form-label">Choose a connection</label>
 				<select class="form-select" aria-label="Default select" id="addConnection" th:field="*{id}">
 				    <option th:each="user: ${futurePotentialConnections}" th:value="${user.id}" th:text="${user.userName} + ' - ' + ${user.firstName} + ' ' + ${user.lastName}"></option>
@@ -20,7 +20,7 @@
 				</div>
 			</form>
 			<p th:unless="${!futurePotentialConnections.isEmpty}">You have already added all the users of the application in your contacts</p>
-		</div>
+		</th:block>
 	</body>
 	
 </html>

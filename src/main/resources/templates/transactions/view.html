@@ -5,23 +5,38 @@
       
 	<head>
 		<title>Transaction</title>
+		
+		<link th:rel="stylesheet" th:href="@{/css/form-validation-styles.css}">
+		
+	    <!-- below we are including the jQuery and jQuery plugin .js files -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+	    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+	    <script th:src="@{/js/transaction-form.js}"></script>
 	</head>
 	
 	<body>
-		<div layout:fragment="content" class="container">
+		<th:block layout:fragment="content">
 			<h1>Transaction</h1>
+			<div th:if="${(param.isNewTransactionMadeSuccessfully != null) and (param.isNewTransactionMadeSuccessfully)}" class="alert alert-success dismissible fade show" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+				<strong>Success!</strong> Transaction successfully made
+			</div>
+			<div th:if="${(param.isNewTransactionMadeSuccessfully != null) and (!param.isNewTransactionMadeSuccessfully)}" class="alert alert-danger dismissible fade show" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+				<strong>Error!</strong> Transaction failed
+			</div>
 			<div class="d-flex justify-content-between mb-2">
 				<h3>Send money</h3>
 				<a th:href="@{/users/contact/add}" class="btn btn-outline-primary" role="button">Add connection</a>
 			</div>
 			<div class="card bg-light">
 				<div class="card-body">
-					<form class="row row-cols-md-auto g-2 align-items-end justify-content-center"
-					th:if="${!connections.isEmpty}" action="#" th:action="@{/transactions/makeTransaction}"
-					th:object="${receiver}" method="post">
-						<div class="col-12">
+					<form id="transactionForm" class="row row-cols-md-auto g-2 align-items-end justify-content-center"
+					th:if="${!connections.isEmpty}" action="#" th:action="@{/transactions/makeTransaction}" method="post">
+						<div class="col-12" th:object="${receiver}">
 							<label for="selectConnection" class="form-label">Select a connection</label>
-							<select class="form-select" aria-label="Default select" id="selectConnection" th:field="*{id}">
+							<select class="form-select" aria-label="Default select" id="selectConnection" name="selectConnection" th:field="*{id}">
 				    			<option th:each="user: ${connections}" th:value="${user.id}" th:text="${user.userName} + ' - ' + ${user.firstName} + ' ' + ${user.lastName}"></option>
 							</select>
 						</div>
@@ -29,7 +44,7 @@
 							<label for="amount" class="form-label">Enter the amount</label>
 							<div class="input-group">
 								<div class="input-group-text">€</div>
-								<input type="number" step="any" class="form-control" placeholder="Amount" id="amount" th:field="*{amount}">
+								<input type="number" step="any" class="form-control" placeholder="Amount" id="amount" th:field="*{amount}" name="amount">
 							</div>
 						</div>
 						<div class="col-12" th:object="${newTransaction}">
@@ -40,6 +55,16 @@
 							<button type="submit" class="btn btn-primary">Pay</button>
 						</div>
 					</form>
+					<p th:unless="${!connections.isEmpty}">First, you need to 
+						<a th:href="@{/users/contact/add}">add contacts</a>
+					to be able to do a banking transaction</p>
+					<p class="text-danger text-center card-text mt-1" th:if="${tooLowAmountError != null}">Amount must be greater than or equal to 10</p>
+					<p class="text-danger text-center card-text mt-1" th:if="${negativeAmountException != null}">Amount must be strictly positive</p>
+					<p class="text-danger text-center card-text mt-1" th:if="${accountNotEnoughMoneyException != null}" >
+						You don't have enough money in your account. You can
+					 	<a th:href="@{/bankTransfers}">top up money</a>
+					 	to your account and try again to make your transaction.
+					</p>
 				</div>
 			</div>
 			
@@ -73,7 +98,7 @@
 			</table>
 			
 			<p th:unless="${!page.getContent().isEmpty}">No transaction to display</p>
-		</div>
+		</th:block>
 
 	</body>
 	

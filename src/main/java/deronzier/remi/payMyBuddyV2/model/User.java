@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,9 +21,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
 
+import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
+import deronzier.remi.payMyBuddyV2.exception.UserUnderEighteenException;
 import lombok.Data;
 
 @Data
@@ -34,6 +38,7 @@ public class User {
 
 	@Column(nullable = false, unique = true)
 	@NotBlank(message = "Email cannot be null")
+	@Email
 	private String email;
 
 	@Column(nullable = false, unique = true)
@@ -52,7 +57,6 @@ public class User {
 	@NotBlank(message = "Password cannot be null")
 	private String password;
 
-	@Past
 	private LocalDate dateOfBirth;
 
 	@Transient
@@ -82,7 +86,6 @@ public class User {
 	private List<Transaction> sentTransactions = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "receiver")
-	@JoinColumn(name = "receiver_id")
 	private List<Transaction> receivedTransactions = new ArrayList<>();
 
 	@ManyToMany(cascade = {
@@ -99,8 +102,28 @@ public class User {
 	@JoinTable(name = "connection", joinColumns = @JoinColumn(name = "owner_id"), inverseJoinColumns = @JoinColumn(name = "connection_id"))
 	private List<User> connections = new ArrayList<>();
 
-	public int getAge() {
+	public Integer getAge() {
 		return calculateAge(dateOfBirth);
+	}
+
+	public void setDateOfBirth(LocalDate dateOfBirth) throws UserUnderEighteenException {
+		if (calculateAge(dateOfBirth) != null) {
+			if (calculateAge(dateOfBirth) >= 18) {
+				this.dateOfBirth = dateOfBirth;
+			} else {
+				throw new UserUnderEighteenException("User is under 18");
+			}
+		}
+	}
+
+	public void setPhoneNumber(String phoneNumber) throws IllegalPhoneNumberException {
+		Pattern pattern = Pattern.compile("(?:(?:\\+|00)33|0)\\s*[1-9](?:[\\s.-]*\\d{2}){4}$");
+		Matcher matcher = pattern.matcher(phoneNumber);
+		if (matcher.matches()) {
+			this.phoneNumber = phoneNumber;
+		} else {
+			throw new IllegalPhoneNumberException("Phone number is not valid");
+		}
 	}
 
 	public void addConnection(User user) {
@@ -136,16 +159,12 @@ public class User {
 		account.setUser(this);
 	}
 
-	public int calculateAge(LocalDate dob) {
-		// creating an instance of the LocalDate class and invoking the now() method
-		// now() method obtains the current date from the system clock in the default
-		// time zone
+	public Integer calculateAge(LocalDate dob) {
 		LocalDate curDate = LocalDate.now();
-		// calculates the amount of time between two dates and returns the years
 		if ((dob != null) && (curDate != null)) {
 			return Period.between(dob, curDate).getYears();
 		} else {
-			return 0;
+			return null;
 		}
 	}
 

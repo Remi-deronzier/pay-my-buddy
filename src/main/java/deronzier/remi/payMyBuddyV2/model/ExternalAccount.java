@@ -29,5 +29,4 @@ public class ExternalAccount {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "user_id")
 	private User user;
-
 }

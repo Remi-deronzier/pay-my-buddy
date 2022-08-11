@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoney;
+import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import deronzier.remi.payMyBuddyV2.exception.TransactionSameAccountException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
@@ -35,7 +35,7 @@ public class TransactionServiceImpl implements TransactionService {
 
 	@Override
 	public Transaction makeTransaction(int senderId, int receiverId, double amount, String description)
-			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoney,
+			throws UserNotFoundException, AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoneyException,
 			TransactionSameAccountException {
 		// Check senderId is different from receiverId
 		if (senderId == receiverId) {
