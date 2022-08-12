@@ -80,7 +80,7 @@ public class BankTransferServiceImpl implements BankTransferService {
 			bankTransfer.setBankTransferType(bankTransferType);
 			break;
 		case USE:
-			userAccount.withdrawMoney(amount);
+			userAccount.withdrawMoney(amount, false);
 			bankTransfer.setBankTransferType(bankTransferType);
 		}
 

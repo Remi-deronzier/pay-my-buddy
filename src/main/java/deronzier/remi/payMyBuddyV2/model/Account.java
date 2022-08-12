@@ -34,14 +34,18 @@ public class Account {
 		balance += amount;
 	}
 
-	public void withdrawMoney(double amount) throws NegativeAmountException, AccountNotEnoughMoneyException {
-		if (amount <= 0) {
-			throw new NegativeAmountException("Amount must be strictly positive");
+	public void withdrawMoney(double amount, boolean shouldForceWithdrawal)
+			throws NegativeAmountException, AccountNotEnoughMoneyException {
+		if (shouldForceWithdrawal) {
+			balance -= amount;
+		} else {
+			if (amount <= 0) {
+				throw new NegativeAmountException("Amount must be strictly positive");
+			}
+			if (balance - amount < 0) {
+				throw new AccountNotEnoughMoneyException("The account has not enough money");
+			}
 		}
-		if (balance - amount < 0) {
-			throw new AccountNotEnoughMoneyException("The account has not enough money");
-		}
-		balance -= amount;
 	}
 
 }
