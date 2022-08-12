@@ -79,15 +79,6 @@ public class User {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	private List<ExternalAccount> externalAccounts = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-	private List<BankTransfer> bankTransfers = new ArrayList<>();
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "sender")
-	private List<Transaction> sentTransactions = new ArrayList<>();
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "receiver")
-	private List<Transaction> receivedTransactions = new ArrayList<>();
-
 	@ManyToMany(cascade = {
 			CascadeType.PERSIST,
 			CascadeType.MERGE
@@ -134,24 +125,9 @@ public class User {
 		connections.remove(user);
 	}
 
-	public void addBankTransfer(BankTransfer bankTransfer) {
-		bankTransfers.add(bankTransfer);
-		bankTransfer.setUser(this);
-	}
-
 	public void addExternalAccount(ExternalAccount externalAccount) {
 		externalAccounts.add(externalAccount);
 		externalAccount.setUser(this);
-	}
-
-	public void addSentTransaction(Transaction transaction) {
-		sentTransactions.add(transaction);
-		transaction.setSender(this);
-	}
-
-	public void addReceivedTransaction(Transaction transaction) {
-		receivedTransactions.add(transaction);
-		transaction.setReceiver(this);
 	}
 
 	public void addAcount(Account account) {

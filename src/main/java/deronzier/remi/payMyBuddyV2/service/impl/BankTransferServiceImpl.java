@@ -42,7 +42,7 @@ public class BankTransferServiceImpl implements BankTransferService {
 
 	@Override
 	public Page<BankTransfer> findAllBankTransfersForSpecificUser(int userId, Pageable pageable) {
-		return bankTransferRepository.findByUserId(userId, pageable);
+		return bankTransferRepository.findBySenderId(userId, pageable);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class BankTransferServiceImpl implements BankTransferService {
 			AccountNotEnoughMoneyException,
 			ExternalAccountNotFoundException, ExternalAccountNotBelongGoodUserException {
 		// Get user
-		User user = userRepository.findById(userId)
+		User sender = userRepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
 
 		// Get user's account
@@ -73,6 +73,7 @@ public class BankTransferServiceImpl implements BankTransferService {
 		BankTransfer bankTransfer = new BankTransfer();
 		bankTransfer.setExternalAccount(externalAccount);
 		bankTransfer.setAmount(amount);
+		bankTransfer.setSender(sender);
 		switch (bankTransferType) {
 		case TOP_UP:
 			userAccount.addMoney(amount);
@@ -84,8 +85,6 @@ public class BankTransferServiceImpl implements BankTransferService {
 		}
 
 		// Save data in DB
-		user.addBankTransfer(bankTransfer);
-
 		return bankTransferRepository.save(bankTransfer);
 	}
 

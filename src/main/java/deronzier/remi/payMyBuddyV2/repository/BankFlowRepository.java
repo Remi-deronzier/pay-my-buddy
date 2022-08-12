@@ -5,9 +5,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import deronzier.remi.payMyBuddyV2.model.Transaction;
+import deronzier.remi.payMyBuddyV2.model.BankFlow;
 
 @Repository
-public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Integer> {
-	Page<Transaction> findBySenderIdOrReceiverId(int senderId, int receiverId, Pageable pageabe);
+public interface BankFlowRepository extends PagingAndSortingRepository<BankFlow, Integer> {
+	Page<BankFlow> findBySenderId(int userId, Pageable pageabe);
 }
