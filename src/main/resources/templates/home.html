@@ -41,7 +41,7 @@
 						<td>
 							<strong th:if="${bankFlow.discriminatorValue == 'transaction'}" th:text="${bankFlow.sender.id == 1} ? 'Sent to: ' : 'Received from: '"></strong>
 							<span th:if="${bankFlow.discriminatorValue == 'transaction'}" th:text="${bankFlow.sender.id == 1} ? ${bankFlow.receiver.userName} : ${bankFlow.receiver.userName}"></span>
-							<span th:unless="${bankFlow.discriminatorValue == 'transaction'}" th:text="${bankFlow.externalAccount.label}"></span>
+							<span th:unless="${bankFlow.discriminatorValue == 'transaction'}" th:text="${bankFlow.externalAccount != null} ? ${bankFlow.externalAccount.label} : 'UNKNOWN'"></span>
 						</td>
 						<td th:text="${bankFlow.discriminatorValue == 'transaction'} ? ${bankFlow.description}"></td>
 						<td th:text="${bankFlow.timeStamp}"></td>

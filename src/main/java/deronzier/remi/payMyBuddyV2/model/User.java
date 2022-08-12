@@ -24,12 +24,15 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserUnderEighteenException;
 import lombok.Data;
 
 @Data
 @Entity
+@DynamicUpdate
 public class User {
 
 	@Id
@@ -108,12 +111,14 @@ public class User {
 	}
 
 	public void setPhoneNumber(String phoneNumber) throws IllegalPhoneNumberException {
-		Pattern pattern = Pattern.compile("(?:(?:\\+|00)33|0)\\s*[1-9](?:[\\s.-]*\\d{2}){4}$");
-		Matcher matcher = pattern.matcher(phoneNumber);
-		if (matcher.matches()) {
-			this.phoneNumber = phoneNumber;
-		} else {
-			throw new IllegalPhoneNumberException("Phone number is not valid");
+		if (phoneNumber != null && !phoneNumber.isEmpty()) {
+			Pattern pattern = Pattern.compile("^(?:(?:\\+|00)33|0)\\s*[1-9](?:[\\s.-]*\\d{2}){4}$");
+			Matcher matcher = pattern.matcher(phoneNumber);
+			if (matcher.matches()) {
+				this.phoneNumber = phoneNumber;
+			} else {
+				throw new IllegalPhoneNumberException("Phone number is not valid");
+			}
 		}
 	}
 

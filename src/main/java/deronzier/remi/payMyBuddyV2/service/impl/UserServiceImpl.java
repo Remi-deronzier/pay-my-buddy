@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
 import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
+import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.model.User;
@@ -89,6 +90,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User save(User user) {
 		return userRepository.save(user);
+	}
+
+	@Override
+	public User updateProfile(User inputUser, int id) throws UserNotFoundException, IllegalPhoneNumberException {
+		User userToUpdate = userRepository.findById(id)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		userToUpdate.setUserName(inputUser.getUserName());
+		userToUpdate.setEmail(inputUser.getEmail());
+		userToUpdate.setFirstName(inputUser.getFirstName());
+		userToUpdate.setLastName(inputUser.getLastName());
+		userToUpdate.setPhoneNumber(inputUser.getPhoneNumber());
+		userToUpdate.setDescription(inputUser.getDescription());
+		return userRepository.save(userToUpdate);
 	}
 
 	@Override
