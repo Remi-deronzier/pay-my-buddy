@@ -8,7 +8,7 @@ import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 
 public interface CommissionService {
 
-	void monetization() throws AccountNotFoundException, UserNotFoundException, NegativeAmountException,
+	double monetization() throws AccountNotFoundException, UserNotFoundException, NegativeAmountException,
 			AccountNotEnoughMoneyException;
 
 	static final double COMMISSION_PERCENTAGE = 0.5;

@@ -3,6 +3,7 @@
 --
 
 INSERT INTO `user` (`email`, `password`, `first_name`, `last_name`, `user_name`) VALUES
+("payMyBuddy@gmail.com", "$2a$12$f85xICrTr0mW4vcBfJ541ejSquWFbYdOyZJSZL6yyZyyC0Kvfc/8S", "Pay My Buddy", "Super User", "PayMyBuddy"),
 ("remi@gmail.com", "$2y$10$fWmW8.Q6f20Fz1M0WmnLDeBKBdeK4ZcEyr1BkwkzW00dp3aRlLPEW", "remi", "Deronzier", "remax21"),
 ("lucie@gmail.com", "$2y$10$h0K.LELTJ9PhRQmy7udPDejWZie8pwwg6mJeznBLl38KT86pFWNTS", "lucie", "Deronzier", "louizaine"),
 ("gaelle@gmail.com", "$2y$10$cOYvpsb9ViSSBUFsVb/vwO8NAUe7C3bLgyOiTvq8UQVPwck3mggLm", "gaelle", "Deronzier", "GaelleDeronzier"),
@@ -49,7 +50,7 @@ INSERT INTO `connection` (`owner_id`, `connection_id`) VALUES
 --
 
 INSERT INTO `account` (`balance`, `user_id`) VALUES
-(100, 1),
+(0, 1),
 (100, 2),
 (500, 3),
 (530, 4),

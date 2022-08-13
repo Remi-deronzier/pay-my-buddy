@@ -27,7 +27,9 @@ public interface UserService {
 
 	List<User> findFuturePotentialConnections(final int ownerId) throws UserNotFoundException;
 
+	User updateProfile(User inputUser, int id) throws UserNotFoundException, IllegalPhoneNumberException;
+
 	static final double INITIAL_ACCOUNT_BALANCE = 0;
 
-	User updateProfile(User inputUser, int id) throws UserNotFoundException, IllegalPhoneNumberException;
+	public final static int PAY_MY_BUDDY_SUPER_USER_ID = 1;
 }
