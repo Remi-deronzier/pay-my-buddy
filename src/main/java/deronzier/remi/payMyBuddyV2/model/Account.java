@@ -45,6 +45,7 @@ public class Account {
 			if (balance - amount < 0) {
 				throw new AccountNotEnoughMoneyException("The account has not enough money");
 			}
+			balance -= amount;
 		}
 	}
 

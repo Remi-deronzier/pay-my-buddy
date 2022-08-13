@@ -49,8 +49,8 @@ INSERT INTO `connection` (`owner_id`, `connection_id`) VALUES
 --
 
 INSERT INTO `account` (`balance`, `user_id`) VALUES
-(123, 1),
-(30, 2),
+(100, 1),
+(100, 2),
 (500, 3),
 (530, 4),
 (1200, 5),
