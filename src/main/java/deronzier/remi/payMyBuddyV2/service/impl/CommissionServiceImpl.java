@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.security.auth.login.AccountNotFoundException;
-import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,12 +154,9 @@ public class CommissionServiceImpl implements CommissionService {
 			transaction.setReceiver(payMyBuddySuperUser);
 			transaction.setAmount(commissionAmount);
 			transaction.setDescription("Daily fee for " + LocalDate.now().minusDays(1));
-			try {
-				transactionRepository.save(transaction);
-			} catch (ConstraintViolationException cve) { // when commission amount is smaller than 10€
-				// Save data in DB
-				transactionRepository.save(transaction);
-			}
+
+			// Save
+			transactionRepository.save(transaction);
 		}
 	}
 
