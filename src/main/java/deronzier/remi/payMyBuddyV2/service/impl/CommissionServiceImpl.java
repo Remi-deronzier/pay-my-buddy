@@ -58,13 +58,13 @@ public class CommissionServiceImpl implements CommissionService {
 	}
 
 	private double calculateTotalDailyCommissionAmount() {
-		Iterable<BankFlow> dailyBankFlows = bankFlowRepository.findByTimeStampBetween(startPreviousDay, endPreviousDay);
+		Iterable<BankFlow> dailyBankFlows = bankFlowRepository.findByTimeStampGreaterThanEqualAndTimeStampLessThan(startPreviousDay, endPreviousDay);
 		return calculateDailyCommission(dailyBankFlows);
 	}
 
 	private double calculateDailyCommissionAmountForUser(int userId) {
 		Iterable<BankFlow> dailyBankFlows = bankFlowRepository
-				.findByTimeStampBetweenAndSenderId(startPreviousDay, endPreviousDay, userId);
+				.findByTimeStampGreaterThanEqualAndTimeStampLessThanAndSenderId(startPreviousDay, endPreviousDay, userId);
 		return calculateDailyCommission(dailyBankFlows);
 	}
 

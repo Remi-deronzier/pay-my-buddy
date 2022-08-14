@@ -13,14 +13,10 @@ import deronzier.remi.payMyBuddyV2.model.BankFlow;
 public interface BankFlowRepository extends PagingAndSortingRepository<BankFlow, Integer> {
 	Page<BankFlow> findBySenderId(int userId, Pageable pageabe);
 
-	Iterable<BankFlow> findByTimeStampBetween(LocalDateTime timeStampStart, LocalDateTime timeStampEnd); // between is
-																											// inclusive:
-																											// begin and
-																											// end
-																											// values
-																											// are
-																											// included
+	Iterable<BankFlow> findByTimeStampGreaterThanEqualAndTimeStampLessThan(LocalDateTime timeStampStart,
+			LocalDateTime timeStampEnd); // include timeStampStart and exclude timeStampEnd
 
-	Iterable<BankFlow> findByTimeStampBetweenAndSenderId(LocalDateTime timeStampStart, LocalDateTime timeStampEnd,
+	Iterable<BankFlow> findByTimeStampGreaterThanEqualAndTimeStampLessThanAndSenderId(LocalDateTime timeStampStart,
+			LocalDateTime timeStampEnd,
 			int senderId);
 }

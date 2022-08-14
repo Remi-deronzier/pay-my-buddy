@@ -23,13 +23,12 @@ public class TestSetUp {
 
 	public final static LocalDateTime TIME_STAMP_START = LocalDateTime.of(REFERENCE_DATE, REFERENCE_TIME); // (day D,
 																											// hour H,
-	// minute m)
+	// minute M)
 	public final static LocalDateTime TIME_STAMP_END = LocalDateTime.of(REFERENCE_DATE.plusDays(1), REFERENCE_TIME); // (day
 																														// D
 	// + 1,
 	// hour
 	// H, minute M)
-	// M)
 
 	public final static int USER1_ID = 2;
 	public final static int USER2_ID = 3;

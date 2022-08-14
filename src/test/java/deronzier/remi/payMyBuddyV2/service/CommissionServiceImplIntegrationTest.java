@@ -93,7 +93,6 @@ public class CommissionServiceImplIntegrationTest {
 		dailyBankFlows.add(TestSetUp.BANK_FLOWS.get(5));
 		dailyBankFlows.add(TestSetUp.BANK_FLOWS.get(6));
 		dailyBankFlows.add(TestSetUp.BANK_FLOWS.get(4));
-		dailyBankFlows.add(TestSetUp.BANK_FLOWS.get(7));
 
 		dailyBankFlowsUser1.add(TestSetUp.BANK_FLOWS.get(0));
 		dailyBankFlowsUser1.add(TestSetUp.BANK_FLOWS.get(2));
@@ -110,12 +109,13 @@ public class CommissionServiceImplIntegrationTest {
 				0);
 		final LocalDateTime endPreviousDay = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0);
 
-		Mockito.when(bankFlowRepository.findByTimeStampBetween(startPreviousDay, endPreviousDay))
+		Mockito.when(bankFlowRepository.findByTimeStampGreaterThanEqualAndTimeStampLessThan(startPreviousDay,
+				endPreviousDay))
 				.thenReturn(dailyBankFlows);
-		Mockito.when(bankFlowRepository.findByTimeStampBetweenAndSenderId(startPreviousDay,
+		Mockito.when(bankFlowRepository.findByTimeStampGreaterThanEqualAndTimeStampLessThanAndSenderId(startPreviousDay,
 				endPreviousDay, TestSetUp.USER1_ID))
 				.thenReturn(dailyBankFlowsUser1);
-		Mockito.when(bankFlowRepository.findByTimeStampBetweenAndSenderId(startPreviousDay,
+		Mockito.when(bankFlowRepository.findByTimeStampGreaterThanEqualAndTimeStampLessThanAndSenderId(startPreviousDay,
 				endPreviousDay, TestSetUp.USER2_ID))
 				.thenReturn(dailyBankFlowsUser2);
 		Mockito.when(userRepository.findAll()).thenReturn(allUsers);

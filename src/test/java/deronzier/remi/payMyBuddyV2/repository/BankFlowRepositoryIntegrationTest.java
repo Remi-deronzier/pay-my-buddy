@@ -46,23 +46,25 @@ public class BankFlowRepositoryIntegrationTest {
 	void givenBankFlowsCreated_whenFindByTimeStampBetween_thenSuccess() throws UserNotFoundException {
 		List<BankFlow> retrievedBankFlowsList = new ArrayList<>();
 
-		Iterable<BankFlow> retrievedBankFlows = bankFlowRepository.findByTimeStampBetween(TestSetUp.TIME_STAMP_START,
+		Iterable<BankFlow> retrievedBankFlows = bankFlowRepository.findByTimeStampGreaterThanEqualAndTimeStampLessThan(
+				TestSetUp.TIME_STAMP_START,
 				TestSetUp.TIME_STAMP_END);
 		retrievedBankFlows.forEach(retrievedBankFlowsList::add);
-		assertThat(retrievedBankFlowsList, hasSize(7));
+		assertThat(retrievedBankFlowsList, hasSize(6));
 		assertThat(retrievedBankFlowsList,
 				containsInAnyOrder(TestSetUp.BANK_FLOWS.get(0), TestSetUp.BANK_FLOWS.get(2),
 						TestSetUp.BANK_FLOWS.get(3), TestSetUp.BANK_FLOWS.get(5),
-						TestSetUp.BANK_FLOWS.get(6), TestSetUp.BANK_FLOWS.get(4), TestSetUp.BANK_FLOWS.get(7)));
+						TestSetUp.BANK_FLOWS.get(6), TestSetUp.BANK_FLOWS.get(7)));
 	}
 
 	@Test
 	void givenBankFlowsCreated_whenFindByTimeStampBetweenAndSenderId_thenSuccess() {
 		List<BankFlow> retrievedBankFlowsList = new ArrayList<>();
 
-		Iterable<BankFlow> retrievedBankFlows = bankFlowRepository.findByTimeStampBetweenAndSenderId(
-				TestSetUp.TIME_STAMP_START,
-				TestSetUp.TIME_STAMP_END, TestSetUp.USER1_ID);
+		Iterable<BankFlow> retrievedBankFlows = bankFlowRepository
+				.findByTimeStampGreaterThanEqualAndTimeStampLessThanAndSenderId(
+						TestSetUp.TIME_STAMP_START,
+						TestSetUp.TIME_STAMP_END, TestSetUp.USER1_ID);
 		retrievedBankFlows.forEach(retrievedBankFlowsList::add);
 		System.out.println(retrievedBankFlowsList.size());
 		assertThat(retrievedBankFlowsList, hasSize(5));
