@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
@@ -26,6 +27,13 @@ public class Account {
 	@OneToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
+
+	@Transient
+	private boolean balanceNegative;
+
+	public boolean getBalanceNegative() {
+		return balance < 0;
+	}
 
 	public void addMoney(double amount) throws NegativeAmountException {
 		if (amount <= 0) {

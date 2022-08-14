@@ -21,6 +21,7 @@
 						<th>Phone number</th>
 						<th>Date of birth</th>
 						<th>Status</th>
+						<th>Account balance</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -33,6 +34,7 @@
 						<td th:text="${user.phoneNumber}"></td>
 						<td th:text="${user.dateOfBirth}"></td>
 						<td th:text="${user.status}"></td>
+						<td th:text="${user.account.balanceNegative} ? 'NEGATIVE' : 'POSITIVE'" th:class="${user.account.balanceNegative} ? 'text-danger' : 'text-success'"></td>
 						<td>
 							<div class="d-flex justify-content-between">
 								<a th:href="@{'/users/{id}'(id=${user.id})}" class="btn btn-primary" role="button">

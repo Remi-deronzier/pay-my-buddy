@@ -56,7 +56,8 @@ INSERT INTO `account` (`balance`, `user_id`) VALUES
 (1200, 5),
 (640, 6),
 (156, 7),
-(300, 8);
+(356, 8),
+(-300, 9);
 
 --
 -- Dumping data for table `external_account`
