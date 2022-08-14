@@ -32,9 +32,9 @@ public class HomeController {
 		model.addAttribute("account", account);
 
 		// Add all bank flows to model
-		Page<BankFlow> bankTransfers = bankFlowService
+		Page<BankFlow> bankFlows = bankFlowService
 				.findAllBankFlowsForSpecificUser(UserController.OWNER_USER_ID, pageable);
-		PageWrapper<BankFlow> page = new PageWrapper<BankFlow>(bankTransfers, "/");
+		PageWrapper<BankFlow> page = new PageWrapper<BankFlow>(bankFlows, "/");
 		model.addAttribute("page", page);
 
 		return "home";

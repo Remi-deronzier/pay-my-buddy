@@ -86,7 +86,7 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/all")
-	public String getAllUsers(Pageable pageable, Model model) {
+	public String getUsers(Pageable pageable, Model model) {
 		// Add all bank flows to model
 		Page<User> users = userService
 				.findAll(pageable);
@@ -113,7 +113,7 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/contact/add")
-	public String addContactView(Model model) throws UserNotFoundException {
+	public String getAddContact(Model model) throws UserNotFoundException {
 		User newConnection = new User();
 		model.addAttribute("newConnection", newConnection);
 		List<User> futurePotentialConnections = userService.findFuturePotentialConnections(OWNER_USER_ID);
@@ -122,7 +122,7 @@ public class UserController {
 	}
 
 	@PostMapping("/contact/add")
-	public String addConntactSendForm(@ModelAttribute("newConnection") User newConnection, Model model)
+	public String postAddContact(@ModelAttribute("newConnection") User newConnection, Model model)
 			throws UserNotFoundException, ConnectionCreationException {
 		userService.addConnection(OWNER_USER_ID, newConnection.getId());
 		return "redirect:/users/contact?isNewConnectionAddedSuccessfully=true";

@@ -22,7 +22,7 @@ public class CommissionController {
 	private CommissionServiceImpl commissionService;
 
 	@GetMapping
-	public String getHome(Model model,
+	public String getCommissions(Model model,
 			@SortDefault(sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
 
 		// Add all bank flows to model

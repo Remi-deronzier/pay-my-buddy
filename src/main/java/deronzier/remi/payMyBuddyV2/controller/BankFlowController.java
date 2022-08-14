@@ -22,13 +22,13 @@ public class BankFlowController {
 	private BankFlowServiceImpl bankFlowService;
 
 	@GetMapping
-	public String getHome(Model model,
+	public String getBankFlows(Model model,
 			@SortDefault(sort = "timeStamp", direction = Sort.Direction.DESC) Pageable pageable) {
 
 		// Add all bank flows to model
-		Page<BankFlow> bankTransfers = bankFlowService
+		Page<BankFlow> bankFlows = bankFlowService
 				.findAll(pageable);
-		PageWrapper<BankFlow> page = new PageWrapper<BankFlow>(bankTransfers, "/bankFlows");
+		PageWrapper<BankFlow> page = new PageWrapper<BankFlow>(bankFlows, "/bankFlows");
 		model.addAttribute("page", page);
 
 		return "bank-flows/view";
