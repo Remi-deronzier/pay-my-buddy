@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,7 +15,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
-import javax.validation.constraints.Min;
 
 import lombok.Data;
 
@@ -28,12 +28,11 @@ public class BankFlow {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "sender_id")
 	private User sender;
 
 	@Column(nullable = false, updatable = false)
-	@Min(value = 10, message = "Amount must be greater or equal to 10€")
 	private double amount;
 
 	@Column(nullable = false, updatable = false)

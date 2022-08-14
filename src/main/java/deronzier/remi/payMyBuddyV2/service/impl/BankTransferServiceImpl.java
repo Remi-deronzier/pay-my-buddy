@@ -56,7 +56,7 @@ public class BankTransferServiceImpl implements BankTransferService {
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
 
 		// Get user's account
-		Account userAccount = accountRepository.findByUserId(userId)
+		Account senderAccount = accountRepository.findByUserId(userId)
 				.orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
 		// Get user's external account
@@ -76,11 +76,11 @@ public class BankTransferServiceImpl implements BankTransferService {
 		bankTransfer.setSender(sender);
 		switch (bankTransferType) {
 		case TOP_UP:
-			userAccount.addMoney(amount);
+			senderAccount.addMoney(amount);
 			bankTransfer.setBankTransferType(bankTransferType);
 			break;
 		case USE:
-			userAccount.withdrawMoney(amount);
+			senderAccount.withdrawMoney(amount, false);
 			bankTransfer.setBankTransferType(bankTransferType);
 		}
 

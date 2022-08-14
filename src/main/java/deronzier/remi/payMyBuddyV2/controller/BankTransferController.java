@@ -70,8 +70,8 @@ public class BankTransferController {
 		}
 
 		// Add external accounts of the user
-		User user1 = userService.findById(UserController.OWNER_USER_ID).get();
-		List<ExternalAccount> externalAccounts = user1.getExternalAccounts();
+		User owner = userService.findById(UserController.OWNER_USER_ID).get();
+		List<ExternalAccount> externalAccounts = owner.getExternalAccounts();
 		model.addAttribute("externalAccounts", externalAccounts);
 
 		// Create empty bank transfer for use for the bank transfer of type use

@@ -3,6 +3,9 @@ package deronzier.remi.payMyBuddyV2.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
 import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
@@ -27,7 +30,11 @@ public interface UserService {
 
 	List<User> findFuturePotentialConnections(final int ownerId) throws UserNotFoundException;
 
+	User updateProfile(User inputUser, int id) throws UserNotFoundException, IllegalPhoneNumberException;
+
+	Page<User> findAll(Pageable pageable);
+
 	static final double INITIAL_ACCOUNT_BALANCE = 0;
 
-	User updateProfile(User inputUser, int id) throws UserNotFoundException, IllegalPhoneNumberException;
+	public final static int PAY_MY_BUDDY_SUPER_USER_ID = 1;
 }

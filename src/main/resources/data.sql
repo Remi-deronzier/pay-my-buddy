@@ -3,6 +3,7 @@
 --
 
 INSERT INTO `user` (`email`, `password`, `first_name`, `last_name`, `user_name`) VALUES
+("payMyBuddy@gmail.com", "$2a$12$f85xICrTr0mW4vcBfJ541ejSquWFbYdOyZJSZL6yyZyyC0Kvfc/8S", "Pay My Buddy", "Super User", "PayMyBuddy"),
 ("remi@gmail.com", "$2y$10$fWmW8.Q6f20Fz1M0WmnLDeBKBdeK4ZcEyr1BkwkzW00dp3aRlLPEW", "remi", "Deronzier", "remax21"),
 ("lucie@gmail.com", "$2y$10$h0K.LELTJ9PhRQmy7udPDejWZie8pwwg6mJeznBLl38KT86pFWNTS", "lucie", "Deronzier", "louizaine"),
 ("gaelle@gmail.com", "$2y$10$cOYvpsb9ViSSBUFsVb/vwO8NAUe7C3bLgyOiTvq8UQVPwck3mggLm", "gaelle", "Deronzier", "GaelleDeronzier"),
@@ -39,9 +40,8 @@ INSERT INTO `user_role` (`user_id`, `role_id`) VALUES
 
 INSERT INTO `connection` (`owner_id`, `connection_id`) VALUES
 (2, 3),
-(1,2),
-(1,3),
-(1,5),
+(2,4),
+(2,5),
 (3, 4);
 
 --
@@ -49,11 +49,54 @@ INSERT INTO `connection` (`owner_id`, `connection_id`) VALUES
 --
 
 INSERT INTO `account` (`balance`, `user_id`) VALUES
-(123, 1),
-(30, 2),
+(0, 1),
+(100, 2),
 (500, 3),
 (530, 4),
 (1200, 5),
 (640, 6),
 (156, 7),
-(300, 8);
+(356, 8),
+(-300, 9);
+
+--
+-- Dumping data for table `external_account`
+--
+
+INSERT INTO `external_account` (`label`, `user_id`) VALUES
+("LCL", 2);
+
+--
+-- Dumping data for table `bank_flow`
+--
+
+INSERT INTO `bank_flow` (`time_stamp`, `sender_id`, `amount`, `bank_flow_type`) VALUES
+("2022-08-14 00:00:01", 3, 20, "transaction"),
+("2022-08-14 04:00:00", 2, 234, "bank_transfer"),
+("2022-08-14 05:00:01", 4, 34, "transaction"),
+("2022-08-14 06:00:00", 2, 132, "transaction");
+
+--
+-- Dumping data for table `transaction`
+--
+
+INSERT INTO `transaction` (`id`, `receiver_id`) VALUES
+(1, 1),
+(3, 5),
+(4, 6);
+
+--
+-- Dumping data for table `bank_transfer`
+--
+
+INSERT INTO `bank_transfer` (`id`, `bank_transfer_type`, `external_account_id`) VALUES
+(2, "TOP_UP", 1);
+
+--
+-- Dumping data for table `commission`
+--
+
+INSERT INTO `commission` (`amount`, `date`) VALUES
+(20, "1980-03-05"),
+(30, "1981-03-05"),
+(10, "1981-03-06");

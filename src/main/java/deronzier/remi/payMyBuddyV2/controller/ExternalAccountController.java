@@ -44,7 +44,7 @@ public class ExternalAccountController {
 	}
 
 	@GetMapping("/add")
-	public String getFormView(Model model, HttpServletRequest request) {
+	public String getAddExternalAccount(Model model, HttpServletRequest request) {
 		// Check validation form server side
 		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
 		if (inputFlashMap != null) {
@@ -61,7 +61,8 @@ public class ExternalAccountController {
 	}
 
 	@PostMapping("/add")
-	public String addExternalAccount(@Valid @ModelAttribute("newExternalAccount") ExternalAccount newExternalAccount,
+	public String postAddExternalAccount(
+			@Valid @ModelAttribute("newExternalAccount") ExternalAccount newExternalAccount,
 			BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 		// Check potential form errors
 		if (bindingResult.hasErrors()) { // if label of external account is blank

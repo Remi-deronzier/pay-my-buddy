@@ -57,7 +57,7 @@ public class TransactionServiceImpl implements TransactionService {
 				.orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
 		// Debit the sender
-		senderAccount.withdrawMoney(amount);
+		senderAccount.withdrawMoney(amount, false);
 
 		// Credit the receiver
 		receiverAccount.addMoney(amount);

@@ -6,20 +6,22 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import deronzier.remi.payMyBuddyV2.utils.Constants;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
-@DiscriminatorValue("bank_transfer")
+@DiscriminatorValue(Constants.BANK_TRANSFER_DISCRIMINATOR)
 public class BankTransfer extends BankFlow {
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "external_account_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
 	private ExternalAccount externalAccount;
 

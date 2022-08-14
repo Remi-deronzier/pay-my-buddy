@@ -22,4 +22,9 @@ public class BankFlowServiceImpl implements BankFlowService {
 		return bankFlowRepository.findBySenderId(userId, pageable);
 	}
 
+	@Override
+	public Page<BankFlow> findAll(Pageable pageable) {
+		return bankFlowRepository.findAll(pageable);
+	}
+
 }

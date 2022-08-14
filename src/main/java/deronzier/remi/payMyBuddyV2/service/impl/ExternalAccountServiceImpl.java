@@ -34,4 +34,10 @@ public class ExternalAccountServiceImpl implements ExternalAccountService {
 		externalAccountRepository.deleteById(externalAccountId);
 	}
 
+//	public static final ExternalAccount getPayMyBuddyAccount() {
+//		final ExternalAccount payMyBuddyAccount = new ExternalAccount();
+//		payMyBuddyAccount.setLabel("Pay My Buddy");
+//		return payMyBuddyAccount;
+//	}
+
 }
