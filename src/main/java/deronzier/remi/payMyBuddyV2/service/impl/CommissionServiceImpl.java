@@ -31,6 +31,7 @@ import deronzier.remi.payMyBuddyV2.repository.TransactionRepository;
 import deronzier.remi.payMyBuddyV2.repository.UserRepository;
 import deronzier.remi.payMyBuddyV2.service.CommissionService;
 import deronzier.remi.payMyBuddyV2.service.UserService;
+import deronzier.remi.payMyBuddyV2.utils.Constants;
 
 @Service
 @Transactional
@@ -86,7 +87,7 @@ public class CommissionServiceImpl implements CommissionService {
 	private double calculateDailyCommission(Iterable<BankFlow> dailyBankFlows) {
 		double dailyCommissionAmount = 0;
 		for (BankFlow dailyBankFlow : dailyBankFlows) {
-			if (dailyBankFlow.getDiscriminatorValue().equals("transaction")) {
+			if (dailyBankFlow.getDiscriminatorValue().equals(Constants.TRANSACTION_DISCRIMINATOR)) {
 				if (((Transaction) dailyBankFlow).getReceiver().getId() != UserService.PAY_MY_BUDDY_SUPER_USER_ID) {
 					// Avoid counting bank transfers charged by Pay My Buddy
 					dailyCommissionAmount += calculateCommissionFee(dailyBankFlow.getAmount());

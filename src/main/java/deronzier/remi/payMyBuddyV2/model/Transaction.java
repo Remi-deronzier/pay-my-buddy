@@ -6,13 +6,14 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import deronzier.remi.payMyBuddyV2.utils.Constants;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@DiscriminatorValue("transaction")
+@DiscriminatorValue(Constants.TRANSACTION_DISCRIMINATOR)
 public class Transaction extends BankFlow {
 
 	private String description;

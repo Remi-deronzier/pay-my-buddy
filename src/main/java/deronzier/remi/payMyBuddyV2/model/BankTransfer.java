@@ -11,13 +11,14 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import deronzier.remi.payMyBuddyV2.utils.Constants;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
-@DiscriminatorValue("bank_transfer")
+@DiscriminatorValue(Constants.BANK_TRANSFER_DISCRIMINATOR)
 public class BankTransfer extends BankFlow {
 
 	@ManyToOne(fetch = FetchType.LAZY)
