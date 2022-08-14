@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-general}">
+      
+	<head>
+		<title>Edit profile</title>
+		
+		<link th:rel="stylesheet" th:href="@{/css/form-validation-styles.css}">
+		
+	    <!-- below we are including the jQuery and jQuery plugin .js files -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+	    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+   	    <script th:src="@{/js/profile-form.js}"></script>
+	</head>
+	
+	<body>
+		<th:block layout:fragment="content">
+			<h1>Edit your profile</h1>
+			<div th:if="${(param.isProfileUpdatedSuccessfully != null) and (!param.isProfileUpdatedSuccessfully)}" class="alert alert-danger dismissible fade show" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+				<strong>Error!</strong> Profile updating failed
+			</div>
+			<form id="profileForm" action="#" th:action="@{'/users/{id}'(id=${user.id})}" th:object="${user}"  th:method="patch">
+				<label for="email" class="form-label">Email</label>
+				<input type="email" class="form-control w-50 mb-3" name="email" id="email" placeholder="name@example.com" th:field="*{email}">
+				<label for="userName" class="form-label">User name</label>
+				<input type="text" class="form-control w-50 mb-3" name="userName" id="userName" placeholder="johnDoe" th:field="*{userName}">
+				<label for="firstName" class="form-label">First name</label>
+				<input type="text" class="form-control w-50 mb-3" name="firstName" id="firstName" placeholder="John" th:field="*{firstName}">
+				<label for="lastName" class="form-label">Last name</label>
+				<input type="text" class="form-control w-50 mb-3" name="lastName" id="lastName" placeholder="Doe" th:field="*{lastName}">
+				<label for="phoneNumber" class="form-label">Phone number</label>
+				<input type="tel" class="form-control w-50 mb-3" name="phoneNumber" id="phoneNumber" placeholder="06 66 66 66 66" th:field="*{phoneNumber}">
+				<label for="description" class="form-label">Description</label>
+				<textarea class="form-control w-50 mb-3" rows="3" name="description" id="description" th:field="*{description}"></textarea>
+				<p class="text-danger" th:if="${illegalPhoneNumberException != null}">Phone number is not a valid french number</p>
+				<p class="text-danger" th:if="${dataIntegrityViolationException != null}">Sorry, email or user name is already taken</p>
+				<button type="submit" class="btn btn-primary">Save</button>
+			</form>
+		</th:block>
+	</body>
+	
+</html>

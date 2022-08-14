@@ -42,7 +42,7 @@ public class BankTransferServiceImpl implements BankTransferService {
 
 	@Override
 	public Page<BankTransfer> findAllBankTransfersForSpecificUser(int userId, Pageable pageable) {
-		return bankTransferRepository.findByUserId(userId, pageable);
+		return bankTransferRepository.findBySenderId(userId, pageable);
 	}
 
 	@Override
@@ -52,11 +52,11 @@ public class BankTransferServiceImpl implements BankTransferService {
 			AccountNotEnoughMoneyException,
 			ExternalAccountNotFoundException, ExternalAccountNotBelongGoodUserException {
 		// Get user
-		User user = userRepository.findById(userId)
+		User sender = userRepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
 
 		// Get user's account
-		Account userAccount = accountRepository.findByUserId(userId)
+		Account senderAccount = accountRepository.findByUserId(userId)
 				.orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
 		// Get user's external account
@@ -72,19 +72,19 @@ public class BankTransferServiceImpl implements BankTransferService {
 		// Debit or credit user's account
 		BankTransfer bankTransfer = new BankTransfer();
 		bankTransfer.setExternalAccount(externalAccount);
+		bankTransfer.setAmount(amount);
+		bankTransfer.setSender(sender);
 		switch (bankTransferType) {
 		case TOP_UP:
-			userAccount.addMoney(amount);
-			bankTransfer.setAmount(amount);
+			senderAccount.addMoney(amount);
+			bankTransfer.setBankTransferType(bankTransferType);
 			break;
 		case USE:
-			userAccount.withdrawMoney(amount);
-			bankTransfer.setAmount(-amount);
+			senderAccount.withdrawMoney(amount, false);
+			bankTransfer.setBankTransferType(bankTransferType);
 		}
 
 		// Save data in DB
-		user.addBankTransfer(bankTransfer);
-
 		return bankTransferRepository.save(bankTransfer);
 	}
 

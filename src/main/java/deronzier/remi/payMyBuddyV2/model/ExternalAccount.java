@@ -2,6 +2,7 @@ package deronzier.remi.payMyBuddyV2.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +27,7 @@ public class ExternalAccount {
 	@NotBlank(message = "Label cannot be null")
 	private String label;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 }

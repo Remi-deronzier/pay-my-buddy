@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
 import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
+import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.model.User;
@@ -92,6 +95,19 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public User updateProfile(User inputUser, int id) throws UserNotFoundException, IllegalPhoneNumberException {
+		User userToUpdate = userRepository.findById(id)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		userToUpdate.setUserName(inputUser.getUserName());
+		userToUpdate.setEmail(inputUser.getEmail());
+		userToUpdate.setFirstName(inputUser.getFirstName());
+		userToUpdate.setLastName(inputUser.getLastName());
+		userToUpdate.setPhoneNumber(inputUser.getPhoneNumber());
+		userToUpdate.setDescription(inputUser.getDescription());
+		return userRepository.save(userToUpdate);
+	}
+
+	@Override
 	public List<User> findFuturePotentialConnections(int ownerId) throws UserNotFoundException {
 		// Get all users
 		Iterable<User> allUsers = userRepository.findAll();
@@ -117,4 +133,8 @@ public class UserServiceImpl implements UserService {
 		return futurePotentialConnections;
 	}
 
+	@Override
+	public Page<User> findAll(Pageable pageable) {
+		return userRepository.findAll(pageable);
+	}
 }

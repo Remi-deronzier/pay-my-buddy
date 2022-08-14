@@ -24,12 +24,15 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserUnderEighteenException;
 import lombok.Data;
 
 @Data
 @Entity
+@DynamicUpdate
 public class User {
 
 	@Id
@@ -79,15 +82,6 @@ public class User {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 	private List<ExternalAccount> externalAccounts = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-	private List<BankTransfer> bankTransfers = new ArrayList<>();
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "sender")
-	private List<Transaction> sentTransactions = new ArrayList<>();
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "receiver")
-	private List<Transaction> receivedTransactions = new ArrayList<>();
-
 	@ManyToMany(cascade = {
 			CascadeType.PERSIST,
 			CascadeType.MERGE
@@ -117,12 +111,14 @@ public class User {
 	}
 
 	public void setPhoneNumber(String phoneNumber) throws IllegalPhoneNumberException {
-		Pattern pattern = Pattern.compile("(?:(?:\\+|00)33|0)\\s*[1-9](?:[\\s.-]*\\d{2}){4}$");
-		Matcher matcher = pattern.matcher(phoneNumber);
-		if (matcher.matches()) {
-			this.phoneNumber = phoneNumber;
-		} else {
-			throw new IllegalPhoneNumberException("Phone number is not valid");
+		if (phoneNumber != null && !phoneNumber.isEmpty()) {
+			Pattern pattern = Pattern.compile("^(?:(?:\\+|00)33|0)\\s*[1-9](?:[\\s.-]*\\d{2}){4}$");
+			Matcher matcher = pattern.matcher(phoneNumber);
+			if (matcher.matches()) {
+				this.phoneNumber = phoneNumber;
+			} else {
+				throw new IllegalPhoneNumberException("Phone number is not valid");
+			}
 		}
 	}
 
@@ -134,24 +130,9 @@ public class User {
 		connections.remove(user);
 	}
 
-	public void addBankTransfer(BankTransfer bankTransfer) {
-		bankTransfers.add(bankTransfer);
-		bankTransfer.setUser(this);
-	}
-
 	public void addExternalAccount(ExternalAccount externalAccount) {
 		externalAccounts.add(externalAccount);
 		externalAccount.setUser(this);
-	}
-
-	public void addSentTransaction(Transaction transaction) {
-		sentTransactions.add(transaction);
-		transaction.setSender(this);
-	}
-
-	public void addReceivedTransaction(Transaction transaction) {
-		receivedTransactions.add(transaction);
-		transaction.setReceiver(this);
 	}
 
 	public void addAcount(Account account) {

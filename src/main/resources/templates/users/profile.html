@@ -10,6 +10,10 @@
 	<body>
 		<th:block layout:fragment="content">
 			<h1>Profile</h1>
+			<div th:if="${(param.isProfileUpdatedSuccessfully != null) and (param.isProfileUpdatedSuccessfully)}" class="alert alert-success dismissible fade show" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+				<strong>Success!</strong> Profile successfully updated
+			</div>
 			<div class="card">
 				<img src="https://picsum.photos/1500/300" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Random image">
 				<div class="card-body">
@@ -43,6 +47,7 @@
 					</li>
 				</ul>
 			</div>
+			<a th:if="${user.id == 2}" th:href="@{'/users/{id}?isEditing=true'(id=${user.id})}" class="btn btn-outline-primary mt-2" role="button">Edit profile</a>
 		</th:block>
 	</body>
 	

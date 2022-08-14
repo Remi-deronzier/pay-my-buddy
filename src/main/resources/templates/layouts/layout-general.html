@@ -47,7 +47,10 @@
 		          <a class="nav-link" th:href="@{/users/contact}">Contact</a>
 		        </li>
 		        <li class="nav-item">
-		          <a class="nav-link" th:href="@{/users/1}">Profile</a>
+		          <a class="nav-link" th:href="@{/users/2}">Profile</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" th:href="@{/adminPanel}">Admin panel</a>
 		        </li>
 		        <li class="nav-item">
 		          <a class="nav-link">Log off</a>
@@ -67,7 +70,7 @@
 		
 		<!-- Optional Pagination Section -->
 		<nav aria-label="Search results pages" layout:fragment="pagination">
-			<ul th:if="${page != null}" class="pagination justify-content-center">
+			<ul th:if="${page != null && !page.items.isEmpty()}" class="pagination justify-content-center">
 				<li th:class="${page.firstPage}? 'disabled page-item' : 'page-item'">
 					<span th:if='${page.firstPage}' class="page-link">← First</span>
 					<a th:if='${not page.firstPage}' class="page-link" th:href='@{${page.url}(page=1,size=${page.size})}'>← First</a>

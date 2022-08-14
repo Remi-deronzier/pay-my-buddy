@@ -82,16 +82,16 @@
 				<tbody>
 					<tr th:each="transaction : ${page.getContent()}">
 						<td>
-							<strong th:if="${transaction.getSender().getId() == 1}" th:text="'Sent to: '"></strong>
-							<strong th:unless="${transaction.getSender().getId() == 1}" th:text="'Received from: '"></strong>
-							<span th:if="${transaction.getSender().getId() == 1}" th:text="${transaction.getReceiver().getUserName()}"></span>
-							<span th:unless="${transaction.getSender().getId() == 1}" th:text="${transaction.getSender().getUserName()}"></span>
+							<strong th:if="${transaction.getSender().getId() == 2}" th:text="'Sent to: '"></strong>
+							<strong th:unless="${transaction.getSender().getId() == 2}" th:text="'Received from: '"></strong>
+							<span th:if="${transaction.getSender().getId() == 2}" th:text="${transaction.getReceiver().getUserName()}"></span>
+							<span th:unless="${transaction.getSender().getId() == 2}" th:text="${transaction.getSender().getUserName()}"></span>
 						</td>
 						<td th:text="${transaction.description}"></td>
 						<td th:text="${transaction.timeStamp}"></td>
 						<td>
-							<span th:if="${transaction.getSender().getId() == 1}" th:text="'-' + ${transaction.amount} + ' €'"></span>
-							<span th:unless="${transaction.getSender().getId() == 1}" th:text="${transaction.amount} + ' €'"></span>
+							<span th:if="${transaction.getSender().getId() == 2}" th:text="'-' + ${transaction.amount} + ' €'"></span>
+							<span th:unless="${transaction.getSender().getId() == 2}" th:text="${transaction.amount} + ' €'"></span>
 						</td>
 					</tr>
 				</tbody>

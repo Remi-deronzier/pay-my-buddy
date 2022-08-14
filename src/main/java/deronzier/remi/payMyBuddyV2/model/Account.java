@@ -2,11 +2,13 @@ package deronzier.remi.payMyBuddyV2.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
@@ -23,9 +25,16 @@ public class Account {
 	@Column(nullable = false, columnDefinition = "double default 0")
 	private double balance;
 
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
+
+	@Transient
+	private boolean balanceNegative;
+
+	public boolean getBalanceNegative() {
+		return balance < 0;
+	}
 
 	public void addMoney(double amount) throws NegativeAmountException {
 		if (amount <= 0) {
@@ -34,14 +43,19 @@ public class Account {
 		balance += amount;
 	}
 
-	public void withdrawMoney(double amount) throws NegativeAmountException, AccountNotEnoughMoneyException {
-		if (amount <= 0) {
-			throw new NegativeAmountException("Amount must be strictly positive");
+	public void withdrawMoney(double amount, boolean shouldForceWithdrawal)
+			throws NegativeAmountException, AccountNotEnoughMoneyException {
+		if (shouldForceWithdrawal) {
+			balance -= amount;
+		} else {
+			if (amount <= 0) {
+				throw new NegativeAmountException("Amount must be strictly positive");
+			}
+			if (balance - amount < 0) {
+				throw new AccountNotEnoughMoneyException("The account has not enough money");
+			}
+			balance -= amount;
 		}
-		if (balance - amount < 0) {
-			throw new AccountNotEnoughMoneyException("The account has not enough money");
-		}
-		balance -= amount;
 	}
 
 }

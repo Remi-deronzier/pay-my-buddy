@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-general}">
+      
+	<head>
+		<title>All users</title>
+	</head>
+	
+	<body>
+		<th:block layout:fragment="content">
+			<h1>All users</h1>
+			
+			<table th:if="${!page.getContent().isEmpty}" class="table table-striped table-bordered">
+				<thead>
+					<tr class="table-primary">
+						<th>User name</th>
+						<th>Email</th>
+						<th>First name</th>
+						<th>Last name</th>
+						<th>Phone number</th>
+						<th>Date of birth</th>
+						<th>Status</th>
+						<th>Account balance</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="user : ${page.content}">
+						<td th:text="${user.userName}"></td>
+						<td th:text="${user.email}"></td>
+						<td th:text="${user.firstName}"></td>
+						<td th:text="${user.lastName}"></td>
+						<td th:text="${user.phoneNumber}"></td>
+						<td th:text="${user.dateOfBirth}"></td>
+						<td th:text="${user.status}"></td>
+						<td th:text="${user.account.balanceNegative} ? 'NEGATIVE' : 'POSITIVE'" th:class="${user.account.balanceNegative} ? 'text-danger' : 'text-success'"></td>
+						<td>
+							<div class="d-flex justify-content-between">
+								<a th:href="@{'/users/{id}'(id=${user.id})}" class="btn btn-primary" role="button">
+									<i class="bi bi-eye text-light"></i> Visit profile
+								</a>
+						        <form th:if="${user.id != 1}" action="#" th:action="@{'/users/contact/delete/{id}'(id=${user.id})}" th:method="delete" >
+							        <button type="submit" class="btn btn-danger">
+							          <i class="bi bi-trash text-light"></i> Delete
+							        </button>
+								</form>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<p th:unless="${!page.getContent().isEmpty}">No user to display</p>
+			
+		</th:block>
+	</body>
+	
+</html>
