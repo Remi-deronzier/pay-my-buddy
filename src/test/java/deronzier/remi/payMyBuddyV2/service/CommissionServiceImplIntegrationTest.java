@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
@@ -31,6 +32,7 @@ import deronzier.remi.payMyBuddyV2.service.impl.CommissionServiceImpl;
 import deronzier.remi.payMyBuddyV2.setup.TestSetUp;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class CommissionServiceImplIntegrationTest {
 
 	@Autowired
