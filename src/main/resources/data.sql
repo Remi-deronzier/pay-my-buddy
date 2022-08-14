@@ -40,9 +40,8 @@ INSERT INTO `user_role` (`user_id`, `role_id`) VALUES
 
 INSERT INTO `connection` (`owner_id`, `connection_id`) VALUES
 (2, 3),
-(1,2),
-(1,3),
-(1,5),
+(2,4),
+(2,5),
 (3, 4);
 
 --
@@ -58,3 +57,43 @@ INSERT INTO `account` (`balance`, `user_id`) VALUES
 (640, 6),
 (156, 7),
 (300, 8);
+
+--
+-- Dumping data for table `external_account`
+--
+
+INSERT INTO `external_account` (`label`, `user_id`) VALUES
+("LCL", 2);
+
+--
+-- Dumping data for table `bank_flow`
+--
+
+INSERT INTO `bank_flow` (`time_stamp`, `sender_id`, `amount`, `bank_flow_type`) VALUES
+("1971-01-01 00:00:01", 1, 20, "transaction"),
+("1974-01-01 00:00:01", 3, 234, "bank_transfer"),
+("1990-01-01 00:00:01", 4, 34, "transaction");
+
+--
+-- Dumping data for table `transaction`
+--
+
+INSERT INTO `transaction` (`id`, `receiver_id`) VALUES
+(1, 4),
+(3, 5);
+
+--
+-- Dumping data for table `bank_transfer`
+--
+
+INSERT INTO `bank_transfer` (`id`, `bank_transfer_type`, `external_account_id`) VALUES
+(2, "TOP_UP", 1);
+
+--
+-- Dumping data for table `commission`
+--
+
+INSERT INTO `commission` (`amount`, `date`) VALUES
+(20, "1980-03-05"),
+(30, "1981-03-05"),
+(10, "1981-03-06");

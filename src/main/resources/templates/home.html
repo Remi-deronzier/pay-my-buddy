@@ -39,14 +39,14 @@
 					<tr th:each="bankFlow : ${page.getContent()}">
 						<td th:text="${bankFlow.discriminatorValue == 'transaction' ? 'transaction' : 'bank transfer'}"></td>
 						<td>
-							<strong th:if="${bankFlow.discriminatorValue == 'transaction'}" th:text="${bankFlow.sender.id == 1} ? 'Sent to: ' : 'Received from: '"></strong>
-							<span th:if="${bankFlow.discriminatorValue == 'transaction'}" th:text="${bankFlow.sender.id == 1} ? ${bankFlow.receiver.userName} : ${bankFlow.receiver.userName}"></span>
+							<strong th:if="${bankFlow.discriminatorValue == 'transaction'}" th:text="${bankFlow.sender.id == 2} ? 'Sent to: ' : 'Received from: '"></strong>
+							<span th:if="${bankFlow.discriminatorValue == 'transaction'}" th:text="${bankFlow.sender.id == 2} ? ${bankFlow.receiver.userName} : ${bankFlow.sender.userName}"></span>
 							<span th:unless="${bankFlow.discriminatorValue == 'transaction'}" th:text="${bankFlow.externalAccount != null} ? ${bankFlow.externalAccount.label} : 'UNKNOWN'"></span>
 						</td>
 						<td th:text="${bankFlow.discriminatorValue == 'transaction'} ? ${bankFlow.description}"></td>
 						<td th:text="${bankFlow.timeStamp}"></td>
 						<td>
-							<span th:if="${bankFlow.discriminatorValue == 'transaction'}" th:text="${bankFlow.sender.id == 1} ? ${-bankFlow.amount} + ' €' :  ${bankFlow.amount} + ' €'"></span>
+							<span th:if="${bankFlow.discriminatorValue == 'transaction'}" th:text="${bankFlow.sender.id == 2} ? ${-bankFlow.amount} + ' €' :  ${bankFlow.amount} + ' €'"></span>
 							<span th:unless="${bankFlow.discriminatorValue == 'transaction'}" th:text="${bankFlow.bankTransferType.name() == 'USE'} ? ${-bankFlow.amount} + ' €' : ${bankFlow.amount} + ' €'"></span>
 						</td>
 					</tr>

@@ -8,36 +8,30 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.model.BankFlow;
-import deronzier.remi.payMyBuddyV2.service.impl.AccountServiceImpl;
 import deronzier.remi.payMyBuddyV2.service.impl.BankFlowServiceImpl;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
 @Controller
+@RequestMapping(value = "/bankFlows")
 public class BankFlowController {
-
-	@Autowired
-	private AccountServiceImpl accountService;
 
 	@Autowired
 	private BankFlowServiceImpl bankFlowService;
 
-	@GetMapping(value = "/")
-	public String getConnections(Model model,
+	@GetMapping
+	public String getHome(Model model,
 			@SortDefault(sort = "timeStamp", direction = Sort.Direction.DESC) Pageable pageable) {
-		// Add user account to model
-		Account account = accountService.findByUserId(UserController.OWNER_USER_ID).get();
-		model.addAttribute("account", account);
 
 		// Add all bank flows to model
 		Page<BankFlow> bankTransfers = bankFlowService
-				.findAllBankFlowsForSpecificUser(UserController.OWNER_USER_ID, pageable);
-		PageWrapper<BankFlow> page = new PageWrapper<BankFlow>(bankTransfers, "/");
+				.findAll(pageable);
+		PageWrapper<BankFlow> page = new PageWrapper<BankFlow>(bankTransfers, "/bankFlows");
 		model.addAttribute("page", page);
 
-		return "home";
+		return "bank-flows/view";
 	}
 
 }

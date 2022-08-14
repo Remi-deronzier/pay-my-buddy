@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Positive;
 
 import lombok.Data;
 
@@ -19,6 +20,7 @@ public class Commission {
 	private int id;
 
 	@Column(nullable = false, updatable = false)
+	@Positive
 	private double amount;
 
 	@Column(nullable = false, updatable = false)

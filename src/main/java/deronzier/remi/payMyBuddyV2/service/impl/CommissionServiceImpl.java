@@ -7,6 +7,8 @@ import javax.security.auth.login.AccountNotFoundException;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,13 +60,15 @@ public class CommissionServiceImpl implements CommissionService {
 	}
 
 	private double calculateTotalDailyCommissionAmount() {
-		Iterable<BankFlow> dailyBankFlows = bankFlowRepository.findByTimeStampGreaterThanEqualAndTimeStampLessThan(startPreviousDay, endPreviousDay);
+		Iterable<BankFlow> dailyBankFlows = bankFlowRepository
+				.findByTimeStampGreaterThanEqualAndTimeStampLessThan(startPreviousDay, endPreviousDay);
 		return calculateDailyCommission(dailyBankFlows);
 	}
 
 	private double calculateDailyCommissionAmountForUser(int userId) {
 		Iterable<BankFlow> dailyBankFlows = bankFlowRepository
-				.findByTimeStampGreaterThanEqualAndTimeStampLessThanAndSenderId(startPreviousDay, endPreviousDay, userId);
+				.findByTimeStampGreaterThanEqualAndTimeStampLessThanAndSenderId(startPreviousDay, endPreviousDay,
+						userId);
 		return calculateDailyCommission(dailyBankFlows);
 	}
 
@@ -127,6 +131,11 @@ public class CommissionServiceImpl implements CommissionService {
 			// Save data in DB
 			transactionRepository.save(transaction);
 		}
+	}
+
+	@Override
+	public Page<Commission> findAll(Pageable pageable) {
+		return commissionRepository.findAll(pageable);
 	}
 
 }

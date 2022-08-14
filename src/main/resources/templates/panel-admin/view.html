@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-general}">
+      
+	<head>
+		<title>Admin panel</title>
+	</head>
+	
+	<body>
+		<th:block layout:fragment="content">
+			<h1>Admin panel</h1>
+			
+			<div class="card mb-4">
+				<img src="https://picsum.photos/1500/200" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Random image">
+				<div class="card-body">
+					<h5 class="card-title">Pay My Buddy Super User balance</h5>
+					<p class="card-text" th:text="${account.balance} + ' €'"></p>
+				</div>
+			</div>
+			
+			<div class="row row-cols-3">
+				<div class="col">
+					<div class="card my-2">
+						<img th:src="@{/assets/images/bank-fees.png}" class="card-img-top" style="object-fit: cover;" alt="Bank fee image">
+						<div class="card-body">
+							<h5 class="card-title">Bank flows</h5>
+							<a th:href="@{/bankFlows}" class="btn btn-primary" role="button">See all bank flows</a>
+						</div>
+					</div>
+			    </div>
+				<div class="col">
+					<div class="card my-2">
+						<img th:src="@{/assets/images/commissions.gif}" class="card-img-top" style="object-fit: cover;" alt="Money image">
+						<div class="card-body">
+							<h5 class="card-title">Commissions</h5>
+							<a th:href="@{/commissions}" class="btn btn-primary" role="button">See all commissions</a>
+						</div>
+					</div>
+			    </div>
+				<div class="col">
+					<div class="card my-2">
+						<img th:src="@{/assets/images/users.gif}" class="card-img-top" style="object-fit: cover;" alt="Users image">
+						<div class="card-body">
+							<h5 class="card-title">Users</h5>
+							<a th:href="@{/users/all}" class="btn btn-primary" role="button">See all users</a>
+						</div>
+					</div>
+			    </div>
+			</div>
+		</th:block>
+			
+	</body>
+	
+</html>

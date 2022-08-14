@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,12 +30,13 @@ import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.service.impl.UserServiceImpl;
+import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
 @Controller
 @RequestMapping(value = "/users")
 public class UserController {
 
-	final static int OWNER_USER_ID = 1;
+	public final static int OWNER_USER_ID = 2;
 
 	@Autowired
 	private UserServiceImpl userService;
@@ -47,7 +50,8 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public String getUser(@PathVariable final int id, @RequestParam(required = false) boolean isEditing, Model model,
+	public String getUser(@PathVariable(required = false) final Integer id,
+			@RequestParam(required = false) boolean isEditing, Model model,
 			HttpServletRequest request) {
 		// Check validation form server side
 		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
@@ -73,14 +77,23 @@ public class UserController {
 			}
 		} else {
 			if (connections.contains(user) || user == user1) { // Check user is allowed to watch the profile of this
-																// specific user
+				// specific user
 				return "users/profile";
 			} else {
 				throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 			}
-
 		}
+	}
 
+	@GetMapping(value = "/all")
+	public String getAllUsers(Pageable pageable, Model model) {
+		// Add all bank flows to model
+		Page<User> users = userService
+				.findAll(pageable);
+		PageWrapper<User> page = new PageWrapper<User>(users, "/users/all");
+		model.addAttribute("page", page);
+
+		return "users/all";
 	}
 
 	@PatchMapping(value = "/{id}")

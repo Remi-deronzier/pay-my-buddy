@@ -9,4 +9,6 @@ public interface BankFlowService {
 
 	Page<BankFlow> findAllBankFlowsForSpecificUser(int userId, Pageable pageable);
 
+	Page<BankFlow> findAll(Pageable pageable);
+
 }
