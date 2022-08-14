@@ -2,6 +2,7 @@ package deronzier.remi.payMyBuddyV2.model;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -16,7 +17,7 @@ public class Transaction extends BankFlow {
 
 	private String description;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "receiver_id")
 	private User receiver;
 
