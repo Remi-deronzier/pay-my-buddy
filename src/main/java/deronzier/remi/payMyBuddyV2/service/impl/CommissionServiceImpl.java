@@ -1,14 +1,19 @@
 package deronzier.remi.payMyBuddyV2.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.security.auth.login.AccountNotFoundException;
 import javax.validation.ConstraintViolationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,9 +57,15 @@ public class CommissionServiceImpl implements CommissionService {
 			0);
 	final LocalDateTime endPreviousDay = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0);
 
+	private static final Logger log = LoggerFactory.getLogger(CommissionServiceImpl.class);
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss");
+
+	@Scheduled(cron = "0 0 0 * * *", zone = "Europe/Paris") // every day at midnight
 	@Override
 	public double monetization() throws AccountNotFoundException, UserNotFoundException, NegativeAmountException,
 			AccountNotEnoughMoneyException {
+		log.info("Calculation of the commission for {} launched at {}", startPreviousDay,
+				dateFormat.format(new Date()));
 		collectDailyCommissionForAllUsers();
 		return saveTotalDailyCommission();
 	}
@@ -67,7 +78,8 @@ public class CommissionServiceImpl implements CommissionService {
 
 	private double calculateDailyCommissionAmountForUser(int userId) {
 		Iterable<BankFlow> dailyBankFlows = bankFlowRepository
-				.findByTimeStampGreaterThanEqualAndTimeStampLessThanAndSenderId(startPreviousDay, endPreviousDay,
+				.findByTimeStampGreaterThanEqualAndTimeStampLessThanAndSenderId(startPreviousDay,
+						endPreviousDay,
 						userId);
 		return calculateDailyCommission(dailyBankFlows);
 	}
@@ -75,61 +87,80 @@ public class CommissionServiceImpl implements CommissionService {
 	private double calculateDailyCommission(Iterable<BankFlow> dailyBankFlows) {
 		double dailyCommissionAmount = 0;
 		for (BankFlow dailyBankFlow : dailyBankFlows) {
-			dailyCommissionAmount += dailyBankFlow.getAmount() * CommissionService.COMMISSION_PERCENTAGE / 100;
+			if (dailyBankFlow.getDiscriminatorValue().equals("transaction")) {
+				if (((Transaction) dailyBankFlow).getReceiver().getId() != UserService.PAY_MY_BUDDY_SUPER_USER_ID) {
+					// Avoid counting bank transfers charged by Pay My Buddy
+					dailyCommissionAmount += calculateCommissionFee(dailyBankFlow.getAmount());
+				}
+			} else {
+				dailyCommissionAmount += calculateCommissionFee(dailyBankFlow.getAmount());
+			}
 		}
 		return dailyCommissionAmount;
 	}
 
-	private double saveTotalDailyCommission() {
+	private double calculateCommissionFee(double amount) {
+		return amount * CommissionService.COMMISSION_PERCENTAGE / 100;
+	}
+
+	private double saveTotalDailyCommission() throws AccountNotFoundException, NegativeAmountException {
+		Account payMyBuddySuperUserAccount = accountRepository.findByUserId(UserService.PAY_MY_BUDDY_SUPER_USER_ID)
+				.orElseThrow(() -> new AccountNotFoundException("Pay My Buddy Super user account not found"));
+
 		double totalDailyCommission = calculateTotalDailyCommissionAmount();
 		Commission dailyCommission = new Commission();
-		dailyCommission.setAmount(totalDailyCommission);
-		commissionRepository.save(dailyCommission);
-		return totalDailyCommission;
+		if (totalDailyCommission > 0) { // Only if strictly positive
+			dailyCommission.setAmount(totalDailyCommission);
+			payMyBuddySuperUserAccount.addMoney(totalDailyCommission);
+			commissionRepository.save(dailyCommission);
+			return totalDailyCommission;
+		} else {
+			return 0;
+		}
+
 	}
 
 	private void collectDailyCommissionForAllUsers()
 			throws UserNotFoundException,
 			AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoneyException {
 		Iterable<User> allUsers = userRepository.findAll();
+		User payMyBuddySuperUser = userRepository.findById(UserService.PAY_MY_BUDDY_SUPER_USER_ID)
+				.orElseThrow(() -> new UserNotFoundException("Pay My Buddy Super user not found"));
 		for (User user : allUsers) {
-			collectDailyCommissionForOneUser(user.getId());
+			if (user.getId() > UserService.PAY_MY_BUDDY_SUPER_USER_ID) { // Skip Pay My Buddy Super User
+				collectDailyCommissionForOneUser(user.getId(), payMyBuddySuperUser);
+			}
 		}
 	}
 
-	private void collectDailyCommissionForOneUser(int userId) throws UserNotFoundException,
+	private void collectDailyCommissionForOneUser(int userId, User payMyBuddySuperUser) throws UserNotFoundException,
 			AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoneyException {
 		// Get users
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
-		User payMyBuddySuperUser = userRepository.findById(UserService.PAY_MY_BUDDY_SUPER_USER_ID)
-				.orElseThrow(() -> new UserNotFoundException("Pay My Buddy Super user not found"));
 
 		// Get accounts
 		Account userAccount = accountRepository.findByUserId(userId)
 				.orElseThrow(() -> new AccountNotFoundException("Account not found"));
-		Account payMyBuddySuperUserAccount = accountRepository.findByUserId(UserService.PAY_MY_BUDDY_SUPER_USER_ID)
-				.orElseThrow(() -> new AccountNotFoundException("Pay My Buddy Super user account not found"));
 
-		double comissionAmount = calculateDailyCommissionAmountForUser(userId);
+		double commissionAmount = calculateDailyCommissionAmountForUser(userId);
 
-		// Debit user of the commission amount
-		userAccount.withdrawMoney(comissionAmount, true);
+		if (commissionAmount > 0) { // Only if commission if strictly positive
+			// Debit user of the commission amount
+			userAccount.withdrawMoney(commissionAmount, true);
 
-		// Credit Pay My Buddy Super User account of the commission amount
-		payMyBuddySuperUserAccount.addMoney(comissionAmount);
-
-		// Update sent and received transactions for the sender and the receiver
-		Transaction transaction = new Transaction();
-		try {
+			// Update sent and received transactions for the sender and the receiver
+			Transaction transaction = new Transaction();
 			transaction.setSender(user);
 			transaction.setReceiver(payMyBuddySuperUser);
-			transaction.setAmount(comissionAmount);
+			transaction.setAmount(commissionAmount);
 			transaction.setDescription("Daily fee for " + LocalDate.now().minusDays(1));
-			transactionRepository.save(transaction);
-		} catch (ConstraintViolationException cve) { // when commission amount is smaller than 10€
-			// Save data in DB
-			transactionRepository.save(transaction);
+			try {
+				transactionRepository.save(transaction);
+			} catch (ConstraintViolationException cve) { // when commission amount is smaller than 10€
+				// Save data in DB
+				transactionRepository.save(transaction);
+			}
 		}
 	}
 

@@ -16,7 +16,8 @@ public interface BankFlowRepository extends PagingAndSortingRepository<BankFlow,
 	Iterable<BankFlow> findByTimeStampGreaterThanEqualAndTimeStampLessThan(LocalDateTime timeStampStart,
 			LocalDateTime timeStampEnd); // include timeStampStart and exclude timeStampEnd
 
-	Iterable<BankFlow> findByTimeStampGreaterThanEqualAndTimeStampLessThanAndSenderId(LocalDateTime timeStampStart,
+	Iterable<BankFlow> findByTimeStampGreaterThanEqualAndTimeStampLessThanAndSenderId(
+			LocalDateTime timeStampStart,
 			LocalDateTime timeStampEnd,
 			int senderId);
 }

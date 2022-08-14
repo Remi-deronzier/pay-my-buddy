@@ -24,9 +24,6 @@ public class TransactionRepositoryIntegrationTest {
 	UserRepository userRepository;
 
 	@Autowired
-	AccountRepository accountRepository;
-
-	@Autowired
 	TestEntityManager entityManager;
 
 	@Test

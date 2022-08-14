@@ -71,17 +71,19 @@ INSERT INTO `external_account` (`label`, `user_id`) VALUES
 --
 
 INSERT INTO `bank_flow` (`time_stamp`, `sender_id`, `amount`, `bank_flow_type`) VALUES
-("1971-01-01 00:00:01", 1, 20, "transaction"),
-("1974-01-01 00:00:01", 3, 234, "bank_transfer"),
-("1990-01-01 00:00:01", 4, 34, "transaction");
+("2022-08-13 00:00:01", 3, 20, "transaction"),
+("2022-08-13 04:00:00", 2, 234, "bank_transfer"),
+("2022-08-13 05:00:01", 4, 34, "transaction"),
+("2022-08-13 06:00:00", 2, 132, "transaction");
 
 --
 -- Dumping data for table `transaction`
 --
 
 INSERT INTO `transaction` (`id`, `receiver_id`) VALUES
-(1, 4),
-(3, 5);
+(1, 1),
+(3, 5),
+(4, 6);
 
 --
 -- Dumping data for table `bank_transfer`

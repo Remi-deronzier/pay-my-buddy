@@ -14,7 +14,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
-import javax.validation.constraints.Min;
 
 import lombok.Data;
 
@@ -33,7 +32,7 @@ public class BankFlow {
 	private User sender;
 
 	@Column(nullable = false, updatable = false)
-	@Min(value = 10, message = "Amount must be greater or equal to 10€")
+//	@Min(value = 10, message = "Amount must be greater or equal to 10€")
 	private double amount;
 
 	@Column(nullable = false, updatable = false)

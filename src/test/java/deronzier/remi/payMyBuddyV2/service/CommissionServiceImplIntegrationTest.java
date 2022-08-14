@@ -127,7 +127,6 @@ public class CommissionServiceImplIntegrationTest {
 		Mockito.when(accountRepository.findByUserId(TestSetUp.USER2_ID)).thenReturn(optionalUser2Account);
 		Mockito.when(accountRepository.findByUserId(UserService.PAY_MY_BUDDY_SUPER_USER_ID))
 				.thenReturn(optionalPayMyBuddySuperUserAccount);
-
 	}
 
 	@Test
