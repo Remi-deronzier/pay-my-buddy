@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import deronzier.remi.payMyBuddyV2.model.BankFlow;
-import deronzier.remi.payMyBuddyV2.service.impl.BankFlowServiceImpl;
+import deronzier.remi.payMyBuddyV2.service.BankFlowService;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
 @Controller
@@ -19,7 +19,7 @@ import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 public class BankFlowController {
 
 	@Autowired
-	private BankFlowServiceImpl bankFlowService;
+	private BankFlowService bankFlowService;
 
 	@GetMapping
 	public String getBankFlows(Model model,

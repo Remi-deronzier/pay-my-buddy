@@ -18,6 +18,7 @@ import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.repository.UserRepository;
 import deronzier.remi.payMyBuddyV2.service.UserService;
+import deronzier.remi.payMyBuddyV2.utils.Constants;
 
 @Service
 @Transactional
@@ -73,7 +74,7 @@ public class UserServiceImpl implements UserService {
 
 		// Create new account and set balance of account to 0
 		Account newAccount = new Account();
-		newAccount.setBalance(INITIAL_ACCOUNT_BALANCE);
+		newAccount.setBalance(Constants.INITIAL_ACCOUNT_BALANCE);
 
 		// Synchronize relation between account and user
 		newUser.addAcount(newAccount);

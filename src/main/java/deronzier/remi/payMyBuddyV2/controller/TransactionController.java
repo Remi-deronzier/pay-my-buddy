@@ -28,8 +28,9 @@ import deronzier.remi.payMyBuddyV2.exception.TransactionSameAccountException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.Transaction;
 import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.service.impl.TransactionServiceImpl;
-import deronzier.remi.payMyBuddyV2.service.impl.UserServiceImpl;
+import deronzier.remi.payMyBuddyV2.service.TransactionService;
+import deronzier.remi.payMyBuddyV2.service.UserService;
+import deronzier.remi.payMyBuddyV2.utils.Constants;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
 @Controller
@@ -37,10 +38,10 @@ import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 public class TransactionController {
 
 	@Autowired
-	private TransactionServiceImpl transactionService;
+	private TransactionService transactionService;
 
 	@Autowired
-	private UserServiceImpl userService;
+	private UserService userService;
 
 	@GetMapping()
 	public String getTransactions(Model model, HttpServletRequest request,
@@ -68,13 +69,13 @@ public class TransactionController {
 		model.addAttribute("newTransaction", newTransaction);
 
 		// Get current user's connections
-		User user1 = userService.findById(UserController.OWNER_USER_ID).get();
+		User user1 = userService.findById(Constants.OWNER_USER_ID).get();
 		List<User> connections = user1.getConnections();
 		model.addAttribute("connections", connections);
 
 		// Get all current user's transactions
 		Page<Transaction> transactions = transactionService
-				.findAllSentAndReceivedTransactionsForSpecificUser(UserController.OWNER_USER_ID, pageable);
+				.findAllSentAndReceivedTransactionsForSpecificUser(Constants.OWNER_USER_ID, pageable);
 		PageWrapper<Transaction> page = new PageWrapper<Transaction>(transactions, "/transactions");
 		model.addAttribute("page", page);
 
@@ -94,7 +95,7 @@ public class TransactionController {
 			return "redirect:/transactions?isNewTransactionMadeSuccessfully=false";
 		}
 		try {
-			transactionService.makeTransaction(UserController.OWNER_USER_ID, receiver.getId(), transaction.getAmount(),
+			transactionService.makeTransaction(Constants.OWNER_USER_ID, receiver.getId(), transaction.getAmount(),
 					transaction.getDescription());
 			return "redirect:/transactions?isNewTransactionMadeSuccessfully=true";
 		} catch (AccountNotEnoughMoneyException aneme) {

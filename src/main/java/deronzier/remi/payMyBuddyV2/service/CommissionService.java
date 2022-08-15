@@ -17,6 +17,4 @@ public interface CommissionService {
 
 	Page<Commission> findAll(Pageable pageable);
 
-	static final double COMMISSION_PERCENTAGE = 0.5;
-
 }

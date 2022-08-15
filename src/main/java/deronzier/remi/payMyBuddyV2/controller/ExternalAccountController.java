@@ -22,22 +22,23 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import deronzier.remi.payMyBuddyV2.model.ExternalAccount;
 import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.service.impl.ExternalAccountServiceImpl;
-import deronzier.remi.payMyBuddyV2.service.impl.UserServiceImpl;
+import deronzier.remi.payMyBuddyV2.service.ExternalAccountService;
+import deronzier.remi.payMyBuddyV2.service.UserService;
+import deronzier.remi.payMyBuddyV2.utils.Constants;
 
 @Controller
 @RequestMapping(value = "/externalAccounts")
 public class ExternalAccountController {
 
 	@Autowired
-	private UserServiceImpl userService;
+	private UserService userService;
 
 	@Autowired
-	private ExternalAccountServiceImpl externalAccountService;
+	private ExternalAccountService externalAccountService;
 
 	@GetMapping
 	public String getExternalAccounts(Model model) {
-		User user1 = userService.findById(UserController.OWNER_USER_ID).get();
+		User user1 = userService.findById(Constants.OWNER_USER_ID).get();
 		List<ExternalAccount> externalAccounts = user1.getExternalAccounts();
 		model.addAttribute("externalAccounts", externalAccounts);
 		return "external-accounts/view";
@@ -72,7 +73,7 @@ public class ExternalAccountController {
 		}
 
 		try {
-			User user1 = userService.findById(UserController.OWNER_USER_ID).get();
+			User user1 = userService.findById(Constants.OWNER_USER_ID).get();
 			user1.addExternalAccount(newExternalAccount);
 			userService.save(user1);
 			return "redirect:/externalAccounts?isNewExternalAccountAddedSuccessfully=true";

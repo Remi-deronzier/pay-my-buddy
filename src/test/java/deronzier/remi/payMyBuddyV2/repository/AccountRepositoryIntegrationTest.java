@@ -15,9 +15,10 @@ import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.setup.TestSetUp;
+import deronzier.remi.payMyBuddyV2.utils.Constants;
 
 @DataJpaTest
-@ActiveProfiles("test")
+@ActiveProfiles(Constants.TEST_PROFILE)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class AccountRepositoryIntegrationTest {
 

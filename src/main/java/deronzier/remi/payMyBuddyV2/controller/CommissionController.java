@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import deronzier.remi.payMyBuddyV2.model.Commission;
-import deronzier.remi.payMyBuddyV2.service.impl.CommissionServiceImpl;
+import deronzier.remi.payMyBuddyV2.service.CommissionService;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
 @Controller
@@ -19,7 +19,7 @@ import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 public class CommissionController {
 
 	@Autowired
-	private CommissionServiceImpl commissionService;
+	private CommissionService commissionService;
 
 	@GetMapping
 	public String getCommissions(Model model,

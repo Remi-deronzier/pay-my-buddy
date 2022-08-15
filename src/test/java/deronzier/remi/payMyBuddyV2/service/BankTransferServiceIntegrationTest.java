@@ -27,15 +27,15 @@ import deronzier.remi.payMyBuddyV2.repository.AccountRepository;
 import deronzier.remi.payMyBuddyV2.repository.BankTransferRepository;
 import deronzier.remi.payMyBuddyV2.repository.ExternalAccountRepository;
 import deronzier.remi.payMyBuddyV2.repository.UserRepository;
-import deronzier.remi.payMyBuddyV2.service.impl.BankTransferServiceImpl;
 import deronzier.remi.payMyBuddyV2.setup.TestSetUp;
+import deronzier.remi.payMyBuddyV2.utils.Constants;
 
 @SpringBootTest
-@ActiveProfiles("test")
-public class BankTransferServiceImplIntegrationTest {
+@ActiveProfiles(Constants.TEST_PROFILE)
+public class BankTransferServiceIntegrationTest {
 
 	@Autowired
-	private BankTransferServiceImpl bankTransferService;
+	private BankTransferService bankTransferService;
 
 	@MockBean
 	private UserRepository userRepository;

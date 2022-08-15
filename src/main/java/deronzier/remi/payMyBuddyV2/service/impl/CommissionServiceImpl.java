@@ -30,7 +30,6 @@ import deronzier.remi.payMyBuddyV2.repository.CommissionRepository;
 import deronzier.remi.payMyBuddyV2.repository.TransactionRepository;
 import deronzier.remi.payMyBuddyV2.repository.UserRepository;
 import deronzier.remi.payMyBuddyV2.service.CommissionService;
-import deronzier.remi.payMyBuddyV2.service.UserService;
 import deronzier.remi.payMyBuddyV2.utils.Constants;
 
 @Service
@@ -88,7 +87,7 @@ public class CommissionServiceImpl implements CommissionService {
 		double dailyCommissionAmount = 0;
 		for (BankFlow dailyBankFlow : dailyBankFlows) {
 			if (dailyBankFlow.getDiscriminatorValue().equals(Constants.TRANSACTION_DISCRIMINATOR)) {
-				if (((Transaction) dailyBankFlow).getReceiver().getId() != UserService.PAY_MY_BUDDY_SUPER_USER_ID) {
+				if (((Transaction) dailyBankFlow).getReceiver().getId() != Constants.PAY_MY_BUDDY_SUPER_USER_ID) {
 					// Avoid counting bank transfers charged by Pay My Buddy
 					dailyCommissionAmount += calculateCommissionFee(dailyBankFlow.getAmount());
 				}
@@ -100,11 +99,11 @@ public class CommissionServiceImpl implements CommissionService {
 	}
 
 	private double calculateCommissionFee(double amount) {
-		return amount * CommissionService.COMMISSION_PERCENTAGE / 100;
+		return amount * Constants.COMMISSION_PERCENTAGE / 100;
 	}
 
 	private double saveTotalDailyCommission() throws AccountNotFoundException, NegativeAmountException {
-		Account payMyBuddySuperUserAccount = accountRepository.findByUserId(UserService.PAY_MY_BUDDY_SUPER_USER_ID)
+		Account payMyBuddySuperUserAccount = accountRepository.findByUserId(Constants.PAY_MY_BUDDY_SUPER_USER_ID)
 				.orElseThrow(() -> new AccountNotFoundException("Pay My Buddy Super user account not found"));
 
 		double totalDailyCommission = calculateTotalDailyCommissionAmount();
@@ -124,10 +123,10 @@ public class CommissionServiceImpl implements CommissionService {
 			throws UserNotFoundException,
 			AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoneyException {
 		Iterable<User> allUsers = userRepository.findAll();
-		User payMyBuddySuperUser = userRepository.findById(UserService.PAY_MY_BUDDY_SUPER_USER_ID)
+		User payMyBuddySuperUser = userRepository.findById(Constants.PAY_MY_BUDDY_SUPER_USER_ID)
 				.orElseThrow(() -> new UserNotFoundException("Pay My Buddy Super user not found"));
 		for (User user : allUsers) {
-			if (user.getId() > UserService.PAY_MY_BUDDY_SUPER_USER_ID) { // Skip Pay My Buddy Super User
+			if (user.getId() > Constants.PAY_MY_BUDDY_SUPER_USER_ID) { // Skip Pay My Buddy Super User
 				collectDailyCommissionForOneUser(user.getId(), payMyBuddySuperUser);
 			}
 		}

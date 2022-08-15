@@ -13,9 +13,10 @@ import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.Transaction;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.setup.TestSetUp;
+import deronzier.remi.payMyBuddyV2.utils.Constants;
 
 @DataJpaTest
-@ActiveProfiles("test")
+@ActiveProfiles(Constants.TEST_PROFILE)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class TransactionRepositoryIntegrationTest {
 

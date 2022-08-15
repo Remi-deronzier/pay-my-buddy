@@ -23,15 +23,15 @@ import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.repository.AccountRepository;
 import deronzier.remi.payMyBuddyV2.repository.TransactionRepository;
 import deronzier.remi.payMyBuddyV2.repository.UserRepository;
-import deronzier.remi.payMyBuddyV2.service.impl.TransactionServiceImpl;
 import deronzier.remi.payMyBuddyV2.setup.TestSetUp;
+import deronzier.remi.payMyBuddyV2.utils.Constants;
 
 @SpringBootTest
-@ActiveProfiles("test")
-public class TransactionServiceImplIntegrationTest {
+@ActiveProfiles(Constants.TEST_PROFILE)
+public class TransactionServiceIntegrationTest {
 
 	@Autowired
-	private TransactionServiceImpl transactionService;
+	private TransactionService transactionService;
 
 	@MockBean
 	private TransactionRepository transactionRepository;

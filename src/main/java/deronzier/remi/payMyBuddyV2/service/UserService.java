@@ -34,7 +34,4 @@ public interface UserService {
 
 	Page<User> findAll(Pageable pageable);
 
-	static final double INITIAL_ACCOUNT_BALANCE = 0;
-
-	public final static int PAY_MY_BUDDY_SUPER_USER_ID = 1;
 }

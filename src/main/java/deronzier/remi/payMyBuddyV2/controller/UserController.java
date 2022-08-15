@@ -29,21 +29,20 @@ import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.service.impl.UserServiceImpl;
+import deronzier.remi.payMyBuddyV2.service.UserService;
+import deronzier.remi.payMyBuddyV2.utils.Constants;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
 @Controller
 @RequestMapping(value = "/users")
 public class UserController {
 
-	public final static int OWNER_USER_ID = 2;
-
 	@Autowired
-	private UserServiceImpl userService;
+	private UserService userService;
 
 	@GetMapping(value = "/contact")
 	public String getConnections(Model model) {
-		User user1 = userService.findById(OWNER_USER_ID).get();
+		User user1 = userService.findById(Constants.OWNER_USER_ID).get();
 		List<User> connections = user1.getConnections();
 		model.addAttribute("connections", connections);
 		return "users/contact";
@@ -64,7 +63,7 @@ public class UserController {
 			model.addAttribute("illegalPhoneNumberException", illegalPhoneNumberException);
 		}
 
-		User user1 = userService.findById(OWNER_USER_ID).get();
+		User user1 = userService.findById(Constants.OWNER_USER_ID).get();
 		List<User> connections = user1.getConnections();
 		User user = userService.findById(id).get();
 		model.addAttribute("user", user);
@@ -116,7 +115,7 @@ public class UserController {
 	public String getAddContact(Model model) throws UserNotFoundException {
 		User newConnection = new User();
 		model.addAttribute("newConnection", newConnection);
-		List<User> futurePotentialConnections = userService.findFuturePotentialConnections(OWNER_USER_ID);
+		List<User> futurePotentialConnections = userService.findFuturePotentialConnections(Constants.OWNER_USER_ID);
 		model.addAttribute("futurePotentialConnections", futurePotentialConnections);
 		return "users/addContact";
 	}
@@ -124,14 +123,14 @@ public class UserController {
 	@PostMapping("/contact/add")
 	public String postAddContact(@ModelAttribute("newConnection") User newConnection, Model model)
 			throws UserNotFoundException, ConnectionCreationException {
-		userService.addConnection(OWNER_USER_ID, newConnection.getId());
+		userService.addConnection(Constants.OWNER_USER_ID, newConnection.getId());
 		return "redirect:/users/contact?isNewConnectionAddedSuccessfully=true";
 	}
 
 	@DeleteMapping("/contact/delete/{connectionId}")
 	public String deleteContact(@PathVariable final int connectionId)
 			throws UserNotFoundException, ConnectionCreationException, ConnectionNotFoundException {
-		userService.deleteConnection(OWNER_USER_ID, connectionId);
+		userService.deleteConnection(Constants.OWNER_USER_ID, connectionId);
 		return "redirect:/users/contact?isConnectionDeletedSuccessfully=true";
 	}
 
