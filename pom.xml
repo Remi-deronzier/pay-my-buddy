@@ -8,6 +8,7 @@
 		<version>2.7.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	
 	<groupId>deronzier.remi</groupId>
 	<artifactId>payMyBuddyV2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -16,6 +17,7 @@
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -40,7 +42,7 @@
 		<dependency>
  			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
-			<version>3.1.2</version>
+			<version>3.1.2</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>org.thymeleaf.extras</groupId>-->
@@ -91,6 +93,13 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		
+	    <resources>
+	        <resource>
+	            <directory>src/main/resources</directory>
+	            <filtering>true</filtering>
+	        </resource>
+    	</resources>
 	</build>
 
 </project>
