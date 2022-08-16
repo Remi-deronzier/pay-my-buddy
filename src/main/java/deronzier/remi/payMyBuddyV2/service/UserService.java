@@ -13,6 +13,7 @@ import deronzier.remi.payMyBuddyV2.exception.UserEmailExistsException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
 import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.payMyBuddyV2.model.VerificationToken;
 
 public interface UserService {
 
@@ -36,5 +37,9 @@ public interface UserService {
 
 	User create(User newUser) throws UserEmailExistsException,
 			UserUserNameExistsException;
+
+	VerificationToken getVerificationToken(String token);
+
+	void createVerificationTokenForUser(User user, String token);
 
 }

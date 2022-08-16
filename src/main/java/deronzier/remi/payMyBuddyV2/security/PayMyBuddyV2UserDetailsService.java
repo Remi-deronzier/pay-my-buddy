@@ -28,7 +28,8 @@ public class PayMyBuddyV2UserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		final User user = userRepository.findByUserName(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-		return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), true,
+		return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(),
+				user.isEnabled(),
 				true,
 				true, true, getAuthorities(user.getRoles()));
 	}

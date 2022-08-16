@@ -26,11 +26,12 @@ public class PayMyBuddyV2SecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {// @formatter:off
 		http
 				.authorizeRequests()
-				.antMatchers("/signup", "/user/signup").permitAll()
+				.antMatchers("/signup", "/login*", "/user/signup", "/registrationConfirm*").permitAll()
 				.anyRequest().authenticated()
 
 				.and()
-				.formLogin().loginPage("/login").permitAll().loginProcessingUrl("/doLogin").defaultSuccessUrl("/", true)
+				.formLogin().loginPage("/login").permitAll().loginProcessingUrl("/doLogin")
+				.defaultSuccessUrl("/", true)
 
 				.and()
 				.logout().permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/doLogout", "POST"));

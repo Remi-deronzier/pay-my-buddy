@@ -87,6 +87,9 @@ public class User {
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private boolean active;
 
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	private boolean enabled;
+
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
 	private Account account;
 

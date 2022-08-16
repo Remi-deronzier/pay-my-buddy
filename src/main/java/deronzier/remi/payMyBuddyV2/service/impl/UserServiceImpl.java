@@ -19,7 +19,9 @@ import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
 import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.payMyBuddyV2.model.VerificationToken;
 import deronzier.remi.payMyBuddyV2.repository.UserRepository;
+import deronzier.remi.payMyBuddyV2.repository.VerificationTokenRepository;
 import deronzier.remi.payMyBuddyV2.service.UserService;
 import deronzier.remi.payMyBuddyV2.utils.Constants;
 
@@ -32,6 +34,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private VerificationTokenRepository verificationTokenRepository;
 
 	public Optional<User> findById(final int id) {
 		return userRepository.findById(id);
@@ -85,10 +90,10 @@ public class UserServiceImpl implements UserService {
 		newUser.addAcount(newAccount);
 
 		// Check uniqueness of email and user name
-		if (emailExist(newUser.getEmail())) {
+		if (emailExists(newUser.getEmail())) {
 			throw new UserEmailExistsException("There is an account with that email address " + newUser.getEmail());
 		}
-		if (userNameExist(newUser.getUserName())) {
+		if (userNameExists(newUser.getUserName())) {
 			throw new UserUserNameExistsException("There is an account with that user name " + newUser.getUserName());
 		}
 
@@ -109,15 +114,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User save(User user) {
+		user.setPasswordConfirmation(user.getPassword());
 		return userRepository.save(user);
 	}
 
-	private boolean emailExist(String email) {
+	private boolean emailExists(String email) {
 		final Optional<User> user = userRepository.findByEmail(email);
 		return user.isPresent();
 	}
 
-	private boolean userNameExist(String userName) {
+	private boolean userNameExists(String userName) {
 		final Optional<User> user = userRepository.findByUserName(userName);
 		return user.isPresent();
 	}
@@ -126,6 +132,7 @@ public class UserServiceImpl implements UserService {
 	public User updateProfile(User inputUser, int id) throws UserNotFoundException, IllegalPhoneNumberException {
 		User userToUpdate = userRepository.findById(id)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		userToUpdate.setPasswordConfirmation(userToUpdate.getPassword());
 		userToUpdate.setUserName(inputUser.getUserName());
 		userToUpdate.setEmail(inputUser.getEmail());
 		userToUpdate.setFirstName(inputUser.getFirstName());
@@ -164,5 +171,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Page<User> findAll(Pageable pageable) {
 		return userRepository.findAll(pageable);
+	}
+
+	@Override
+	public void createVerificationTokenForUser(final User user, final String token) {
+		final VerificationToken myToken = new VerificationToken(token, user);
+		verificationTokenRepository.save(myToken);
+	}
+
+	@Override
+	public VerificationToken getVerificationToken(final String token) {
+		return verificationTokenRepository.findByToken(token);
 	}
 }
