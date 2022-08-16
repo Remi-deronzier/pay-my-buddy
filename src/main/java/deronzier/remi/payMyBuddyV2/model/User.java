@@ -3,6 +3,7 @@ package deronzier.remi.payMyBuddyV2.model;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,14 +26,17 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserUnderEighteenException;
+import deronzier.remi.payMyBuddyV2.validation.PasswordMatches;
 import lombok.Data;
 
 @Data
 @Entity
 @DynamicUpdate
+@PasswordMatches
 public class User {
 
 	@Id
@@ -60,6 +64,13 @@ public class User {
 	@NotBlank(message = "Password cannot be null")
 	private String password;
 
+	@Transient
+	@NotBlank(message = "Password confirmation is required")
+	private String passwordConfirmation;
+
+	private Calendar created = Calendar.getInstance();
+
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate dateOfBirth;
 
 	@Transient

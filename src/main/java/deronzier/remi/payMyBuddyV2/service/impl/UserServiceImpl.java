@@ -7,13 +7,16 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
 import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
+import deronzier.remi.payMyBuddyV2.exception.UserEmailExistsException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
+import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
 import deronzier.remi.payMyBuddyV2.model.Account;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.repository.UserRepository;
@@ -26,6 +29,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public Optional<User> findById(final int id) {
 		return userRepository.findById(id);
@@ -68,16 +74,27 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User create() {
-		// Create new user
-		User newUser = new User();
-
+	public User create(User newUser)
+			throws UserEmailExistsException,
+			UserUserNameExistsException {
 		// Create new account and set balance of account to 0
 		Account newAccount = new Account();
 		newAccount.setBalance(Constants.INITIAL_ACCOUNT_BALANCE);
 
 		// Synchronize relation between account and user
 		newUser.addAcount(newAccount);
+
+		// Check uniqueness of email and user name
+		if (emailExist(newUser.getEmail())) {
+			throw new UserEmailExistsException("There is an account with that email address " + newUser.getEmail());
+		}
+		if (userNameExist(newUser.getUserName())) {
+			throw new UserUserNameExistsException("There is an account with that user name " + newUser.getUserName());
+		}
+
+		String encryptedPassword = passwordEncoder.encode(newUser.getPassword());
+		newUser.setPassword(encryptedPassword);
+		newUser.setPasswordConfirmation(encryptedPassword);
 
 		// Save new user
 		return userRepository.save(newUser);
@@ -93,6 +110,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User save(User user) {
 		return userRepository.save(user);
+	}
+
+	private boolean emailExist(String email) {
+		final Optional<User> user = userRepository.findByEmail(email);
+		return user.isPresent();
+	}
+
+	private boolean userNameExist(String userName) {
+		final Optional<User> user = userRepository.findByUserName(userName);
+		return user.isPresent();
 	}
 
 	@Override
