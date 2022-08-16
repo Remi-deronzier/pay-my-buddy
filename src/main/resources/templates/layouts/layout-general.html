@@ -50,10 +50,12 @@
 		          <a class="nav-link" th:href="@{/users/2}">Profile</a>
 		        </li>
 		        <li class="nav-item">
-		          <a class="nav-link" th:href="@{/adminPanel}">Admin panel</a>
+		          <a class="nav-link" th:href="@{/adminPanel}" >Admin panel</a>
 		        </li>
 		        <li class="nav-item">
-		          <a class="nav-link">Log off</a>
+			        <form method="POST" th:action="@{/doLogout}">
+			          <button type="submit" class="btn btn-primary">Log out</button>
+			        </form>
 		        </li>
 		      </ul>
 		    </div>

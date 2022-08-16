@@ -59,7 +59,7 @@ public class CommissionServiceImpl implements CommissionService {
 	private static final Logger log = LoggerFactory.getLogger(CommissionServiceImpl.class);
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss");
 
-	@Scheduled(cron = "0 0 0 * * *", zone = "Europe/Paris") // every day at midnight
+	@Scheduled(cron = "0 15 0 * * *", zone = "Europe/Paris") // every day at 00:15:00
 	@Override
 	public double monetization() throws AccountNotFoundException, UserNotFoundException, NegativeAmountException,
 			AccountNotEnoughMoneyException {
