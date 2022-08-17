@@ -3,8 +3,6 @@ package deronzier.remi.payMyBuddyV2.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -57,20 +55,17 @@ public class PayMyBuddyV2SecurityConfig extends WebSecurityConfigurerAdapter {
 				.defaultSuccessUrl("/", true)
 
 				.and()
-				.logout().permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/doLogout", "POST"));
-	} // @formatter:on
+				.logout().permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/doLogout", "POST"))
 
-	@Bean
-	public AuthenticationProvider daoAuthenticationProvider() {
-		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-		provider.setPasswordEncoder(passwordEncoder());
-		provider.setUserDetailsService(userDetailsService);
-		return provider;
-	}
+				.and()
+				.rememberMe()
+				.rememberMeParameter("sticky")
+				.rememberMeCookieName("sticky-cookie");
+	} // @formatter:on
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(daoAuthenticationProvider());
+		auth.userDetailsService(userDetailsService);
 	}
 
 	@Bean
