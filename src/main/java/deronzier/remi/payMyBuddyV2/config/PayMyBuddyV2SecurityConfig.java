@@ -22,11 +22,34 @@ public class PayMyBuddyV2SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsService userDetailsService;
 
+	/**
+	 * Try to give access to /resources folder but epic fail!!!!
+	 *
+	 */
+
+//	@Override
+//	public void configure(WebSecurity web) throws Exception {
+//		web
+//				.ignoring()
+//				.antMatchers("/resources/**");
+//	}
+
 	@Override
 	public void configure(HttpSecurity http) throws Exception {// @formatter:off
 		http
 				.authorizeRequests()
-				.antMatchers("/signup", "/login*", "/user/signup", "/registrationConfirm*").permitAll()
+				.antMatchers("/signup",
+						"/resources/**",
+						"/js/**",
+						"/css/**",
+						"/login*",
+						"/user/signup",
+						"/registrationConfirm*",
+						"/forgotPassword*",
+						"/user/resetPassword*",
+						"/user/changePassword*",
+						"/user/savePassword*")
+				.permitAll()
 				.anyRequest().authenticated()
 
 				.and()

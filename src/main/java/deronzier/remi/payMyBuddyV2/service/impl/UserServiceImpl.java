@@ -18,8 +18,10 @@ import deronzier.remi.payMyBuddyV2.exception.UserEmailExistsException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
 import deronzier.remi.payMyBuddyV2.model.Account;
+import deronzier.remi.payMyBuddyV2.model.PasswordResetToken;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.model.VerificationToken;
+import deronzier.remi.payMyBuddyV2.repository.PasswordResetTokenRepository;
 import deronzier.remi.payMyBuddyV2.repository.UserRepository;
 import deronzier.remi.payMyBuddyV2.repository.VerificationTokenRepository;
 import deronzier.remi.payMyBuddyV2.service.UserService;
@@ -34,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private PasswordResetTokenRepository passwordResetTokenRepository;
 
 	@Autowired
 	private VerificationTokenRepository verificationTokenRepository;
@@ -174,6 +179,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public User findUserByEmail(final String email) throws UserNotFoundException {
+		return userRepository.findByEmail(email)
+				.orElseThrow(() -> new UserNotFoundException("User not found."));
+
+	}
+
+	@Override
 	public void createVerificationTokenForUser(final User user, final String token) {
 		final VerificationToken myToken = new VerificationToken(token, user);
 		verificationTokenRepository.save(myToken);
@@ -182,5 +194,24 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public VerificationToken getVerificationToken(final String token) {
 		return verificationTokenRepository.findByToken(token);
+	}
+
+	@Override
+	public void createPasswordResetTokenForUser(final User user, final String token) {
+		final PasswordResetToken myToken = new PasswordResetToken(token, user);
+		passwordResetTokenRepository.save(myToken);
+	}
+
+	@Override
+	public PasswordResetToken getPasswordResetToken(final String token) {
+		return passwordResetTokenRepository.findByToken(token);
+	}
+
+	@Override
+	public void changeUserPassword(final User user, final String password) {
+		String encryptedPassword = passwordEncoder.encode(password);
+		user.setPassword(encryptedPassword);
+		user.setPasswordConfirmation(encryptedPassword);
+		userRepository.save(user);
 	}
 }

@@ -12,6 +12,7 @@ import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserEmailExistsException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
+import deronzier.remi.payMyBuddyV2.model.PasswordResetToken;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.model.VerificationToken;
 
@@ -41,5 +42,13 @@ public interface UserService {
 	VerificationToken getVerificationToken(String token);
 
 	void createVerificationTokenForUser(User user, String token);
+
+	void createPasswordResetTokenForUser(User user, String token);
+
+	PasswordResetToken getPasswordResetToken(String token);
+
+	void changeUserPassword(User user, String password);
+
+	User findUserByEmail(String email) throws UserNotFoundException;
 
 }

@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.registration.listener;
+package deronzier.remi.payMyBuddyV2.forgotPassword.listener;
 
 import java.util.UUID;
 
@@ -8,42 +8,42 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
+import deronzier.remi.payMyBuddyV2.forgotPassword.OnForgotPasswordCompleteEvent;
 import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.registration.OnRegistrationCompleteEvent;
 import deronzier.remi.payMyBuddyV2.service.UserService;
 
 @Component
-public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
+public class ForgotPasswordListener implements ApplicationListener<OnForgotPasswordCompleteEvent> {
 
 	@Autowired
-	private UserService service;
+	private UserService userService;
 
 	@Autowired
 	private JavaMailSender mailSender;
 
 	@Override
-	public void onApplicationEvent(final OnRegistrationCompleteEvent event) {
+	public void onApplicationEvent(final OnForgotPasswordCompleteEvent event) {
 		this.confirmRegistration(event);
 	}
 
-	private void confirmRegistration(final OnRegistrationCompleteEvent event) {
+	private void confirmRegistration(final OnForgotPasswordCompleteEvent event) {
 		final User user = event.getUser();
 		final String token = UUID.randomUUID().toString();
-		service.createVerificationTokenForUser(user, token);
-
+		userService.createPasswordResetTokenForUser(user, token);
 		final SimpleMailMessage email = constructEmailMessage(event, user, token);
 		mailSender.send(email);
 	}
 
-	private SimpleMailMessage constructEmailMessage(final OnRegistrationCompleteEvent event, final User user,
+	private SimpleMailMessage constructEmailMessage(final OnForgotPasswordCompleteEvent event, final User user,
 			final String token) {
 		final String recipientAddress = user.getEmail();
-		final String subject = "Pay My Buddy - Registration confirmation";
-		final String confirmationUrl = event.getAppUrl() + "/registrationConfirm?token=" + token;
+		final String subject = "Pay My Buddy - Reset password";
+		final String changePasswordUrl = event.getAppUrl() + "/user/changePassword?userId=" + user.getId() + "&token="
+				+ token;
 		final SimpleMailMessage email = new SimpleMailMessage();
 		email.setTo(recipientAddress);
 		email.setSubject(subject);
-		email.setText("Please open the following URL to verify your account: \r\n" + confirmationUrl);
+		email.setText("Please open the following URL to verify your account: \r\n" + changePasswordUrl);
 		return email;
 	}
 

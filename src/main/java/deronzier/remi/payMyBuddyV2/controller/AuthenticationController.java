@@ -8,19 +8,25 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import deronzier.remi.payMyBuddyV2.exception.UserEmailExistsException;
+import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
+import deronzier.remi.payMyBuddyV2.forgotPassword.OnForgotPasswordCompleteEvent;
+import deronzier.remi.payMyBuddyV2.model.PasswordResetToken;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.model.VerificationToken;
 import deronzier.remi.payMyBuddyV2.registration.OnRegistrationCompleteEvent;
@@ -35,6 +41,11 @@ public class AuthenticationController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	// Log in
+
 	@RequestMapping("/login")
 	public String login(Model model, HttpServletRequest request) {
 		// Check validation form server side
@@ -47,6 +58,8 @@ public class AuthenticationController {
 		}
 		return "authentication/login-view";
 	}
+
+	// Sign up
 
 	@RequestMapping("/signup")
 	public String getSignup(Model model) {
@@ -106,6 +119,106 @@ public class AuthenticationController {
 		userService.save(user);
 		redirectAttributes.addFlashAttribute("message", "Your account verified successfully");
 		return new ModelAndView("redirect:/login");
+	}
+
+	// Reset password
+
+	@RequestMapping("/forgotPassword")
+	public String showForgotPassword(Model model, HttpServletRequest request) {
+		// Check validation form server side
+		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+		if (inputFlashMap != null) {
+			String errorMessage = (String) inputFlashMap.get("errorMessage");
+			String message = (String) inputFlashMap.get("message");
+			model.addAttribute("message", message);
+			model.addAttribute("errorMessage", errorMessage);
+		}
+		return "authentication/forgot-password";
+	}
+
+	@RequestMapping(value = "/user/resetPassword", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelAndView resetPassword(final HttpServletRequest request, @RequestParam("email") final String userEmail,
+			final RedirectAttributes redirectAttributes) {
+		User user;
+		try {
+			user = userService.findUserByEmail(userEmail);
+			final String appUrl = "http://" + request.getServerName() + ":" + request.getServerPort()
+					+ request.getContextPath();
+			eventPublisher.publishEvent(new OnForgotPasswordCompleteEvent(user, appUrl));
+			redirectAttributes.addFlashAttribute("message", "You should receive a password reset email shortly");
+			return new ModelAndView("redirect:/login");
+		} catch (UserNotFoundException e) {
+			redirectAttributes.addFlashAttribute("errorMessage",
+					"It seems that this user does not exist. You must sign up first");
+			return new ModelAndView("redirect:/signup");
+		}
+
+	}
+
+	@RequestMapping(value = "/user/changePassword", method = RequestMethod.GET)
+	public ModelAndView showChangePasswordPage(@RequestParam("userId") final long userId,
+			@RequestParam("token") final String token, final RedirectAttributes redirectAttributes) {
+		final PasswordResetToken passToken = userService.getPasswordResetToken(token);
+		if (passToken == null) {
+			redirectAttributes.addFlashAttribute("errorMessage", "Invalid password reset token");
+			return new ModelAndView("redirect:/login");
+		}
+		final User user = passToken.getUser();
+		if (user.getId() != userId) {
+			redirectAttributes.addFlashAttribute("errorMessage", "Invalid password reset token");
+			return new ModelAndView("redirect:/login");
+		}
+
+		final Calendar cal = Calendar.getInstance();
+		if ((passToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+			redirectAttributes.addFlashAttribute("errorMessage", "Your password reset token has expired");
+			return new ModelAndView("redirect:/login");
+		}
+
+		final ModelAndView view = new ModelAndView("authentication/reset-password");
+		view.addObject("token", token);
+		view.addObject("userId", userId);
+		return view;
+	}
+
+	@RequestMapping(value = "/user/savePassword", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelAndView savePassword(@RequestParam("password") final String password,
+			@RequestParam("passwordConfirmation") final String passwordConfirmation,
+			@RequestParam("token") final String token, @RequestParam("userId") final long userId,
+			final RedirectAttributes redirectAttributes) {
+		if (!password.equals(passwordConfirmation)) {
+			return redirectToChangePasswordWithErrorMessage(token, userId, redirectAttributes,
+					"Passwords do not match");
+		}
+
+		final PasswordResetToken passwordResetToken = userService.getPasswordResetToken(token);
+		if (passwordResetToken == null) {
+			redirectAttributes.addFlashAttribute("errorMessage", "Invalid token");
+		} else {
+			final User user = passwordResetToken.getUser();
+			if (user == null) {
+				redirectAttributes.addFlashAttribute("errorMessage", "Unknown user");
+			} else {
+				final String encryptedPreviousPassword = user.getPassword();
+				if (passwordEncoder.matches(password, encryptedPreviousPassword)) {
+					return redirectToChangePasswordWithErrorMessage(token, userId, redirectAttributes,
+							"This new password must be different from the old one");
+				}
+				userService.changeUserPassword(user, password);
+				redirectAttributes.addFlashAttribute("message", "Password reset successfully");
+			}
+		}
+		return new ModelAndView("redirect:/login");
+	}
+
+	private ModelAndView redirectToChangePasswordWithErrorMessage(final String token, final long userId,
+			final RedirectAttributes redirectAttributes, final String errorMessage) {
+		redirectAttributes.addAttribute("token", token);
+		redirectAttributes.addAttribute("userId", userId);
+		redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+		return new ModelAndView("redirect:/user/changePassword");
 	}
 
 }

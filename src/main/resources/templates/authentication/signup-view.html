@@ -19,6 +19,11 @@
 					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
 					<strong>Error!</strong> Registration failed
 				</div>
+				<div th:if="${errorMessage}" class="alert alert-danger dismissible fade show w-50" role="alert">
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+					<strong>Error!</strong>
+					<span th:text="${errorMessage}">Error message</span>
+				</div>
 			</div>
 			<div class="d-flex justify-content-center align-items-center">
 				<div class="card w-75 text-center">
@@ -94,9 +99,9 @@
 								<span th:if="${#fields.hasErrors('passwordConfirmation')}" th:errors="*{passwordConfirmation}" class="text-danger text-end">Password confirmation Error</span>
 								<span th:if="${#fields.hasErrors('global')}" th:errors="*{global}" class="text-danger text-end">Incorrect password confirmation</span>
   							</div>
-							<button type="submit" class="btn btn-primary mb-3">Sign up</button>
+							<button type="submit" class="btn btn-primary mb-2">Sign up</button>
 							<div>
-						        <a th:href="@{/login}" class="card-link">Log in</a>
+						        <a th:href="@{/login}" class="btn btn-outline-primary" role="button">Log in</a>
 					        </div>
 						</form>
 						
