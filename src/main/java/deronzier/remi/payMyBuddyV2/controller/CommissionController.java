@@ -15,7 +15,7 @@ import deronzier.remi.payMyBuddyV2.service.CommissionService;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
 @Controller
-@RequestMapping(value = "/commissions")
+@RequestMapping(value = "/admin/commissions")
 public class CommissionController {
 
 	@Autowired

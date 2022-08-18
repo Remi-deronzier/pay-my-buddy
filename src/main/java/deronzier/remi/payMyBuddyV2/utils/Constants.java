@@ -8,7 +8,7 @@ public class Constants {
 
 	public static final double COMMISSION_PERCENTAGE = 0.5;
 
-	public final static int OWNER_USER_ID = 2;
+//	public final static int OWNER_USER_ID = 2;
 	public final static int PAY_MY_BUDDY_SUPER_USER_ID = 1;
 
 	public static final double INITIAL_ACCOUNT_BALANCE = 0;

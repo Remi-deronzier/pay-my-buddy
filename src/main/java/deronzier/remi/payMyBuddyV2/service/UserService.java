@@ -18,7 +18,7 @@ import deronzier.remi.payMyBuddyV2.model.VerificationToken;
 
 public interface UserService {
 
-	Optional<User> findById(final int id);
+	Optional<User> findUserById(final int id);
 
 	User addConnection(final int ownerId, final int newConnectionId)
 			throws UserNotFoundException, ConnectionCreationException;
@@ -50,5 +50,7 @@ public interface UserService {
 	void changeUserPassword(User user, String password);
 
 	User findUserByEmail(String email) throws UserNotFoundException;
+
+	Optional<User> findUserByUsername(final String userName);
 
 }

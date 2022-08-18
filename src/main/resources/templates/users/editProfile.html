@@ -24,9 +24,9 @@
 			</div>
 			<form id="profileForm" action="#" th:action="@{'/users/{id}'(id=${user.id})}" th:object="${user}"  th:method="patch">
 				<label for="email" class="form-label">Email</label>
-				<input type="email" class="form-control w-50 mb-3" name="email" id="email" placeholder="name@example.com" th:field="*{email}">
+				<input type="email" class="form-control w-50 mb-3" name="email" id="email" placeholder="name@example.com" th:field="*{email}" aria-label="disabled user name" disabled>
 				<label for="userName" class="form-label">User name</label>
-				<input type="text" class="form-control w-50 mb-3" name="userName" id="userName" placeholder="johnDoe" th:field="*{userName}">
+				<input type="text" class="form-control w-50 mb-3" name="userName" id="userName" placeholder="johnDoe" th:field="*{userName}" aria-label="disabled user name" disabled>
 				<label for="firstName" class="form-label">First name</label>
 				<input type="text" class="form-control w-50 mb-3" name="firstName" id="firstName" placeholder="John" th:field="*{firstName}">
 				<label for="lastName" class="form-label">Last name</label>

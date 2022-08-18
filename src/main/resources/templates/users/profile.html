@@ -47,7 +47,7 @@
 					</li>
 				</ul>
 			</div>
-			<a th:if="${user.id == 2}" th:href="@{'/users/{id}?isEditing=true'(id=${user.id})}" class="btn btn-outline-primary mt-2" role="button">Edit profile</a>
+			<a th:if="${user.userName == #authentication.name}" th:href="@{'/users/{userName}?isEditing=true'(userName=${user.userName})}" class="btn btn-outline-primary mt-2" role="button">Edit profile</a>
 		</th:block>
 	</body>
 	

@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private VerificationTokenRepository verificationTokenRepository;
 
-	public Optional<User> findById(final int id) {
+	public Optional<User> findUserById(final int id) {
 		return userRepository.findById(id);
 	}
 
@@ -138,8 +138,6 @@ public class UserServiceImpl implements UserService {
 		User userToUpdate = userRepository.findById(id)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
 		userToUpdate.setPasswordConfirmation(userToUpdate.getPassword());
-		userToUpdate.setUserName(inputUser.getUserName());
-		userToUpdate.setEmail(inputUser.getEmail());
 		userToUpdate.setFirstName(inputUser.getFirstName());
 		userToUpdate.setLastName(inputUser.getLastName());
 		userToUpdate.setPhoneNumber(inputUser.getPhoneNumber());
@@ -155,7 +153,7 @@ public class UserServiceImpl implements UserService {
 		// Convert users iterable to list and delete user logged in
 		List<User> futurePotentialConnections = new ArrayList<User>();
 		allUsers.forEach((user) -> {
-			if (user.getId() != ownerId) {
+			if (user.getId() != ownerId && user.getId() != Constants.PAY_MY_BUDDY_SUPER_USER_ID) {
 				futurePotentialConnections.add(user);
 			}
 		});
@@ -213,5 +211,10 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(encryptedPassword);
 		user.setPasswordConfirmation(encryptedPassword);
 		userRepository.save(user);
+	}
+
+	@Override
+	public Optional<User> findUserByUsername(String userName) {
+		return userRepository.findByUserName(userName);
 	}
 }

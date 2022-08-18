@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,9 +29,9 @@ import deronzier.remi.payMyBuddyV2.exception.TransactionSameAccountException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.Transaction;
 import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.payMyBuddyV2.security.CustomUser;
 import deronzier.remi.payMyBuddyV2.service.TransactionService;
 import deronzier.remi.payMyBuddyV2.service.UserService;
-import deronzier.remi.payMyBuddyV2.utils.Constants;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
 @Controller
@@ -45,8 +46,11 @@ public class TransactionController {
 
 	@GetMapping()
 	public String getTransactions(Model model, HttpServletRequest request,
+			@AuthenticationPrincipal CustomUser customUser,
 			@SortDefault(sort = "timeStamp", direction = Sort.Direction.DESC) Pageable pageable)
 			throws UserNotFoundException {
+		final int userId = customUser.getId();
+
 		// Check validation form server side
 		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
 		if (inputFlashMap != null) {
@@ -69,13 +73,14 @@ public class TransactionController {
 		model.addAttribute("newTransaction", newTransaction);
 
 		// Get current user's connections
-		User user1 = userService.findById(Constants.OWNER_USER_ID).get();
-		List<User> connections = user1.getConnections();
+		User user = userService.findUserById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		List<User> connections = user.getConnections();
 		model.addAttribute("connections", connections);
 
 		// Get all current user's transactions
 		Page<Transaction> transactions = transactionService
-				.findAllSentAndReceivedTransactionsForSpecificUser(Constants.OWNER_USER_ID, pageable);
+				.findAllSentAndReceivedTransactionsForSpecificUser(userId, pageable);
 		PageWrapper<Transaction> page = new PageWrapper<Transaction>(transactions, "/transactions");
 		model.addAttribute("page", page);
 
@@ -84,18 +89,19 @@ public class TransactionController {
 
 	@PostMapping("/makeTransaction")
 	public String makeTransaction(@Valid @ModelAttribute("newTransaction") Transaction transaction,
-			BindingResult bindingResult,
+			BindingResult bindingResult, @AuthenticationPrincipal CustomUser customUser,
 			@ModelAttribute("receiver") User receiver, Model model,
 			RedirectAttributes redirectAttributes)
-			throws UserNotFoundException, AccountNotFoundException,
-			TransactionSameAccountException {
+			throws UserNotFoundException, AccountNotFoundException, TransactionSameAccountException {
+		final int userId = customUser.getId();
+
 		if (bindingResult.hasErrors()) { // if amount is lower than 10€
 			redirectAttributes.addFlashAttribute("tooLowAmountError",
 					bindingResult.getFieldError("amount").getDefaultMessage());
 			return "redirect:/transactions?isNewTransactionMadeSuccessfully=false";
 		}
 		try {
-			transactionService.makeTransaction(Constants.OWNER_USER_ID, receiver.getId(), transaction.getAmount(),
+			transactionService.makeTransaction(userId, receiver.getId(), transaction.getAmount(),
 					transaction.getDescription());
 			return "redirect:/transactions?isNewTransactionMadeSuccessfully=true";
 		} catch (AccountNotEnoughMoneyException aneme) {

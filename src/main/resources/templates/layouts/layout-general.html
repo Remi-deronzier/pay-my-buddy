@@ -47,17 +47,18 @@
 		          <a class="nav-link" th:href="@{/users/contact}">Contact</a>
 		        </li>
 		        <li class="nav-item">
-		          <a class="nav-link" th:href="@{/users/2}">Profile</a>
+		          <a class="nav-link" th:href="@{'/users/{userName}'(userName=${#authentication.name})}">Profile</a>
 		        </li>
-		        <li class="nav-item">
-		          <a class="nav-link" th:href="@{/adminPanel}" >Admin panel</a>
+		        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+		          <a class="nav-link" th:href="@{/admin/adminPanel}" >Admin panel</a>
 		        </li>
-		        <li class="nav-item">
+		      </ul>
+		      		<div class="text-light me-2 fs-3">
+			      		Hi, <span sec:authentication="name">John</span>
+		      		</div>
 			        <form method="POST" th:action="@{/doLogout}">
 			          <button type="submit" class="btn btn-primary">Log out</button>
 			        </form>
-		        </li>
-		      </ul>
 		    </div>
 		  </div>
 		</nav>

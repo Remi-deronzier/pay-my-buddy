@@ -38,7 +38,7 @@
 						<td th:text="${connection.phoneNumber}"></td>
 						<td>
 							<div class="d-flex justify-content-between">
-								<a th:href="@{'/users/{id}'(id=${connection.id})}" class="btn btn-primary" role="button">
+								<a th:href="@{'/users/{userName}'(userName=${connection.userName})}" class="btn btn-primary" role="button">
 									<i class="bi bi-eye text-light"></i> Visit profile
 								</a>
 						        <form action="#" th:action="@{'/users/contact/delete/{id}'(id=${connection.id})}" th:method="delete" >
