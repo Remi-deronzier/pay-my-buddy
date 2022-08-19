@@ -1,11 +1,13 @@
 package deronzier.remi.payMyBuddyV2.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.jboss.aerogear.security.otp.Totp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -100,7 +103,7 @@ public class AuthenticationController {
 
 	@RequestMapping(value = "/registrationConfirm")
 	public ModelAndView confirmRegistration(final Model model, @RequestParam("token") final String token,
-			final RedirectAttributes redirectAttributes) {
+			final RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
 		final VerificationToken verificationToken = userService.getVerificationToken(token);
 		if (verificationToken == null) {
 			redirectAttributes.addFlashAttribute("errorMessage", "Invalid account confirmation token.");
@@ -118,21 +121,20 @@ public class AuthenticationController {
 		user.setEnabled(true);
 		userService.save(user);
 		redirectAttributes.addFlashAttribute("message", "Your account verified successfully");
-		return new ModelAndView("redirect:/login");
+
+		if (user.isUsing2FA()) {
+			redirectAttributes.addAttribute("qrCode", userService.generateQRUrl(user));
+			redirectAttributes.addAttribute("userName", user.getUserName());
+			return new ModelAndView("redirect:/qrCode");
+		} else {
+			return new ModelAndView("redirect:/login");
+		}
 	}
 
 	// Reset password
 
 	@RequestMapping("/forgotPassword")
 	public String showForgotPassword(Model model, HttpServletRequest request) {
-		// Check validation form server side
-		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
-		if (inputFlashMap != null) {
-			String errorMessage = (String) inputFlashMap.get("errorMessage");
-			String message = (String) inputFlashMap.get("message");
-			model.addAttribute("message", message);
-			model.addAttribute("errorMessage", errorMessage);
-		}
 		return "authentication/forgot-password";
 	}
 
@@ -219,6 +221,35 @@ public class AuthenticationController {
 		redirectAttributes.addAttribute("userId", userId);
 		redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
 		return new ModelAndView("redirect:/user/changePassword");
+	}
+
+	// 2FA
+
+	@RequestMapping("/qrCode")
+	public String getQrCode(Model model, HttpServletRequest request) {
+		String qrCode = (String) request.getParameter("qrCode");
+		String userName = (String) request.getParameter("username");
+		model.addAttribute("qrCode", qrCode);
+		model.addAttribute("userName", userName);
+		return "authentication/qr-code";
+	}
+
+	@PostMapping("/confirmSecret")
+	public String signupConfirmSecret(@RequestParam("userName") String userName,
+			@RequestParam(required = true, value = "code") String code, RedirectAttributes redirectAttributes)
+			throws UserNotFoundException, UnsupportedEncodingException {
+
+		User user = userService.findUserByUsername(userName)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		Totp totp = new Totp(user.getSecret());
+		if (totp.verify(code)) {
+			redirectAttributes.addFlashAttribute("message", "Successful implementation of 2FA");
+			return "redirect:/login";
+		} else {
+			redirectAttributes.addAttribute("qrCode", userService.generateQRUrl(user));
+			redirectAttributes.addAttribute("userName", user.getUserName());
+			return "redirect:/qrCode?errorMessage";
+		}
 	}
 
 }

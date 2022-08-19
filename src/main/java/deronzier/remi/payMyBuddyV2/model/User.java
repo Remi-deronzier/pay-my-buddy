@@ -26,6 +26,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.jboss.aerogear.security.otp.api.Base32;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
@@ -79,6 +80,11 @@ public class User {
 	private String description;
 
 	private String phoneNumber;
+
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	private boolean using2FA;
+
+	private String secret = Base32.random(); // For 2FA
 
 	@Column(nullable = false, columnDefinition = "varchar(32) default 'AWAY'")
 	@Enumerated(value = EnumType.STRING)

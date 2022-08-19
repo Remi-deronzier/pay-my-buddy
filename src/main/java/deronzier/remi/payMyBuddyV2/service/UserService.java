@@ -1,5 +1,6 @@
 package deronzier.remi.payMyBuddyV2.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,5 +53,9 @@ public interface UserService {
 	User findUserByEmail(String email) throws UserNotFoundException;
 
 	Optional<User> findUserByUsername(final String userName);
+
+	String generateQRUrl(User user) throws UnsupportedEncodingException;
+
+	User updateUsing2FA(boolean using2fa, int id) throws UserNotFoundException;
 
 }

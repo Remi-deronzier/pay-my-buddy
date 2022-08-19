@@ -14,6 +14,10 @@
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
 				<strong>Success!</strong> Profile successfully updated
 			</div>
+			<div th:if="${(param.areSettingsUpdatedSuccessfully != null) and (param.areSettingsUpdatedSuccessfully)}" class="alert alert-success dismissible fade show" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+				<strong>Success!</strong> Settings successfully updated
+			</div>
 			<div class="card">
 				<img src="https://picsum.photos/1500/300" class="card-img-top" style="height: 300px; object-fit: cover;" alt="Random image">
 				<div class="card-body">

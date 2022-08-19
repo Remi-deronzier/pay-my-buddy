@@ -11,7 +11,7 @@ import deronzier.remi.payMyBuddyV2.model.BankFlow;
 
 @Repository
 public interface BankFlowRepository extends PagingAndSortingRepository<BankFlow, Integer> {
-	Page<BankFlow> findBySenderId(int userId, Pageable pageabe);
+	Page<BankFlow> findBySenderIdOrReceiverId(int senderId, int receiverId, Pageable pageabe);
 
 	Iterable<BankFlow> findByTimeStampGreaterThanEqualAndTimeStampLessThan(LocalDateTime timeStampStart,
 			LocalDateTime timeStampEnd); // include timeStampStart and exclude timeStampEnd

@@ -67,7 +67,7 @@
   							<div class="row mb-3">
 								<label for="dateOfBirth" class="col-sm-2 col-form-label">Date of birth</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" name="dateOfBirth" id="dateOfBirth" placeholder="1997-02-11" th:field="*{dateOfBirth}">
+									<input type="date" class="form-control" name="dateOfBirth" id="dateOfBirth" placeholder="1997-02-11" th:field="*{dateOfBirth}">
 								</div>
 								<span th:if="${#fields.hasErrors('dateOfBirth')}" class="text-danger text-end">Date of birth is not a valid format (yyyy-MM-dd) or you are not over 18</span>
   							</div>
@@ -99,7 +99,13 @@
 								<span th:if="${#fields.hasErrors('passwordConfirmation')}" th:errors="*{passwordConfirmation}" class="text-danger text-end">Password confirmation Error</span>
 								<span th:if="${#fields.hasErrors('global')}" th:errors="*{global}" class="text-danger text-end">Incorrect password confirmation</span>
   							</div>
-							<button type="submit" class="btn btn-primary mb-2">Sign up</button>
+  							<div class="form-check mb-3 form-check-inline">
+							  	<label class="form-check-label" for="using2FA">Activate 2FA</label>
+							  	<input class="form-check-input" type="checkbox" id="using2FA" name="using2FA" th:field="*{using2FA}">
+							</div>
+							<div>
+								<button type="submit" class="btn btn-primary mb-2">Sign up</button>
+							</div>
 							<div>
 						        <a th:href="@{/login}" class="btn btn-outline-primary" role="button">Log in</a>
 					        </div>

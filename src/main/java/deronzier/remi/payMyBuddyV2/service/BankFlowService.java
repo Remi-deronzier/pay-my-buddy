@@ -7,7 +7,7 @@ import deronzier.remi.payMyBuddyV2.model.BankFlow;
 
 public interface BankFlowService {
 
-	Page<BankFlow> findAllBankFlowsForSpecificUser(int userId, Pageable pageable);
+	Page<BankFlow> findAllSentAndReceivedBankFlowsForSpecificUser(int userId, Pageable pageable);
 
 	Page<BankFlow> findAll(Pageable pageable);
 

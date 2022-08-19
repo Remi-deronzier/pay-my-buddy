@@ -17,7 +17,7 @@
 			<div class="d-flex justify-content-center align-items-center">
 				<div th:if="${param.error}" class="alert alert-danger dismissible fade show w-50" role="alert">
 					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
-					<strong>Error!</strong> Invalid user name or password or account not yet activated
+					<strong>Error!</strong> Invalid user name or password or account not yet activated or wrong verification code
 				</div>
 				<div th:if="${param.logout}" class="alert alert-success dismissible fade show w-50" role="alert">
 					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
@@ -51,16 +51,30 @@
 								<div class="col-sm-10">
 		  							<div class="input-group">
 										<div class="input-group-text">@</div>
-										<input type="text" class="form-control" name="username" id="username" placeholder="johnDoe">
+										<input required type="text" class="form-control" name="username" id="username" placeholder="johnDoe">
 									</div>
 								</div>
 							</div>
   							<div class="row mb-3">
 								<label for="password" class="col-sm-2 col-form-label">Password*</label>
 								<div class="col-sm-10">
-									<input type="password" class="form-control" name="password" id="password" placeholder="*****">
+									<input required type="password" class="form-control" name="password" id="password" placeholder="*****">
 								</div>
   							</div>
+  							<p>
+							  <a class="btn btn-info" data-bs-toggle="collapse" href="#collapseVerificationCode" role="button">
+							    Click only if you have activated 2FA
+							  </a>
+							</p>
+							<div class="collapse" id="collapseVerificationCode">
+							    <p class="card-text text-start">Enter the 6-digit code from Google Authenticator app</p>
+	  							<div class="row mb-3">
+									<label for="code" class="col-sm-2 col-form-label">Code*</label>
+									<div class="col-sm-10">
+										<input type="number" class="form-control" name="code" id="code" placeholder="123467">
+									</div>
+	  							</div>
+							</div>
   							<div class="form-check mb-3 form-check-inline">
 							  	<label class="form-check-label" for="remember">Remember me</label>
 							  	<input class="form-check-input" type="checkbox" id="remember" name="sticky" value="true">

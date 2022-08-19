@@ -1,10 +1,14 @@
 package deronzier.remi.payMyBuddyV2.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.jboss.aerogear.security.otp.api.Base32;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,6 +46,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private VerificationTokenRepository verificationTokenRepository;
+
+	@Value("${spring.application.name}")
+	private String appName;
 
 	public Optional<User> findUserById(final int id) {
 		return userRepository.findById(id);
@@ -146,6 +153,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public User updateUsing2FA(boolean using2FA, int id) throws UserNotFoundException {
+		User userToUpdate = userRepository.findById(id)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		userToUpdate.setPasswordConfirmation(userToUpdate.getPassword());
+		userToUpdate.setUsing2FA(using2FA);
+		userToUpdate.setSecret(Base32.random());
+		return userRepository.save(userToUpdate);
+	}
+
+	@Override
 	public List<User> findFuturePotentialConnections(int ownerId) throws UserNotFoundException {
 		// Get all users
 		Iterable<User> allUsers = userRepository.findAll();
@@ -180,7 +197,6 @@ public class UserServiceImpl implements UserService {
 	public User findUserByEmail(final String email) throws UserNotFoundException {
 		return userRepository.findByEmail(email)
 				.orElseThrow(() -> new UserNotFoundException("User not found."));
-
 	}
 
 	@Override
@@ -216,5 +232,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Optional<User> findUserByUsername(String userName) {
 		return userRepository.findByUserName(userName);
+	}
+
+	/**
+	 * https://github.com/google/google-authenticator/wiki/Key-Uri-Format To
+	 * understand the format of the secret key to send to Google Authenticator
+	 */
+	@Override
+	public String generateQRUrl(User user) throws UnsupportedEncodingException {
+		return Constants.QR_PREFIX + URLEncoder.encode(String.format(
+				"otpauth://totp/%s:%s?secret=%s&issuer=%s",
+				appName, user.getEmail(), user.getSecret(), appName),
+				"UTF-8");
 	}
 }

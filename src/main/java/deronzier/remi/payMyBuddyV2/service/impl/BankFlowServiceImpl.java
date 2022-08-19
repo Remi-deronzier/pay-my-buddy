@@ -18,8 +18,8 @@ public class BankFlowServiceImpl implements BankFlowService {
 	private BankFlowRepository bankFlowRepository;
 
 	@Override
-	public Page<BankFlow> findAllBankFlowsForSpecificUser(int userId, Pageable pageable) {
-		return bankFlowRepository.findBySenderId(userId, pageable);
+	public Page<BankFlow> findAllSentAndReceivedBankFlowsForSpecificUser(int userId, Pageable pageable) {
+		return bankFlowRepository.findBySenderIdOrReceiverId(userId, userId, pageable);
 	}
 
 	@Override

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	    <title>Pay My buddy - Qr code</title>
+	    
+		<!-- Bootstrap CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+		<!-- Bootstrap JS -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+	</head>
+	
+	<body>
+		<div class="container mt-5">
+			<div class="d-flex justify-content-center align-items-center">
+				<div th:if="${param.errorMessage}" class="alert alert-danger dismissible fade show w-75" role="alert">
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+					<strong>Error!</strong>
+					<span>Wrong verification code</span>
+				</div>
+			</div>
+			
+			<div class="d-flex justify-content-center">
+				<div class="card w-75 text-center">
+					<div class="card-body">
+						<div class="d-flex justify-content-center">
+							<h5 class="card-title bg-success rounded p-3 text-light mb-4">Pay My Buddy</h5>
+						</div>
+					    <p class="card-text">
+					        Scan this Barcode using Google Authenticator app on your phone
+					        (<a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank">Android</a> or
+					        <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605" target="_blank">iPhone</a>) 
+					        to use it later in login
+					    </p>
+					    <img th:src="${qrCode}" class="mb-3"/>
+					    <form th:action="@{/confirmSecret}" method="post" class="form">
+						    <p class="card-text">Enter the 6-digit code from Google Authenticator app</p>
+						    <div class="row mb-3">
+								<label for="code" class="col-sm-2 col-form-label">Verification code*</label>
+								<div class="col-sm-10">
+									<input required type="number" class="form-control" name="code" id="code" placeholder="123467">
+								</div>
+							</div>
+							<input required type="hidden" th:value="${param.userName}" th:name="userName">
+				            <button type="submit" class="btn btn-primary">Verify</button>
+					    </form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

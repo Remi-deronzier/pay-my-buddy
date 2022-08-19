@@ -1,5 +1,6 @@
 package deronzier.remi.payMyBuddyV2.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -143,6 +144,35 @@ public class UserController {
 		final int userId = customUser.getId();
 		userService.addConnection(userId, newConnection.getId());
 		return "redirect:/users/contact?isNewConnectionAddedSuccessfully=true";
+	}
+
+	@GetMapping(value = "/settings/{userName}")
+	public String getSettings(Model model, @PathVariable final String userName)
+			throws UserNotFoundException {
+		User user = userService.findUserByUsername(userName)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		final int userId = user.getId();
+		model.addAttribute("using2FA", user.isUsing2FA());
+		model.addAttribute("userId", userId);
+		model.addAttribute("userName", userName);
+		return "users/settings";
+	}
+
+	@PatchMapping("/settings/{id}")
+	public String patchSettings(@RequestParam(required = true, value = "using2FA") boolean using2FA,
+			@PathVariable final int id, @RequestParam(required = true, value = "userName") String userName,
+			RedirectAttributes redirectAttributes)
+			throws UserNotFoundException, UnsupportedEncodingException {
+		User user = userService.findUserById(id)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		userService.updateUsing2FA(using2FA, id);
+		if (using2FA) {
+			redirectAttributes.addAttribute("qrCode", userService.generateQRUrl(user));
+			redirectAttributes.addAttribute("userName", userName);
+			return "redirect:/qrCode";
+		} else {
+			return "redirect:/users/" + userName + "?areSettingsUpdatedSuccessfully=true";
+		}
 	}
 
 	@DeleteMapping("/contact/delete/{connectionId}")

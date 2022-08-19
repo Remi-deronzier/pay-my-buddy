@@ -3,6 +3,7 @@ package deronzier.remi.payMyBuddyV2.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import deronzier.remi.payMyBuddyV2.security.CustomAuthenticationProvider;
+import deronzier.remi.payMyBuddyV2.security.CustomWebAuthenticationDetailsSource;
+
 @SuppressWarnings("deprecation")
 @EnableWebSecurity
 @Configuration
@@ -22,17 +26,8 @@ public class PayMyBuddyV2SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsService userDetailsService;
 
-	/**
-	 * Try to give access to /resources folder but epic fail!!!!
-	 *
-	 */
-
-//	@Override
-//	public void configure(WebSecurity web) throws Exception {
-//		web
-//				.ignoring()
-//				.antMatchers("/resources/**");
-//	}
+	@Autowired
+	private CustomWebAuthenticationDetailsSource authenticationDetailsSource;
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {// @formatter:off
@@ -46,6 +41,8 @@ public class PayMyBuddyV2SecurityConfig extends WebSecurityConfigurerAdapter {
 						"/login*",
 						"/user/signup",
 						"/registrationConfirm*",
+						"/qrCode*",
+						"/confirmSecret*",
 						"/forgotPassword*",
 						"/user/resetPassword*",
 						"/user/changePassword*",
@@ -56,19 +53,30 @@ public class PayMyBuddyV2SecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 				.formLogin().loginPage("/login").permitAll().loginProcessingUrl("/doLogin")
 				.defaultSuccessUrl("/", true)
+				.authenticationDetailsSource(authenticationDetailsSource)
 
 				.and()
 				.logout().permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/doLogout", "POST"))
+				.deleteCookies("JSESSIONID")
 
 				.and()
 				.rememberMe()
+				.userDetailsService(userDetailsService)
 				.rememberMeParameter("sticky")
 				.rememberMeCookieName("sticky-cookie");
 	} // @formatter:on
 
+	@Bean
+	public DaoAuthenticationProvider authProvider() {
+		final CustomAuthenticationProvider authProvider = new CustomAuthenticationProvider();
+		authProvider.setUserDetailsService(userDetailsService);
+		authProvider.setPasswordEncoder(passwordEncoder());
+		return authProvider;
+	}
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService);
+		auth.authenticationProvider(authProvider());
 	}
 
 	@Bean
