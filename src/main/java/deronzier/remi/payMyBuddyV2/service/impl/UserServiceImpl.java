@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.jboss.aerogear.security.otp.api.Base32;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,6 +164,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public User updatePhoneNumber(String phoneNumber, String userName)
+			throws UserNotFoundException, IllegalPhoneNumberException {
+		User userToUpdate = userRepository.findByUserName(userName)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		userToUpdate.setPasswordConfirmation(userToUpdate.getPassword());
+		userToUpdate.setPhoneNumber(phoneNumber);
+		return userRepository.save(userToUpdate);
+	}
+
+	@Override
 	public List<User> findFuturePotentialConnections(int ownerId) throws UserNotFoundException {
 		// Get all users
 		Iterable<User> allUsers = userRepository.findAll();
@@ -222,6 +233,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public void createPhoneVerificationCode(User user) {
+		final String phoneVerificationCode = getRandomNumberString();
+		user.setPasswordConfirmation(user.getPassword());
+		user.setPhoneVerificationCode(phoneVerificationCode);
+		userRepository.save(user);
+	}
+
+	@Override
 	public void changeUserPassword(final User user, final String password) {
 		String encryptedPassword = passwordEncoder.encode(password);
 		user.setPassword(encryptedPassword);
@@ -244,5 +263,11 @@ public class UserServiceImpl implements UserService {
 				"otpauth://totp/%s:%s?secret=%s&issuer=%s",
 				appName, user.getEmail(), user.getSecret(), appName),
 				"UTF-8");
+	}
+
+	private String getRandomNumberString() {
+		Random rnd = new Random();
+		int number = rnd.nextInt(999999);
+		return String.format("%06d", number);
 	}
 }

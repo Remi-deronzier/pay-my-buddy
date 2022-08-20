@@ -4,7 +4,6 @@
 
 INSERT INTO `user` (`email`, `password`, `first_name`, `last_name`, `user_name`, `enabled`) VALUES
 ("payMyBuddy@gmail.com", "$2a$12$f85xICrTr0mW4vcBfJ541ejSquWFbYdOyZJSZL6yyZyyC0Kvfc/8S", "Pay My Buddy", "Super User", "PayMyBuddy", 1),
-("remi@gmail.com", "$2y$10$fWmW8.Q6f20Fz1M0WmnLDeBKBdeK4ZcEyr1BkwkzW00dp3aRlLPEW", "remi", "Deronzier", "remax21", 1),
 ("lucie@gmail.com", "$2y$10$h0K.LELTJ9PhRQmy7udPDejWZie8pwwg6mJeznBLl38KT86pFWNTS", "lucie", "Deronzier", "louizaine", 1),
 ("gaelle@gmail.com", "$2y$10$cOYvpsb9ViSSBUFsVb/vwO8NAUe7C3bLgyOiTvq8UQVPwck3mggLm", "gaelle", "Deronzier", "GaelleDeronzier", 1),
 ("pierre-andre@gmail.com", "$2a$12$8rRhQWxE.mgJX5.g5RSbVugxAwyPm3vU6UK4TG.u0s3U2leQQlo0e", "pierre-andre", "Crepon", "PeterAndrewX", 1),
@@ -14,6 +13,9 @@ INSERT INTO `user` (`email`, `password`, `first_name`, `last_name`, `user_name`,
 
 INSERT INTO `user` (`email`, `password`, `first_name`, `last_name`, `user_name`, `description`, `phone_number`, `date_of_birth`, `enabled`) VALUES
 ("thomas@gmail.com", "$2y$10$tYLAx3bm0t1H2nyqCJMgh.XjMUGOVlD7Iy06j1of2oUnm4bBycap2", "thomas", "Deronzier", "thomsou", "Hello, my name is Thomas. I love running and hiking. I work in the field of renewable energy. I also play the piano and enjoy spending time with my friends. I find this very important!!!", "+33 6 66 66 66 66", "1997-06-12", 1);
+
+INSERT INTO `user` (`email`, `password`, `first_name`, `last_name`, `user_name`, `description`, `phone_number`, `date_of_birth`, `enabled`) VALUES
+("remi@gmail.com", "$2y$10$fWmW8.Q6f20Fz1M0WmnLDeBKBdeK4ZcEyr1BkwkzW00dp3aRlLPEW", "remi", "Deronzier", "remax21", "Hello, my name is Remi. I love running and hiking. I work in the field of renewable energy. I also play the piano and enjoy spending time with my friends. I find this very important!!!", "+33 6 95 94 43 35", "1998-06-12", 1);
 
 --
 -- Dumping data for table `role`
@@ -42,6 +44,8 @@ INSERT INTO `connection` (`owner_id`, `connection_id`) VALUES
 (2, 3),
 (2,4),
 (2,5),
+(9, 3),
+(9, 5),
 (3, 4);
 
 --
@@ -57,7 +61,7 @@ INSERT INTO `account` (`balance`, `user_id`) VALUES
 (640, 6),
 (156, 7),
 (356, 8),
-(-300, 9);
+(300, 9);
 
 --
 -- Dumping data for table `external_account`

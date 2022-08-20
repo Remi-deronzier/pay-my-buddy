@@ -79,10 +79,13 @@ public class User {
 
 	private String description;
 
+	@NotBlank(message = "Phone number cannot be null")
 	private String phoneNumber;
 
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private boolean using2FA;
+
+	private String phoneVerificationCode;
 
 	private String secret = Base32.random(); // For 2FA
 
@@ -132,7 +135,7 @@ public class User {
 
 	public void setPhoneNumber(String phoneNumber) throws IllegalPhoneNumberException {
 		if (phoneNumber != null && !phoneNumber.isEmpty()) {
-			Pattern pattern = Pattern.compile("^(?:(?:\\+|00)33|0)\\s*[1-9](?:[\\s.-]*\\d{2}){4}$");
+			Pattern pattern = Pattern.compile("^((\\+)33)[1-9](\\d{2}){4}$");
 			Matcher matcher = pattern.matcher(phoneNumber);
 			if (matcher.matches()) {
 				this.phoneNumber = phoneNumber;
@@ -160,7 +163,7 @@ public class User {
 		account.setUser(this);
 	}
 
-	public Integer calculateAge(LocalDate dob) {
+	private Integer calculateAge(LocalDate dob) {
 		LocalDate curDate = LocalDate.now();
 		if ((dob != null) && (curDate != null)) {
 			return Period.between(dob, curDate).getYears();

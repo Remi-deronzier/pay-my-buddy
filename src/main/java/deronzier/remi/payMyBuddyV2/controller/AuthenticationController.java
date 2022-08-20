@@ -25,14 +25,16 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import deronzier.remi.payMyBuddyV2.event.checkPhone.OnPhoneCheckCompleteEvent;
+import deronzier.remi.payMyBuddyV2.event.forgotPassword.OnForgotPasswordCompleteEvent;
+import deronzier.remi.payMyBuddyV2.event.registration.OnRegistrationCompleteEvent;
+import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserEmailExistsException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
-import deronzier.remi.payMyBuddyV2.forgotPassword.OnForgotPasswordCompleteEvent;
 import deronzier.remi.payMyBuddyV2.model.PasswordResetToken;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.model.VerificationToken;
-import deronzier.remi.payMyBuddyV2.registration.OnRegistrationCompleteEvent;
 import deronzier.remi.payMyBuddyV2.service.UserService;
 
 @Controller
@@ -118,23 +120,15 @@ public class AuthenticationController {
 			return new ModelAndView("redirect:/login");
 		}
 
-		user.setEnabled(true);
-		userService.save(user);
-		redirectAttributes.addFlashAttribute("message", "Your account verified successfully");
+		redirectAttributes.addAttribute("userName", user.getUserName());
+		return new ModelAndView("redirect:/phoneCheck");
 
-		if (user.isUsing2FA()) {
-			redirectAttributes.addAttribute("qrCode", userService.generateQRUrl(user));
-			redirectAttributes.addAttribute("userName", user.getUserName());
-			return new ModelAndView("redirect:/qrCode");
-		} else {
-			return new ModelAndView("redirect:/login");
-		}
 	}
 
 	// Reset password
 
 	@RequestMapping("/forgotPassword")
-	public String showForgotPassword(Model model, HttpServletRequest request) {
+	public String showForgotPassword() {
 		return "authentication/forgot-password";
 	}
 
@@ -155,7 +149,6 @@ public class AuthenticationController {
 					"It seems that this user does not exist. You must sign up first");
 			return new ModelAndView("redirect:/signup");
 		}
-
 	}
 
 	@RequestMapping(value = "/user/changePassword", method = RequestMethod.GET)
@@ -235,7 +228,7 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/confirmSecret")
-	public String signupConfirmSecret(@RequestParam("userName") String userName,
+	public String signupConfirmSecret2FA(@RequestParam("userName") String userName,
 			@RequestParam(required = true, value = "code") String code, RedirectAttributes redirectAttributes)
 			throws UserNotFoundException, UnsupportedEncodingException {
 
@@ -249,6 +242,93 @@ public class AuthenticationController {
 			redirectAttributes.addAttribute("qrCode", userService.generateQRUrl(user));
 			redirectAttributes.addAttribute("userName", user.getUserName());
 			return "redirect:/qrCode?errorMessage";
+		}
+	}
+
+	// Phone verification
+
+	@RequestMapping("/phoneCheck")
+	public String getCheckPhoneNumber(Model model, @RequestParam("userName") String userName)
+			throws UserNotFoundException {
+		User user = userService.findUserByUsername(userName)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		userService.createPhoneVerificationCode(user);
+		model.addAttribute("phoneNumber", user.getPhoneNumber());
+		eventPublisher.publishEvent(new OnPhoneCheckCompleteEvent(user, user.getPhoneVerificationCode()));
+		return "authentication/phone-check";
+	}
+
+	@PostMapping("/confirmPhoneNumber")
+	public String signupCheckPhoneNumber(@RequestParam("userName") String userName,
+			@RequestParam(required = true, value = "code") String code, RedirectAttributes redirectAttributes)
+			throws UserNotFoundException, UnsupportedEncodingException {
+		User user = userService.findUserByUsername(userName)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		final String phoneVerificationCode = user.getPhoneVerificationCode();
+		if (phoneVerificationCode.equals(code)) {
+			user.setEnabled(true);
+			userService.save(user);
+			if (user.isUsing2FA()) {
+				redirectAttributes.addAttribute("qrCode", userService.generateQRUrl(user));
+				redirectAttributes.addAttribute("userName", user.getUserName());
+				return "redirect:/qrCode";
+			} else {
+				redirectAttributes.addFlashAttribute("message", "Phone and account successfully verified");
+				return "redirect:/login";
+			}
+		} else {
+			redirectAttributes.addAttribute("errorMessage", "Wrong verification code");
+			redirectAttributes.addAttribute("userName", user.getUserName());
+			return "redirect:/phoneCheck";
+		}
+	}
+
+	@RequestMapping("/updatePhoneNumber")
+	public String getUpdatePhoneNumber(Model model, @RequestParam("userName") String userName)
+			throws UserNotFoundException {
+		User user = userService.findUserByUsername(userName)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		model.addAttribute(user);
+		return "authentication/new-phone-number";
+	}
+
+	@PostMapping("/updatePhoneNumber")
+	public String postNewPhoneNumber(Model model, RedirectAttributes redirectAttributes,
+			@RequestParam("userName") String userName, @RequestParam("phoneNumber") String phoneNumber)
+			throws UserNotFoundException {
+		try {
+			userService.updatePhoneNumber(phoneNumber, userName);
+			redirectAttributes.addAttribute("userName", userName);
+			redirectAttributes.addAttribute("message", "Phone number successfully updated");
+			return "redirect:/phoneCheck";
+		} catch (IllegalPhoneNumberException ipne) {
+			model.addAttribute("error", "Wrong phone number");
+			return "authentication/new-phone-number";
+		}
+	}
+
+	// Reset registration
+
+	@RequestMapping("/resetRegistration")
+	public String getResetRegistration() {
+		return "authentication/reset-registration";
+	}
+
+	@PostMapping("/resetRegistration")
+	public String postResetRegistration(@RequestParam("email") final String userEmail,
+			RedirectAttributes redirectAttributes,
+			HttpServletRequest request) {
+		try {
+			User user = userService.findUserByEmail(userEmail);
+			final String appUrl = "http://" + request.getServerName() + ":" + request.getServerPort()
+					+ request.getContextPath();
+			eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, appUrl));
+			redirectAttributes.addFlashAttribute("message", "You should receive a new activation email shortly");
+			return "redirect:/login";
+		} catch (UserNotFoundException e) {
+			redirectAttributes.addFlashAttribute("errorMessage",
+					"It seems that this user does not exist. You must sign up first");
+			return "redirect:/signup";
 		}
 	}
 

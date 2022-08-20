@@ -58,4 +58,9 @@ public interface UserService {
 
 	User updateUsing2FA(boolean using2fa, int id) throws UserNotFoundException;
 
+	void createPhoneVerificationCode(User user);
+
+	User updatePhoneNumber(String phoneNumber, String userName)
+			throws UserNotFoundException, IllegalPhoneNumberException;
+
 }

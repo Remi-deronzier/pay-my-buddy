@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.forgotPassword;
+package deronzier.remi.payMyBuddyV2.event.forgotPassword;
 
 import org.springframework.context.ApplicationEvent;
 

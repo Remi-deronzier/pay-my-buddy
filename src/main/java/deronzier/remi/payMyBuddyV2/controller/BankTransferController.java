@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import deronzier.remi.payMyBuddyV2.event.bankFlow.OnBankFlowCompleteEvent;
 import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotBelongGoodUserException;
 import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotFoundException;
@@ -49,6 +51,9 @@ public class BankTransferController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private ApplicationEventPublisher eventPublisher;
 
 	@GetMapping()
 	public String getBankTransfers(Model model, HttpServletRequest request,
@@ -117,6 +122,8 @@ public class BankTransferController {
 			throws UserNotFoundException, AccountNotFoundException,
 			ExternalAccountNotFoundException, ExternalAccountNotBelongGoodUserException {
 		final int userId = customUser.getId();
+		User userLoggedIn = userService.findUserById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
 
 		try {
 			switch (bankTransferType) {
@@ -145,6 +152,10 @@ public class BankTransferController {
 					bankTransferService.makeBankTransfer(newBankTransfer.getAmount(), userId,
 							BankTransferType.USE,
 							externalAccount.getId());
+					if (userLoggedIn.getPhoneNumber() != null && !userLoggedIn.getPhoneNumber().isEmpty()) {
+						eventPublisher
+								.publishEvent(new OnBankFlowCompleteEvent(userLoggedIn, newBankTransfer.getAmount()));
+					}
 				} catch (NegativeAmountException nae) {
 					redirectAttributes.addFlashAttribute("negativeAmountExceptionUse", nae);
 					return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import deronzier.remi.payMyBuddyV2.event.bankFlow.OnBankFlowCompleteEvent;
 import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import deronzier.remi.payMyBuddyV2.exception.TransactionSameAccountException;
@@ -43,6 +45,9 @@ public class TransactionController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private ApplicationEventPublisher eventPublisher;
 
 	@GetMapping()
 	public String getTransactions(Model model, HttpServletRequest request,
@@ -94,6 +99,8 @@ public class TransactionController {
 			RedirectAttributes redirectAttributes)
 			throws UserNotFoundException, AccountNotFoundException, TransactionSameAccountException {
 		final int userId = customUser.getId();
+		User userLoggedIn = userService.findUserById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
 
 		if (bindingResult.hasErrors()) { // if amount is lower than 10€
 			redirectAttributes.addFlashAttribute("tooLowAmountError",
@@ -103,6 +110,9 @@ public class TransactionController {
 		try {
 			transactionService.makeTransaction(userId, receiver.getId(), transaction.getAmount(),
 					transaction.getDescription());
+			if (userLoggedIn.getPhoneNumber() != null && !userLoggedIn.getPhoneNumber().isEmpty()) {
+				eventPublisher.publishEvent(new OnBankFlowCompleteEvent(userLoggedIn, transaction.getAmount()));
+			}
 			return "redirect:/transactions?isNewTransactionMadeSuccessfully=true";
 		} catch (AccountNotEnoughMoneyException aneme) {
 			redirectAttributes.addFlashAttribute("accountNotEnoughMoneyException", aneme);

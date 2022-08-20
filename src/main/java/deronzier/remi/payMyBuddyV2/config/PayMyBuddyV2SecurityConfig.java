@@ -1,6 +1,9 @@
 package deronzier.remi.payMyBuddyV2.config;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.twilio.Twilio;
+
 import deronzier.remi.payMyBuddyV2.security.CustomAuthenticationProvider;
 import deronzier.remi.payMyBuddyV2.security.CustomWebAuthenticationDetailsSource;
 
@@ -22,6 +27,12 @@ import deronzier.remi.payMyBuddyV2.security.CustomWebAuthenticationDetailsSource
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class PayMyBuddyV2SecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Value("${twilio.sid}")
+	private String accountSid;
+
+	@Value("${twilio.token}")
+	private String authToken;
 
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -39,6 +50,11 @@ public class PayMyBuddyV2SecurityConfig extends WebSecurityConfigurerAdapter {
 						"/js/**",
 						"/css/**",
 						"/login*",
+						"/user/signup",
+						"/phoneCheck*",
+						"/confirmPhoneNumber*",
+						"/updatePhoneNumber*",
+						"/resetRegistration*",
 						"/user/signup",
 						"/registrationConfirm*",
 						"/qrCode*",
@@ -82,6 +98,11 @@ public class PayMyBuddyV2SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@PostConstruct
+	public void twilioRestClient() {
+		Twilio.init(accountSid, authToken);
 	}
 
 }

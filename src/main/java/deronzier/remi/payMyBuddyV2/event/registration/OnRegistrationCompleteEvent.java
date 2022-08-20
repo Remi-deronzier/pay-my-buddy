@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.registration;
+package deronzier.remi.payMyBuddyV2.event.registration;
 
 import org.springframework.context.ApplicationEvent;
 

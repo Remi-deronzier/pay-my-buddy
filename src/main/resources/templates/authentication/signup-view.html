@@ -38,7 +38,7 @@
 								<div class="col-sm-10">
 		  							<div class="input-group">
 										<div class="input-group-text">@</div>
-										<input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" th:field="*{email}">
+										<input required type="email" class="form-control" name="email" id="email" placeholder="name@example.com" th:field="*{email}">
 									</div>
 								</div>
 								<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger text-end">Email Error</span>
@@ -46,21 +46,21 @@
 							<div class="row mb-3">
 								<label for="userName" class="col-sm-2 col-form-label">Username*</label>
 							    <div class="col-sm-10">
-									<input type="text" class="form-control" name="userName" id="userName" placeholder="johnDoe" th:field="*{userName}">
+									<input required type="text" class="form-control" name="userName" id="userName" placeholder="johnDoe" th:field="*{userName}">
 							    </div>
 								<span th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}" class="text-danger text-end">User name Error</span>
   							</div>
   							<div class="row mb-3">
 								<label for="firstName" class="col-sm-2 col-form-label">First name*</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" name="firstName" id="firstName" placeholder="John" th:field="*{firstName}">
+									<input required type="text" class="form-control" name="firstName" id="firstName" placeholder="John" th:field="*{firstName}">
 								</div>
 								<span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-danger text-end">First name Error</span>
   							</div>
   							<div class="row mb-3">
 								<label for="lastName" class="col-sm-2 col-form-label">Last name*</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" name="lastName" id="lastName" placeholder="Doe" th:field="*{lastName}">
+									<input required type="text" class="form-control" name="lastName" id="lastName" placeholder="Doe" th:field="*{lastName}">
 								</div>
 								<span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger text-end">Last name Error</span>
   							</div>
@@ -72,9 +72,9 @@
 								<span th:if="${#fields.hasErrors('dateOfBirth')}" class="text-danger text-end">Date of birth is not a valid format (yyyy-MM-dd) or you are not over 18</span>
   							</div>
   							<div class="row mb-3">
-								<label for="phoneNumber" class="col-sm-2 col-form-label">Tel</label>
+								<label for="phoneNumber" class="col-sm-2 col-form-label">Tel*</label>
 								<div class="col-sm-10">
-									<input type="tel" class="form-control" name="phoneNumber" id="phoneNumber" placeholder="06 66 66 66 66" th:field="*{phoneNumber}">
+									<input required type="tel" class="form-control" name="phoneNumber" id="phoneNumber" placeholder="+33666666666 (Respect this format)" th:field="*{phoneNumber}">
 								</div>
 								<span th:if="${#fields.hasErrors('phoneNumber')}" class="text-danger text-end">Phone number is not a French valid number</span>
   							</div>
@@ -87,14 +87,14 @@
   							<div class="row mb-3">
 								<label for="password" class="col-sm-2 col-form-label">Password*</label>
 								<div class="col-sm-10">
-									<input type="password" class="form-control" name="password" id="password" placeholder="*****" th:field="*{password}">
+									<input required type="password" class="form-control" name="password" id="password" placeholder="*****" th:field="*{password}">
 								</div>
 								<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger text-end">Password Error</span>
   							</div>
   							<div class="row">
 								<label for="passwordConfirmation" class="col-sm-2 col-form-label">Password confirmation*</label>
 								<div class="col-sm-10">
-									<input type="password" class="form-control" name="passwordConfirmation" id="passwordConfirmation" placeholder="*****">
+									<input required type="password" class="form-control" name="passwordConfirmation" id="passwordConfirmation" placeholder="*****">
 								</div>
 								<span th:if="${#fields.hasErrors('passwordConfirmation')}" th:errors="*{passwordConfirmation}" class="text-danger text-end">Password confirmation Error</span>
 								<span th:if="${#fields.hasErrors('global')}" th:errors="*{global}" class="text-danger text-end">Incorrect password confirmation</span>
