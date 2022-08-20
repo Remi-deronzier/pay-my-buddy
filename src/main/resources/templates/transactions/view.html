@@ -34,24 +34,24 @@
 				<div class="card-body">
 					<form id="transactionForm" class="row row-cols-md-auto g-2 align-items-end justify-content-center"
 					th:if="${!connections.isEmpty}" action="#" th:action="@{/transactions/makeTransaction}" method="post">
-						<div class="col-12" th:object="${receiver}">
+						<div class="col" th:object="${receiver}">
 							<label for="selectConnection" class="form-label">Select a connection</label>
 							<select class="form-select" aria-label="Default select" id="selectConnection" name="selectConnection" th:field="*{id}">
 				    			<option th:each="user: ${connections}" th:value="${user.id}" th:text="${user.userName} + ' - ' + ${user.firstName} + ' ' + ${user.lastName}"></option>
 							</select>
 						</div>
-						<div class="col-12" th:object="${newTransaction}">
+						<div class="col" th:object="${newTransaction}">
 							<label for="amount" class="form-label">Enter the amount*</label>
 							<div class="input-group">
 								<div class="input-group-text">€</div>
 								<input type="number" step="any" class="form-control" placeholder="Amount" id="amount" th:field="*{amount}" name="amount">
 							</div>
 						</div>
-						<div class="col-12" th:object="${newTransaction}">
+						<div class="col" th:object="${newTransaction}">
 							<label for="description" class="form-label">Enter the description</label>
 							<input type="text" class="form-control" placeholder="Description" id="description" th:field="*{description}">
 						</div>
-						<div class="col-12">
+						<div class="col">
 							<button type="submit" class="btn btn-primary">Pay</button>
 						</div>
 					</form>
