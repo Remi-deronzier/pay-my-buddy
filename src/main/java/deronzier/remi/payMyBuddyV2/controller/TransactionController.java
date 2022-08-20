@@ -110,7 +110,7 @@ public class TransactionController {
 		try {
 			transactionService.makeTransaction(userId, receiver.getId(), transaction.getAmount(),
 					transaction.getDescription());
-			if (userLoggedIn.getPhoneNumber() != null && !userLoggedIn.getPhoneNumber().isEmpty()) {
+			if (userLoggedIn.isUsingPhone()) {
 				eventPublisher.publishEvent(new OnBankFlowCompleteEvent(userLoggedIn, transaction.getAmount()));
 			}
 			return "redirect:/transactions?isNewTransactionMadeSuccessfully=true";

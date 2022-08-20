@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
 import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
-import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserEmailExistsException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
@@ -142,7 +141,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User updateProfile(User inputUser, int id) throws UserNotFoundException, IllegalPhoneNumberException {
+	public User updateProfile(User inputUser, int id) throws UserNotFoundException {
 		User userToUpdate = userRepository.findById(id)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
 		userToUpdate.setPasswordConfirmation(userToUpdate.getPassword());
@@ -165,7 +164,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User updatePhoneNumber(String phoneNumber, String userName)
-			throws UserNotFoundException, IllegalPhoneNumberException {
+			throws UserNotFoundException {
 		User userToUpdate = userRepository.findByUserName(userName)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
 		userToUpdate.setPasswordConfirmation(userToUpdate.getPassword());

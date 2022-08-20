@@ -25,10 +25,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import com.twilio.rest.lookups.v1.PhoneNumber;
+
 import deronzier.remi.payMyBuddyV2.event.checkPhone.OnPhoneCheckCompleteEvent;
 import deronzier.remi.payMyBuddyV2.event.forgotPassword.OnForgotPasswordCompleteEvent;
 import deronzier.remi.payMyBuddyV2.event.registration.OnRegistrationCompleteEvent;
-import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserEmailExistsException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
@@ -77,6 +78,11 @@ public class AuthenticationController {
 	public String postSignup(@Valid @ModelAttribute("newUser") final User newUser, final BindingResult result,
 			Model model, HttpServletRequest request) {
 		if (result.hasErrors()) {
+			return returnSignupPageWithErrorMessages(model, newUser);
+		}
+
+		if (!isPhoneNumberValid(newUser.getPhoneNumber())) {
+			result.addError(new FieldError("newUser", "phoneNumber", "Invalid phone number"));
 			return returnSignupPageWithErrorMessages(model, newUser);
 		}
 
@@ -248,14 +254,29 @@ public class AuthenticationController {
 	// Phone verification
 
 	@RequestMapping("/phoneCheck")
-	public String getCheckPhoneNumber(Model model, @RequestParam("userName") String userName)
-			throws UserNotFoundException {
+	public String getCheckPhoneNumber(Model model, @RequestParam("userName") String userName,
+			RedirectAttributes redirectAttributes)
+			throws UserNotFoundException, UnsupportedEncodingException {
 		User user = userService.findUserByUsername(userName)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
-		userService.createPhoneVerificationCode(user);
-		model.addAttribute("phoneNumber", user.getPhoneNumber());
-		eventPublisher.publishEvent(new OnPhoneCheckCompleteEvent(user, user.getPhoneVerificationCode()));
-		return "authentication/phone-check";
+		try {
+			userService.createPhoneVerificationCode(user);
+			model.addAttribute("phoneNumber", user.getPhoneNumber());
+			eventPublisher.publishEvent(new OnPhoneCheckCompleteEvent(user, user.getPhoneVerificationCode()));
+			return "authentication/phone-check";
+		} catch (com.twilio.exception.ApiException e) {
+			user.setEnabled(true);
+			userService.save(user);
+			if (user.isUsing2FA()) {
+				redirectAttributes.addAttribute("qrCode", userService.generateQRUrl(user));
+				redirectAttributes.addAttribute("userName", user.getUserName());
+				return "redirect:/qrCode?isPhoneNumberChecked=false";
+			} else {
+				redirectAttributes.addFlashAttribute("errorMessage",
+						"There was a problem during the verification of your phone number. However, you can still use our services without any problems. Just note that you will not be notified by SMS when you receive or send bank transfers.");
+				return "redirect:/login";
+			}
+		}
 	}
 
 	@PostMapping("/confirmPhoneNumber")
@@ -267,6 +288,7 @@ public class AuthenticationController {
 		final String phoneVerificationCode = user.getPhoneVerificationCode();
 		if (phoneVerificationCode.equals(code)) {
 			user.setEnabled(true);
+			user.setUsingPhone(true);
 			userService.save(user);
 			if (user.isUsing2FA()) {
 				redirectAttributes.addAttribute("qrCode", userService.generateQRUrl(user));
@@ -296,15 +318,16 @@ public class AuthenticationController {
 	public String postNewPhoneNumber(Model model, RedirectAttributes redirectAttributes,
 			@RequestParam("userName") String userName, @RequestParam("phoneNumber") String phoneNumber)
 			throws UserNotFoundException {
-		try {
-			userService.updatePhoneNumber(phoneNumber, userName);
-			redirectAttributes.addAttribute("userName", userName);
-			redirectAttributes.addAttribute("message", "Phone number successfully updated");
-			return "redirect:/phoneCheck";
-		} catch (IllegalPhoneNumberException ipne) {
+
+		if (!isPhoneNumberValid(phoneNumber)) {
 			model.addAttribute("error", "Wrong phone number");
 			return "authentication/new-phone-number";
 		}
+
+		userService.updatePhoneNumber(phoneNumber, userName);
+		redirectAttributes.addAttribute("userName", userName);
+		redirectAttributes.addAttribute("message", "Phone number successfully updated");
+		return "redirect:/phoneCheck";
 	}
 
 	// Reset registration
@@ -329,6 +352,17 @@ public class AuthenticationController {
 			redirectAttributes.addFlashAttribute("errorMessage",
 					"It seems that this user does not exist. You must sign up first");
 			return "redirect:/signup";
+		}
+	}
+
+	private boolean isPhoneNumberValid(String phoneNumber) {
+		try {
+			PhoneNumber
+					.fetcher(new com.twilio.type.PhoneNumber(phoneNumber))
+					.fetch();
+			return true;
+		} catch (com.twilio.exception.ApiException e) {
+			return false;
 		}
 	}
 

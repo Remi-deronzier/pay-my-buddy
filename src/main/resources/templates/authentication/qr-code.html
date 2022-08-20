@@ -20,6 +20,13 @@
 					<strong>Error!</strong>
 					<span>Wrong verification code</span>
 				</div>
+				<div th:if="${param.isPhoneNumberChecked != null && !param.isPhoneNumberChecked}" class="alert alert-danger dismissible fade show w-75" role="alert">
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+					<strong>Error!</strong>
+					<span>
+						There was a problem during the verification of your phone number. However, you can still use our services without any problems. Just note that you will not be notified by SMS when you receive or send bank transfers.
+					</span>
+				</div>
 			</div>
 			
 			<div class="d-flex justify-content-center">

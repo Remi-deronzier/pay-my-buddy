@@ -28,7 +28,6 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
 import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
-import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.security.CustomUser;
@@ -61,12 +60,9 @@ public class UserController {
 		// Check validation form server side
 		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
 		if (inputFlashMap != null) {
-			IllegalPhoneNumberException illegalPhoneNumberException = (IllegalPhoneNumberException) inputFlashMap
-					.get("illegalPhoneNumberException");
 			DataIntegrityViolationException dataIntegrityViolationException = (DataIntegrityViolationException) inputFlashMap
 					.get("dataIntegrityViolationException");
 			model.addAttribute("dataIntegrityViolationException", dataIntegrityViolationException);
-			model.addAttribute("illegalPhoneNumberException", illegalPhoneNumberException);
 		}
 
 		User userLoggedIn = userService.findUserByUsername(customUser.getUsername())
@@ -113,9 +109,6 @@ public class UserController {
 			final String userName = customUser.getUsername();
 			try {
 				userService.updateProfile(user, id);
-			} catch (IllegalPhoneNumberException ipne) {
-				redirectAttributes.addFlashAttribute("illegalPhoneNumberException", ipne);
-				return "redirect:/users/" + userName + "?isProfileUpdatedSuccessfully=false&isEditing=true";
 			} catch (DataIntegrityViolationException dive) {
 				redirectAttributes.addFlashAttribute("dataIntegrityViolationException", dive);
 				return "redirect:/users/" + userName + "?isProfileUpdatedSuccessfully=false&isEditing=true";

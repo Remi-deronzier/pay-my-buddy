@@ -5,8 +5,6 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,7 +27,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.jboss.aerogear.security.otp.api.Base32;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserUnderEighteenException;
 import deronzier.remi.payMyBuddyV2.validation.passwordmatches.PasswordMatches;
 import deronzier.remi.payMyBuddyV2.validation.passwordvalid.ValidPassword;
@@ -87,9 +84,12 @@ public class User {
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private boolean using2FA;
 
+	private String secret = Base32.random(); // For 2FA
+
 	private String phoneVerificationCode;
 
-	private String secret = Base32.random(); // For 2FA
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	private boolean usingPhone;
 
 	@Column(nullable = false, columnDefinition = "varchar(32) default 'AWAY'")
 	@Enumerated(value = EnumType.STRING)
@@ -131,18 +131,6 @@ public class User {
 				this.dateOfBirth = dateOfBirth;
 			} else {
 				throw new UserUnderEighteenException("User is under 18");
-			}
-		}
-	}
-
-	public void setPhoneNumber(String phoneNumber) throws IllegalPhoneNumberException {
-		if (phoneNumber != null && !phoneNumber.isEmpty()) {
-			Pattern pattern = Pattern.compile("^((\\+)33)[1-9](\\d{2}){4}$");
-			Matcher matcher = pattern.matcher(phoneNumber);
-			if (matcher.matches()) {
-				this.phoneNumber = phoneNumber;
-			} else {
-				throw new IllegalPhoneNumberException("Phone number is not valid");
 			}
 		}
 	}

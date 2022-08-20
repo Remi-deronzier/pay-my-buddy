@@ -152,7 +152,7 @@ public class BankTransferController {
 					bankTransferService.makeBankTransfer(newBankTransfer.getAmount(), userId,
 							BankTransferType.USE,
 							externalAccount.getId());
-					if (userLoggedIn.getPhoneNumber() != null && !userLoggedIn.getPhoneNumber().isEmpty()) {
+					if (userLoggedIn.isUsingPhone()) {
 						eventPublisher
 								.publishEvent(new OnBankFlowCompleteEvent(userLoggedIn, newBankTransfer.getAmount()));
 					}
