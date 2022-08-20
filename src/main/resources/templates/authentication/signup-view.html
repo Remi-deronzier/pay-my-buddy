@@ -10,6 +10,10 @@
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
 		<!-- Bootstrap JS -->
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+		
+		<!-- Jquery password strength -->
+		<script src="/js/jquery-1.7.3.js"></script>
+		<script src="/js/pwstrength-bootstrap.min.js"></script>
 	</head>
 	
 	<body>
@@ -116,5 +120,19 @@
 			</div>
 		
 		</div>
+		<script type="text/javascript">
+		 $(document).ready(function() {
+				options = {
+				    common : {
+						minChar : 12,
+						usernameField: "#userName"
+				    },
+				    ui : {
+						showErrors : true,
+				    }
+				};
+				$('#password').pwstrength(options);
+		    });
+		</script>
 	</body>
 </html>

@@ -31,7 +31,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserUnderEighteenException;
-import deronzier.remi.payMyBuddyV2.validation.PasswordMatches;
+import deronzier.remi.payMyBuddyV2.validation.passwordmatches.PasswordMatches;
+import deronzier.remi.payMyBuddyV2.validation.passwordvalid.ValidPassword;
 import lombok.Data;
 
 @Data
@@ -63,6 +64,7 @@ public class User {
 
 	@Column(nullable = false)
 	@NotBlank(message = "Password cannot be null")
+	@ValidPassword
 	private String password;
 
 	@Transient
