@@ -33,6 +33,7 @@ import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.model.UserStatus;
 import deronzier.remi.payMyBuddyV2.security.ActiveUserService;
 import deronzier.remi.payMyBuddyV2.security.CustomUser;
+import deronzier.remi.payMyBuddyV2.service.AuthenticationService;
 import deronzier.remi.payMyBuddyV2.service.UserService;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
@@ -45,6 +46,9 @@ public class UserController {
 
 	@Autowired
 	private ActiveUserService activeUserService;
+
+	@Autowired
+	private AuthenticationService authenticationService;
 
 	@GetMapping(value = "/contact")
 	public String getConnections(Model model, @AuthenticationPrincipal CustomUser customUser)
@@ -169,9 +173,9 @@ public class UserController {
 			throws UserNotFoundException, UnsupportedEncodingException {
 		User user = userService.findUserById(id)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
-		userService.updateUsing2FA(using2FA, id);
+		authenticationService.updateUsing2FA(using2FA, id);
 		if (using2FA) {
-			redirectAttributes.addAttribute("qrCode", userService.generateQRUrl(user));
+			redirectAttributes.addAttribute("qrCode", authenticationService.generateQRUrl(user));
 			redirectAttributes.addAttribute("userName", userName);
 			return "redirect:/qrCode";
 		} else {

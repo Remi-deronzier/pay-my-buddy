@@ -1,6 +1,5 @@
 package deronzier.remi.payMyBuddyV2.service;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,9 +11,7 @@ import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserEmailExistsException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
-import deronzier.remi.payMyBuddyV2.model.PasswordResetToken;
 import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.model.VerificationToken;
 
 public interface UserService {
 
@@ -39,27 +36,10 @@ public interface UserService {
 	User create(User newUser) throws UserEmailExistsException,
 			UserUserNameExistsException;
 
-	VerificationToken getVerificationToken(String token);
-
-	void createVerificationTokenForUser(User user, String token);
-
-	void createPasswordResetTokenForUser(User user, String token);
-
-	PasswordResetToken getPasswordResetToken(String token);
-
 	void changeUserPassword(User user, String password);
 
 	User findUserByEmail(String email) throws UserNotFoundException;
 
 	Optional<User> findUserByUsername(final String userName);
-
-	String generateQRUrl(User user) throws UnsupportedEncodingException;
-
-	User updateUsing2FA(boolean using2fa, int id) throws UserNotFoundException;
-
-	void createPhoneVerificationCode(User user);
-
-	User updatePhoneNumber(String phoneNumber, String userName)
-			throws UserNotFoundException;
 
 }
