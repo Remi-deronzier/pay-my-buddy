@@ -30,6 +30,8 @@ import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
 import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.payMyBuddyV2.model.UserStatus;
+import deronzier.remi.payMyBuddyV2.security.ActiveUserService;
 import deronzier.remi.payMyBuddyV2.security.CustomUser;
 import deronzier.remi.payMyBuddyV2.service.UserService;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
@@ -40,6 +42,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private ActiveUserService activeUserService;
 
 	@GetMapping(value = "/contact")
 	public String getConnections(Model model, @AuthenticationPrincipal CustomUser customUser)
@@ -72,6 +77,9 @@ public class UserController {
 		List<User> connections = userLoggedIn.getConnections();
 		model.addAttribute("user", user);
 
+		boolean userActive = activeUserService.isUserActive(userName);
+		model.addAttribute("userStatus", userActive ? UserStatus.ACTIVE.getLabel() : UserStatus.AWAY.getLabel());
+
 		if (isEditing) {
 			if (user == userLoggedIn) { // Check user wants to edit his own profile
 				return "users/editProfile";
@@ -97,6 +105,9 @@ public class UserController {
 				.findAll(pageable);
 		PageWrapper<User> page = new PageWrapper<User>(users, "/users/all");
 		model.addAttribute("page", page);
+
+		List<String> activeUsers = activeUserService.getActiveUsers();
+		model.addAttribute("activeUsers", activeUsers);
 
 		return "users/all";
 	}

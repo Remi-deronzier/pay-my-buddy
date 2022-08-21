@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -73,7 +75,13 @@ public class PayMyBuddyV2SecurityConfig extends WebSecurityConfigurerAdapter {
 
 				.and()
 				.logout().permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/doLogout", "POST"))
-				.deleteCookies("JSESSIONID")
+				.clearAuthentication(true)
+				.invalidateHttpSession(true)
+				.deleteCookies("JSESSIONID", "sticky-cookie")
+
+				.and().sessionManagement().maximumSessions(1)
+				.sessionRegistry(sessionRegistry()).and().sessionFixation()
+				.migrateSession()
 
 				.and()
 				.rememberMe()
@@ -98,6 +106,11 @@ public class PayMyBuddyV2SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public SessionRegistry sessionRegistry() {
+		return new SessionRegistryImpl();
 	}
 
 	@PostConstruct

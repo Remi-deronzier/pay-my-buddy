@@ -23,7 +23,7 @@
 				<div class="card-body">
 					<div class="d-flex justify-content-between">
 						<h5 class="card-title" th:text="${user.userName}"></h5>
-						<p class="card-text"><small class="text-muted" th:text="${user.status.label}"></small></p>
+						<p class="card-text"><small class="text-muted" th:text="${userStatus}"></small></p>
 					</div>
 					<p class="card-text" th:text="${user.description}"></p>
 					<p th:if="${user.age != null}"  class="card-text"><small class="text-muted" th:text="${user.age} + ' years old'"></small></p>
