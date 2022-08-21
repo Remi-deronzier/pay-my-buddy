@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.validation.passwordmatches;
+package deronzier.remi.paymybuddyv2.validation.passwordmatches;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;

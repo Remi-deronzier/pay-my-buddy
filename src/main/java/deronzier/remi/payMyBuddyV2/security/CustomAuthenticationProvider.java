@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.security;
+package deronzier.remi.paymybuddyv2.security;
 
 import org.jboss.aerogear.security.otp.Totp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +8,8 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.repository.UserRepository;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.repository.UserRepository;
 
 public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 	@Autowired

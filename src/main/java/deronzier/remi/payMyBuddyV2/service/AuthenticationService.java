@@ -1,11 +1,11 @@
-package deronzier.remi.payMyBuddyV2.service;
+package deronzier.remi.paymybuddyv2.service;
 
 import java.io.UnsupportedEncodingException;
 
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.model.PasswordResetToken;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.model.VerificationToken;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.model.PasswordResetToken;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.model.VerificationToken;
 
 public interface AuthenticationService {
 

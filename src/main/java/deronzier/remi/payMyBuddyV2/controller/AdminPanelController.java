@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.controller;
+package deronzier.remi.paymybuddyv2.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -6,9 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import deronzier.remi.payMyBuddyV2.model.Account;
-import deronzier.remi.payMyBuddyV2.service.AccountService;
-import deronzier.remi.payMyBuddyV2.utils.Constants;
+import deronzier.remi.paymybuddyv2.model.Account;
+import deronzier.remi.paymybuddyv2.service.AccountService;
+import deronzier.remi.paymybuddyv2.utils.Constants;
 
 @Controller
 @RequestMapping(value = "/admin/adminPanel")

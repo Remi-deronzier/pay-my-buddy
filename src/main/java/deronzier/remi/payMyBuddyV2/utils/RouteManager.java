@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.utils;
+package deronzier.remi.paymybuddyv2.utils;
 
 /**
  * @author remax Just the beginning of a route manager to gather all our routes

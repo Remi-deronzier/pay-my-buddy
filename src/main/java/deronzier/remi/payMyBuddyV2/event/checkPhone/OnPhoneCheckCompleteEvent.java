@@ -1,8 +1,8 @@
-package deronzier.remi.payMyBuddyV2.event.checkPhone;
+package deronzier.remi.paymybuddyv2.event.checkphone;
 
 import org.springframework.context.ApplicationEvent;
 
-import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.paymybuddyv2.model.User;
 
 public class OnPhoneCheckCompleteEvent extends ApplicationEvent {
 

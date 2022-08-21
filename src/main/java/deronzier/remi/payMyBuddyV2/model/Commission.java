@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.model;
+package deronzier.remi.paymybuddyv2.model;
 
 import java.time.LocalDate;
 

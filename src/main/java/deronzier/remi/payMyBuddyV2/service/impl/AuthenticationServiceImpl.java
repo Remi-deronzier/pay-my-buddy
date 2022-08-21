@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.service.impl;
+package deronzier.remi.paymybuddyv2.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -12,15 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.twilio.rest.lookups.v1.PhoneNumber;
 
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.model.PasswordResetToken;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.model.VerificationToken;
-import deronzier.remi.payMyBuddyV2.repository.PasswordResetTokenRepository;
-import deronzier.remi.payMyBuddyV2.repository.UserRepository;
-import deronzier.remi.payMyBuddyV2.repository.VerificationTokenRepository;
-import deronzier.remi.payMyBuddyV2.service.AuthenticationService;
-import deronzier.remi.payMyBuddyV2.utils.Constants;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.model.PasswordResetToken;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.model.VerificationToken;
+import deronzier.remi.paymybuddyv2.repository.PasswordResetTokenRepository;
+import deronzier.remi.paymybuddyv2.repository.UserRepository;
+import deronzier.remi.paymybuddyv2.repository.VerificationTokenRepository;
+import deronzier.remi.paymybuddyv2.service.AuthenticationService;
+import deronzier.remi.paymybuddyv2.utils.Constants;
 
 @Service
 @Transactional

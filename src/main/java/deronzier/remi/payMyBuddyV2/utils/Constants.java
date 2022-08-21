@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.utils;
+package deronzier.remi.paymybuddyv2.utils;
 
 public class Constants {
 	public static final String BANK_TRANSFER_DISCRIMINATOR = "bank_transfer";

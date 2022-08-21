@@ -54,7 +54,7 @@
 							</div>
 						</div>
 						<div class="col">
-							<button type="submit" class="btn btn-primary" th:name="bankTransferType" th:value="${T(deronzier.remi.payMyBuddyV2.model.BankTransferType).TOP_UP}">Top up</button>
+							<button type="submit" class="btn btn-primary" th:name="bankTransferType" th:value="${T(deronzier.remi.paymybuddyv2.model.BankTransferType).TOP_UP}">Top up</button>
 						</div>
 					</form>
 					<p th:unless="${!externalAccounts.isEmpty}">First, you need to 
@@ -84,7 +84,7 @@
 							</div>
 						</div>
 						<div class="col">
-							<button type="submit" class="btn btn-primary" th:name="bankTransferType" th:value="${T(deronzier.remi.payMyBuddyV2.model.BankTransferType).USE}">Use</button>
+							<button type="submit" class="btn btn-primary" th:name="bankTransferType" th:value="${T(deronzier.remi.paymybuddyv2.model.BankTransferType).USE}">Use</button>
 						</div>
 					</form>
 					<p th:unless="${!externalAccounts.isEmpty}">First, you need to 

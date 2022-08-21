@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.exception;
+package deronzier.remi.paymybuddyv2.exception;
 
 public class UserNotFoundException extends Exception {
 

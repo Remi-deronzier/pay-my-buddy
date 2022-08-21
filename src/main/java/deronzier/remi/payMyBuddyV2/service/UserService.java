@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.service;
+package deronzier.remi.paymybuddyv2.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,13 +6,13 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
-import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
-import deronzier.remi.payMyBuddyV2.exception.UserEmailExistsException;
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.validation.passwordvalid.ValidPassword;
+import deronzier.remi.paymybuddyv2.exception.ConnectionCreationException;
+import deronzier.remi.paymybuddyv2.exception.ConnectionNotFoundException;
+import deronzier.remi.paymybuddyv2.exception.UserEmailExistsException;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.exception.UserUserNameExistsException;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.validation.passwordvalid.ValidPassword;
 
 public interface UserService {
 

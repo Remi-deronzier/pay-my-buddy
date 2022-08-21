@@ -1,8 +1,8 @@
-package deronzier.remi.payMyBuddyV2.service;
+package deronzier.remi.paymybuddyv2.service;
 
 import java.util.Optional;
 
-import deronzier.remi.payMyBuddyV2.model.Account;
+import deronzier.remi.paymybuddyv2.model.Account;
 
 public interface AccountService {
 

@@ -1,9 +1,9 @@
-package deronzier.remi.payMyBuddyV2.validation.passwordmatches;
+package deronzier.remi.paymybuddyv2.validation.passwordmatches;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.paymybuddyv2.model.User;
 
 public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object> {
 

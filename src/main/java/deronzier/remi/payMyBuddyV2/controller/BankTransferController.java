@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.controller;
+package deronzier.remi.paymybuddyv2.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -26,20 +26,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import deronzier.remi.payMyBuddyV2.event.bankFlow.OnBankFlowCompleteEvent;
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
-import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotBelongGoodUserException;
-import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotFoundException;
-import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.model.BankTransfer;
-import deronzier.remi.payMyBuddyV2.model.BankTransferType;
-import deronzier.remi.payMyBuddyV2.model.ExternalAccount;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.security.CustomUser;
-import deronzier.remi.payMyBuddyV2.service.BankTransferService;
-import deronzier.remi.payMyBuddyV2.service.UserService;
-import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
+import deronzier.remi.paymybuddyv2.event.bankflow.OnBankFlowCompleteEvent;
+import deronzier.remi.paymybuddyv2.exception.AccountNotEnoughMoneyException;
+import deronzier.remi.paymybuddyv2.exception.ExternalAccountNotBelongGoodUserException;
+import deronzier.remi.paymybuddyv2.exception.ExternalAccountNotFoundException;
+import deronzier.remi.paymybuddyv2.exception.NegativeAmountException;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.model.BankTransfer;
+import deronzier.remi.paymybuddyv2.model.BankTransferType;
+import deronzier.remi.paymybuddyv2.model.ExternalAccount;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.security.CustomUser;
+import deronzier.remi.paymybuddyv2.service.BankTransferService;
+import deronzier.remi.paymybuddyv2.service.UserService;
+import deronzier.remi.paymybuddyv2.utils.PageWrapper;
 
 @ControllerAdvice
 @Controller

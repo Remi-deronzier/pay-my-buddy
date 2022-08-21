@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.controller;
+package deronzier.remi.paymybuddyv2.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
@@ -26,17 +26,17 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import deronzier.remi.payMyBuddyV2.event.checkPhone.OnPhoneCheckCompleteEvent;
-import deronzier.remi.payMyBuddyV2.event.forgotPassword.OnForgotPasswordCompleteEvent;
-import deronzier.remi.payMyBuddyV2.event.registration.OnRegistrationCompleteEvent;
-import deronzier.remi.payMyBuddyV2.exception.UserEmailExistsException;
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
-import deronzier.remi.payMyBuddyV2.model.PasswordResetToken;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.model.VerificationToken;
-import deronzier.remi.payMyBuddyV2.service.AuthenticationService;
-import deronzier.remi.payMyBuddyV2.service.UserService;
+import deronzier.remi.paymybuddyv2.event.checkphone.OnPhoneCheckCompleteEvent;
+import deronzier.remi.paymybuddyv2.event.forgotpassword.OnForgotPasswordCompleteEvent;
+import deronzier.remi.paymybuddyv2.event.registration.OnRegistrationCompleteEvent;
+import deronzier.remi.paymybuddyv2.exception.UserEmailExistsException;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.exception.UserUserNameExistsException;
+import deronzier.remi.paymybuddyv2.model.PasswordResetToken;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.model.VerificationToken;
+import deronzier.remi.paymybuddyv2.service.AuthenticationService;
+import deronzier.remi.paymybuddyv2.service.UserService;
 
 @Controller
 public class AuthenticationController {

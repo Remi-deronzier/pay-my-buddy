@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.model;
+package deronzier.remi.paymybuddyv2.model;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -25,9 +25,9 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.jboss.aerogear.security.otp.api.Base32;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import deronzier.remi.payMyBuddyV2.exception.UserUnderEighteenException;
-import deronzier.remi.payMyBuddyV2.validation.passwordmatches.PasswordMatches;
-import deronzier.remi.payMyBuddyV2.validation.passwordvalid.ValidPassword;
+import deronzier.remi.paymybuddyv2.exception.UserUnderEighteenException;
+import deronzier.remi.paymybuddyv2.validation.passwordmatches.PasswordMatches;
+import deronzier.remi.paymybuddyv2.validation.passwordvalid.ValidPassword;
 import lombok.Data;
 
 @Data

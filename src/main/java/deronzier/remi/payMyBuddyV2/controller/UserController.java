@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.controller;
+package deronzier.remi.paymybuddyv2.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -26,16 +26,16 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
-import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.model.UserStatus;
-import deronzier.remi.payMyBuddyV2.security.ActiveUserService;
-import deronzier.remi.payMyBuddyV2.security.CustomUser;
-import deronzier.remi.payMyBuddyV2.service.AuthenticationService;
-import deronzier.remi.payMyBuddyV2.service.UserService;
-import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
+import deronzier.remi.paymybuddyv2.exception.ConnectionCreationException;
+import deronzier.remi.paymybuddyv2.exception.ConnectionNotFoundException;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.model.UserStatus;
+import deronzier.remi.paymybuddyv2.security.ActiveUserService;
+import deronzier.remi.paymybuddyv2.security.CustomUser;
+import deronzier.remi.paymybuddyv2.service.AuthenticationService;
+import deronzier.remi.paymybuddyv2.service.UserService;
+import deronzier.remi.paymybuddyv2.utils.PageWrapper;
 
 @Controller
 @RequestMapping(value = "/users")

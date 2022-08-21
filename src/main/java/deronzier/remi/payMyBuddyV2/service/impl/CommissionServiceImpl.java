@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.service.impl;
+package deronzier.remi.paymybuddyv2.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -16,21 +16,21 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
-import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.model.Account;
-import deronzier.remi.payMyBuddyV2.model.BankFlow;
-import deronzier.remi.payMyBuddyV2.model.Commission;
-import deronzier.remi.payMyBuddyV2.model.Transaction;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.repository.AccountRepository;
-import deronzier.remi.payMyBuddyV2.repository.BankFlowRepository;
-import deronzier.remi.payMyBuddyV2.repository.CommissionRepository;
-import deronzier.remi.payMyBuddyV2.repository.TransactionRepository;
-import deronzier.remi.payMyBuddyV2.repository.UserRepository;
-import deronzier.remi.payMyBuddyV2.service.CommissionService;
-import deronzier.remi.payMyBuddyV2.utils.Constants;
+import deronzier.remi.paymybuddyv2.exception.AccountNotEnoughMoneyException;
+import deronzier.remi.paymybuddyv2.exception.NegativeAmountException;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.model.Account;
+import deronzier.remi.paymybuddyv2.model.BankFlow;
+import deronzier.remi.paymybuddyv2.model.Commission;
+import deronzier.remi.paymybuddyv2.model.Transaction;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.repository.AccountRepository;
+import deronzier.remi.paymybuddyv2.repository.BankFlowRepository;
+import deronzier.remi.paymybuddyv2.repository.CommissionRepository;
+import deronzier.remi.paymybuddyv2.repository.TransactionRepository;
+import deronzier.remi.paymybuddyv2.repository.UserRepository;
+import deronzier.remi.paymybuddyv2.service.CommissionService;
+import deronzier.remi.paymybuddyv2.utils.Constants;
 
 @Service
 @Transactional
