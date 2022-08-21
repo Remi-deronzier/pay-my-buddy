@@ -13,9 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import deronzier.remi.payMyBuddyV2.model.BankFlow;
 import deronzier.remi.payMyBuddyV2.service.BankFlowService;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
+import deronzier.remi.payMyBuddyV2.utils.RouteManager;
 
+/**
+ * @author remax Just an example to show how a proper controller should be if we
+ *         want to have const route names to avoid typo
+ *
+ */
 @Controller
-@RequestMapping(value = "/admin/bankFlows")
+@RequestMapping(value = RouteManager.ADMIN + RouteManager.BANK_FLOWS)
 public class BankFlowController {
 
 	@Autowired
@@ -28,7 +34,7 @@ public class BankFlowController {
 		// Add all bank flows to model
 		Page<BankFlow> bankFlows = bankFlowService
 				.findAll(pageable);
-		PageWrapper<BankFlow> page = new PageWrapper<BankFlow>(bankFlows, "/bankFlows");
+		PageWrapper<BankFlow> page = new PageWrapper<BankFlow>(bankFlows, RouteManager.BANK_FLOWS);
 		model.addAttribute("page", page);
 
 		return "bank-flows/view";
