@@ -1,8 +1,8 @@
-package deronzier.remi.payMyBuddyV2.event.registration;
+package deronzier.remi.paymybuddyv2.event.registration;
 
 import org.springframework.context.ApplicationEvent;
 
-import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.paymybuddyv2.model.User;
 
 public class OnRegistrationCompleteEvent extends ApplicationEvent {
 

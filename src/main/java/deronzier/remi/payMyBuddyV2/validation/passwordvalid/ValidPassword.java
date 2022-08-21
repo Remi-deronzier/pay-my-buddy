@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.validation.passwordvalid;
+package deronzier.remi.paymybuddyv2.validation.passwordvalid;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
@@ -6,6 +6,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -14,7 +15,7 @@ import javax.validation.Payload;
 
 @Documented
 @Constraint(validatedBy = PasswordConstraintValidator.class)
-@Target({ TYPE, FIELD, ANNOTATION_TYPE })
+@Target({ TYPE, FIELD, ANNOTATION_TYPE, ElementType.PARAMETER })
 @Retention(RUNTIME)
 public @interface ValidPassword {
 	String message() default "Invalid Password";

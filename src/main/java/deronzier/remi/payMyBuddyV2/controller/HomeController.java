@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.controller;
+package deronzier.remi.paymybuddyv2.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotFoundException;
-import deronzier.remi.payMyBuddyV2.model.Account;
-import deronzier.remi.payMyBuddyV2.model.BankFlow;
-import deronzier.remi.payMyBuddyV2.security.CustomUser;
-import deronzier.remi.payMyBuddyV2.service.AccountService;
-import deronzier.remi.payMyBuddyV2.service.BankFlowService;
-import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
+import deronzier.remi.paymybuddyv2.exception.AccountNotFoundException;
+import deronzier.remi.paymybuddyv2.model.Account;
+import deronzier.remi.paymybuddyv2.model.BankFlow;
+import deronzier.remi.paymybuddyv2.security.CustomUser;
+import deronzier.remi.paymybuddyv2.service.AccountService;
+import deronzier.remi.paymybuddyv2.service.BankFlowService;
+import deronzier.remi.paymybuddyv2.utils.PageWrapper;
 
 @Controller
 public class HomeController {
@@ -32,7 +32,6 @@ public class HomeController {
 	public String getHome(Model model, @AuthenticationPrincipal CustomUser customUser, Authentication principal,
 			@SortDefault(sort = "timeStamp", direction = Sort.Direction.DESC) Pageable pageable)
 			throws AccountNotFoundException {
-//		System.out.println(principal.getPrincipal());
 		final int userId = customUser.getId();
 
 		// Add user account to model

@@ -14,7 +14,6 @@ $().ready(function () {
 				required: true,
 				equalTo: "#password"
 			}
-            
         },
     });
 });

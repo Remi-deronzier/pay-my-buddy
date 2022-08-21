@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.model;
+package deronzier.remi.paymybuddyv2.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
-import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
+import deronzier.remi.paymybuddyv2.exception.AccountNotEnoughMoneyException;
+import deronzier.remi.paymybuddyv2.exception.NegativeAmountException;
 import lombok.Data;
 
 @Data

@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.model;
+package deronzier.remi.paymybuddyv2.model;
 
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
@@ -11,7 +11,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import deronzier.remi.payMyBuddyV2.utils.Constants;
+import deronzier.remi.paymybuddyv2.utils.Constants;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

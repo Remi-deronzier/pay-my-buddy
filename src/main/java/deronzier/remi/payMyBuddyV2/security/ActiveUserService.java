@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.security;
+package deronzier.remi.paymybuddyv2.security;
 
 import java.util.Arrays;
 import java.util.List;

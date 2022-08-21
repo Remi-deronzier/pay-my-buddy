@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2;
+package deronzier.remi.paymybuddyv2;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.config;
+package deronzier.remi.paymybuddyv2.config;
 
 import javax.annotation.PostConstruct;
 
@@ -21,8 +21,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.twilio.Twilio;
 
-import deronzier.remi.payMyBuddyV2.security.CustomAuthenticationProvider;
-import deronzier.remi.payMyBuddyV2.security.CustomWebAuthenticationDetailsSource;
+import deronzier.remi.paymybuddyv2.security.CustomAuthenticationProvider;
+import deronzier.remi.paymybuddyv2.security.CustomWebAuthenticationDetailsSource;
 
 @SuppressWarnings("deprecation")
 @EnableWebSecurity

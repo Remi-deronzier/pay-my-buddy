@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.event.forgotPassword.listener;
+package deronzier.remi.paymybuddyv2.event.forgotpassword.listener;
 
 import java.util.UUID;
 
@@ -8,18 +8,18 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
-import deronzier.remi.payMyBuddyV2.event.forgotPassword.OnForgotPasswordCompleteEvent;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.service.UserService;
+import deronzier.remi.paymybuddyv2.event.forgotpassword.OnForgotPasswordCompleteEvent;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.service.AuthenticationService;
 
 @Component
 public class ForgotPasswordListener implements ApplicationListener<OnForgotPasswordCompleteEvent> {
 
 	@Autowired
-	private UserService userService;
+	private JavaMailSender mailSender;
 
 	@Autowired
-	private JavaMailSender mailSender;
+	private AuthenticationService authenticationService;
 
 	@Override
 	public void onApplicationEvent(final OnForgotPasswordCompleteEvent event) {
@@ -29,7 +29,7 @@ public class ForgotPasswordListener implements ApplicationListener<OnForgotPassw
 	private void confirmRegistration(final OnForgotPasswordCompleteEvent event) {
 		final User user = event.getUser();
 		final String token = UUID.randomUUID().toString();
-		userService.createPasswordResetTokenForUser(user, token);
+		authenticationService.createPasswordResetTokenForUser(user, token);
 		final SimpleMailMessage email = constructEmailMessage(event, user, token);
 		mailSender.send(email);
 	}

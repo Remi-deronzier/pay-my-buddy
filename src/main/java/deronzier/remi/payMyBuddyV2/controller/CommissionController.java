@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.controller;
+package deronzier.remi.paymybuddyv2.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,9 +10,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import deronzier.remi.payMyBuddyV2.model.Commission;
-import deronzier.remi.payMyBuddyV2.service.CommissionService;
-import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
+import deronzier.remi.paymybuddyv2.model.Commission;
+import deronzier.remi.paymybuddyv2.service.CommissionService;
+import deronzier.remi.paymybuddyv2.utils.PageWrapper;
 
 @Controller
 @RequestMapping(value = "/admin/commissions")

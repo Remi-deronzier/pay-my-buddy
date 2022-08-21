@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.security;
+package deronzier.remi.paymybuddyv2.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,9 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import deronzier.remi.payMyBuddyV2.model.Role;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.repository.UserRepository;
+import deronzier.remi.paymybuddyv2.model.Role;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.repository.UserRepository;
 
 @Service
 @Transactional

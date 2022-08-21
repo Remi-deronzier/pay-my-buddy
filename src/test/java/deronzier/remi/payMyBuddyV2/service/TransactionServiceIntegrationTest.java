@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.service;
+package deronzier.remi.paymybuddyv2.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,17 +14,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
-import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
-import deronzier.remi.payMyBuddyV2.exception.TransactionSameAccountException;
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.model.Account;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.repository.AccountRepository;
-import deronzier.remi.payMyBuddyV2.repository.TransactionRepository;
-import deronzier.remi.payMyBuddyV2.repository.UserRepository;
-import deronzier.remi.payMyBuddyV2.setup.TestSetUp;
-import deronzier.remi.payMyBuddyV2.utils.Constants;
+import deronzier.remi.paymybuddyv2.exception.AccountNotEnoughMoneyException;
+import deronzier.remi.paymybuddyv2.exception.NegativeAmountException;
+import deronzier.remi.paymybuddyv2.exception.TransactionSameAccountException;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.model.Account;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.repository.AccountRepository;
+import deronzier.remi.paymybuddyv2.repository.TransactionRepository;
+import deronzier.remi.paymybuddyv2.repository.UserRepository;
+import deronzier.remi.paymybuddyv2.setup.TestSetUp;
+import deronzier.remi.paymybuddyv2.utils.Constants;
 
 @SpringBootTest
 @ActiveProfiles(Constants.TEST_PROFILE)

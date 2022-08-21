@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.validation.passwordvalid;
+package deronzier.remi.paymybuddyv2.validation.passwordvalid;
 
 import java.util.ArrayList;
 import java.util.List;

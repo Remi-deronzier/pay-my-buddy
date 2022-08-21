@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.repository;
+package deronzier.remi.paymybuddyv2.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,9 +9,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
-import deronzier.remi.payMyBuddyV2.model.Commission;
-import deronzier.remi.payMyBuddyV2.setup.TestSetUp;
-import deronzier.remi.payMyBuddyV2.utils.Constants;
+import deronzier.remi.paymybuddyv2.model.Commission;
+import deronzier.remi.paymybuddyv2.setup.TestSetUp;
+import deronzier.remi.paymybuddyv2.utils.Constants;
 
 @DataJpaTest
 @ActiveProfiles(Constants.TEST_PROFILE)
