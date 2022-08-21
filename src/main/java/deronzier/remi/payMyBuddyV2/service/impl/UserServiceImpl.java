@@ -132,7 +132,6 @@ public class UserServiceImpl implements UserService {
 		userToUpdate.setPasswordConfirmation(userToUpdate.getPassword());
 		userToUpdate.setFirstName(inputUser.getFirstName());
 		userToUpdate.setLastName(inputUser.getLastName());
-		userToUpdate.setPhoneNumber(inputUser.getPhoneNumber());
 		userToUpdate.setDescription(inputUser.getDescription());
 		return userRepository.save(userToUpdate);
 	}
