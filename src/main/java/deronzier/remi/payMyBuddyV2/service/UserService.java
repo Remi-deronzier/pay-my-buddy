@@ -12,6 +12,7 @@ import deronzier.remi.payMyBuddyV2.exception.UserEmailExistsException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.exception.UserUserNameExistsException;
 import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.payMyBuddyV2.validation.passwordvalid.ValidPassword;
 
 public interface UserService {
 
@@ -36,7 +37,7 @@ public interface UserService {
 	User create(User newUser) throws UserEmailExistsException,
 			UserUserNameExistsException;
 
-	void changeUserPassword(User user, String password);
+	void changeUserPassword(User user, @ValidPassword String password);
 
 	User findUserByEmail(String email) throws UserNotFoundException;
 

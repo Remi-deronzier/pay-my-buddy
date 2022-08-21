@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
 import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
@@ -21,9 +22,11 @@ import deronzier.remi.payMyBuddyV2.model.User;
 import deronzier.remi.payMyBuddyV2.repository.UserRepository;
 import deronzier.remi.payMyBuddyV2.service.UserService;
 import deronzier.remi.payMyBuddyV2.utils.Constants;
+import deronzier.remi.payMyBuddyV2.validation.passwordvalid.ValidPassword;
 
 @Service
 @Transactional
+@Validated
 public class UserServiceImpl implements UserService {
 
 	@Autowired
@@ -172,7 +175,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void changeUserPassword(final User user, final String password) {
+	public void changeUserPassword(final User user, @ValidPassword final String password) {
 		String encryptedPassword = passwordEncoder.encode(password);
 		user.setPassword(encryptedPassword);
 		user.setPasswordConfirmation(encryptedPassword);

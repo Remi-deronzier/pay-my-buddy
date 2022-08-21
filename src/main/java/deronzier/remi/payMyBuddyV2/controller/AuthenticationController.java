@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.jboss.aerogear.security.otp.Totp;
@@ -185,6 +186,7 @@ public class AuthenticationController {
 		final ModelAndView view = new ModelAndView("authentication/reset-password");
 		view.addObject("token", token);
 		view.addObject("userId", userId);
+		view.addObject("userName", user.getUserName());
 		return view;
 	}
 
@@ -194,29 +196,38 @@ public class AuthenticationController {
 			@RequestParam("passwordConfirmation") final String passwordConfirmation,
 			@RequestParam("token") final String token, @RequestParam("userId") final long userId,
 			final RedirectAttributes redirectAttributes) {
-		if (!password.equals(passwordConfirmation)) {
-			return redirectToChangePasswordWithErrorMessage(token, userId, redirectAttributes,
-					"Passwords do not match");
-		}
-
-		final PasswordResetToken passwordResetToken = authenticationService.getPasswordResetToken(token);
-		if (passwordResetToken == null) {
-			redirectAttributes.addFlashAttribute("errorMessage", "Invalid token");
-		} else {
-			final User user = passwordResetToken.getUser();
-			if (user == null) {
-				redirectAttributes.addFlashAttribute("errorMessage", "Unknown user");
-			} else {
-				final String encryptedPreviousPassword = user.getPassword();
-				if (passwordEncoder.matches(password, encryptedPreviousPassword)) {
-					return redirectToChangePasswordWithErrorMessage(token, userId, redirectAttributes,
-							"This new password must be different from the old one");
-				}
-				userService.changeUserPassword(user, password);
-				redirectAttributes.addFlashAttribute("message", "Password reset successfully");
+		try {
+			if (!password.equals(passwordConfirmation)) {
+				return redirectToChangePasswordWithErrorMessage(token, userId, redirectAttributes,
+						"Passwords do not match");
 			}
+
+			final PasswordResetToken passwordResetToken = authenticationService.getPasswordResetToken(token);
+			if (passwordResetToken == null) {
+				redirectAttributes.addFlashAttribute("errorMessage", "Invalid token");
+			} else {
+				final User user = passwordResetToken.getUser();
+				if (user == null) {
+					redirectAttributes.addFlashAttribute("errorMessage", "Unknown user");
+				} else {
+					final String encryptedPreviousPassword = user.getPassword();
+					if (passwordEncoder.matches(password, encryptedPreviousPassword)) {
+						return redirectToChangePasswordWithErrorMessage(token, userId, redirectAttributes,
+								"This new password must be different from the old one");
+					}
+					userService.changeUserPassword(user, password);
+					redirectAttributes.addFlashAttribute("message", "Password reset successfully");
+				}
+			}
+			return new ModelAndView("redirect:/login");
+		} catch (ConstraintViolationException cve) {
+			redirectAttributes.addFlashAttribute("passwordErrorMessage", cve.getMessage().substring(29)); // Delete the
+																											// unnecessary
+																											// beginning
+																											// of the
+																											// message
+			return redirectToChangePasswordWithErrorMessage(token, userId, redirectAttributes, "Invalid password");
 		}
-		return new ModelAndView("redirect:/login");
 	}
 
 	private ModelAndView redirectToChangePasswordWithErrorMessage(final String token, final long userId,
