@@ -11,7 +11,7 @@ import deronzier.remi.payMyBuddyV2.service.AccountService;
 import deronzier.remi.payMyBuddyV2.utils.Constants;
 
 @Controller
-@RequestMapping(value = "/adminPanel")
+@RequestMapping(value = "/admin/adminPanel")
 public class AdminPanelController {
 
 	@Autowired

@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,11 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.ExternalAccount;
 import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.payMyBuddyV2.security.CustomUser;
 import deronzier.remi.payMyBuddyV2.service.ExternalAccountService;
 import deronzier.remi.payMyBuddyV2.service.UserService;
-import deronzier.remi.payMyBuddyV2.utils.Constants;
 
 @Controller
 @RequestMapping(value = "/externalAccounts")
@@ -37,9 +39,12 @@ public class ExternalAccountController {
 	private ExternalAccountService externalAccountService;
 
 	@GetMapping
-	public String getExternalAccounts(Model model) {
-		User user1 = userService.findById(Constants.OWNER_USER_ID).get();
-		List<ExternalAccount> externalAccounts = user1.getExternalAccounts();
+	public String getExternalAccounts(Model model, @AuthenticationPrincipal CustomUser customUser)
+			throws UserNotFoundException {
+		final int userId = customUser.getId();
+		User user = userService.findUserById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		List<ExternalAccount> externalAccounts = user.getExternalAccounts();
 		model.addAttribute("externalAccounts", externalAccounts);
 		return "external-accounts/view";
 	}
@@ -62,9 +67,12 @@ public class ExternalAccountController {
 	}
 
 	@PostMapping("/add")
-	public String postAddExternalAccount(
+	public String postAddExternalAccount(@AuthenticationPrincipal CustomUser customUser,
 			@Valid @ModelAttribute("newExternalAccount") ExternalAccount newExternalAccount,
-			BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+			BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes)
+			throws UserNotFoundException {
+		final int userId = customUser.getId();
+
 		// Check potential form errors
 		if (bindingResult.hasErrors()) { // if label of external account is blank
 			redirectAttributes.addFlashAttribute("labelExternalAccountError",
@@ -73,9 +81,10 @@ public class ExternalAccountController {
 		}
 
 		try {
-			User user1 = userService.findById(Constants.OWNER_USER_ID).get();
-			user1.addExternalAccount(newExternalAccount);
-			userService.save(user1);
+			User user = userService.findUserById(userId)
+					.orElseThrow(() -> new UserNotFoundException("User not found"));
+			user.addExternalAccount(newExternalAccount);
+			userService.save(user);
 			return "redirect:/externalAccounts?isNewExternalAccountAddedSuccessfully=true";
 		} catch (DataIntegrityViolationException dive) {
 			redirectAttributes.addFlashAttribute("dataIntegrityViolationException", dive);

@@ -7,3 +7,7 @@ label.error {
 #amount-error {
 	padding-left: 1rem;
 }
+
+#email-error {
+	padding-left: 1rem;
+}

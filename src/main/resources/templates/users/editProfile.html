@@ -24,15 +24,15 @@
 			</div>
 			<form id="profileForm" action="#" th:action="@{'/users/{id}'(id=${user.id})}" th:object="${user}"  th:method="patch">
 				<label for="email" class="form-label">Email</label>
-				<input type="email" class="form-control w-50 mb-3" name="email" id="email" placeholder="name@example.com" th:field="*{email}">
+				<input type="email" class="form-control w-50 mb-3" name="email" id="email" placeholder="name@example.com" th:field="*{email}" aria-label="disabled user name" disabled>
 				<label for="userName" class="form-label">User name</label>
-				<input type="text" class="form-control w-50 mb-3" name="userName" id="userName" placeholder="johnDoe" th:field="*{userName}">
+				<input type="text" class="form-control w-50 mb-3" name="userName" id="userName" placeholder="johnDoe" th:field="*{userName}" aria-label="disabled user name" disabled>
 				<label for="firstName" class="form-label">First name</label>
 				<input type="text" class="form-control w-50 mb-3" name="firstName" id="firstName" placeholder="John" th:field="*{firstName}">
 				<label for="lastName" class="form-label">Last name</label>
 				<input type="text" class="form-control w-50 mb-3" name="lastName" id="lastName" placeholder="Doe" th:field="*{lastName}">
 				<label for="phoneNumber" class="form-label">Phone number</label>
-				<input type="tel" class="form-control w-50 mb-3" name="phoneNumber" id="phoneNumber" placeholder="06 66 66 66 66" th:field="*{phoneNumber}">
+				<input type="tel" class="form-control w-50 mb-3" name="phoneNumber" id="phoneNumber" placeholder="06 66 66 66 66" th:field="*{phoneNumber}" disabled>
 				<label for="description" class="form-label">Description</label>
 				<textarea class="form-control w-50 mb-3" rows="3" name="description" id="description" th:field="*{description}"></textarea>
 				<p class="text-danger" th:if="${illegalPhoneNumberException != null}">Phone number is not a valid french number</p>

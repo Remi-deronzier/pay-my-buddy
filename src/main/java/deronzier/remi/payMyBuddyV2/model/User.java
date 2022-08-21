@@ -3,15 +3,12 @@ package deronzier.remi.payMyBuddyV2.model;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,14 +22,18 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.jboss.aerogear.security.otp.api.Base32;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
 import deronzier.remi.payMyBuddyV2.exception.UserUnderEighteenException;
+import deronzier.remi.payMyBuddyV2.validation.passwordmatches.PasswordMatches;
+import deronzier.remi.payMyBuddyV2.validation.passwordvalid.ValidPassword;
 import lombok.Data;
 
 @Data
 @Entity
 @DynamicUpdate
+@PasswordMatches
 public class User {
 
 	@Id
@@ -58,8 +59,16 @@ public class User {
 
 	@Column(nullable = false)
 	@NotBlank(message = "Password cannot be null")
+	@ValidPassword
 	private String password;
 
+	@Transient
+	@NotBlank(message = "Password confirmation is required")
+	private String passwordConfirmation;
+
+	private Calendar created = Calendar.getInstance();
+
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate dateOfBirth;
 
 	@Transient
@@ -67,14 +76,24 @@ public class User {
 
 	private String description;
 
+	@NotBlank(message = "Phone number cannot be null")
 	private String phoneNumber;
 
-	@Column(nullable = false, columnDefinition = "varchar(32) default 'AWAY'")
-	@Enumerated(value = EnumType.STRING)
-	private UserStatus status = UserStatus.AWAY;
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	private boolean using2FA;
+
+	private String secret = Base32.random(); // For 2FA
+
+	private String phoneVerificationCode;
+
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	private boolean usingPhone;
 
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private boolean active;
+
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	private boolean enabled;
 
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
 	private Account account;
@@ -110,18 +129,6 @@ public class User {
 		}
 	}
 
-	public void setPhoneNumber(String phoneNumber) throws IllegalPhoneNumberException {
-		if (phoneNumber != null && !phoneNumber.isEmpty()) {
-			Pattern pattern = Pattern.compile("^(?:(?:\\+|00)33|0)\\s*[1-9](?:[\\s.-]*\\d{2}){4}$");
-			Matcher matcher = pattern.matcher(phoneNumber);
-			if (matcher.matches()) {
-				this.phoneNumber = phoneNumber;
-			} else {
-				throw new IllegalPhoneNumberException("Phone number is not valid");
-			}
-		}
-	}
-
 	public void addConnection(User user) {
 		connections.add(user);
 	}
@@ -140,7 +147,7 @@ public class User {
 		account.setUser(this);
 	}
 
-	public Integer calculateAge(LocalDate dob) {
+	private Integer calculateAge(LocalDate dob) {
 		LocalDate curDate = LocalDate.now();
 		if ((dob != null) && (curDate != null)) {
 			return Period.between(dob, curDate).getYears();

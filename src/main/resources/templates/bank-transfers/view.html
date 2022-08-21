@@ -40,20 +40,20 @@
 				<div class="card-body">
 					<form th:if="${!externalAccounts.isEmpty}" class="row row-cols-md-auto g-2 align-items-end justify-content-center"
 					action="#" th:action="@{/bankTransfers/makeBankTransfer}" method="post" id="bankTransferTopUpForm">
-						<div class="col-12" th:object="${externalAccountTopUp}">
+						<div class="col" th:object="${externalAccountTopUp}">
 							<label for="selectExternalAccountTopUp" class="form-label">Select an account</label>
 							<select class="form-select" aria-label="Default select" id="selectExternalAccountTopUp" th:field="*{id}">
 				    			<option th:each="externalAccount : ${externalAccounts}" th:value="${externalAccount.id}" th:text="${externalAccount.label}"></option>
 							</select>
 						</div>
-						<div class="col-12" th:object="${newBankTransferTopUp}">
-							<label for="amountTopUp" class="form-label">Enter the amount</label>
+						<div class="col" th:object="${newBankTransferTopUp}">
+							<label for="amountTopUp" class="form-label">Enter the amount*</label>
 							<div class="input-group">
 								<div class="input-group-text">€</div>
 								<input type="number" step="any" class="form-control" placeholder="Amount" id="amountTopUp" th:field="*{amount}">
 							</div>
 						</div>
-						<div class="col-12">
+						<div class="col">
 							<button type="submit" class="btn btn-primary" th:name="bankTransferType" th:value="${T(deronzier.remi.payMyBuddyV2.model.BankTransferType).TOP_UP}">Top up</button>
 						</div>
 					</form>
@@ -70,20 +70,20 @@
 				<div class="card-body">
 					<form th:if="${!externalAccounts.isEmpty}" class="row row-cols-md-auto g-2 align-items-end justify-content-center"
 					action="#" th:action="@{/bankTransfers/makeBankTransfer}" method="post" id="bankTransferUseForm">
-						<div class="col-12" th:object="${externalAccountUse}">
+						<div class="col" th:object="${externalAccountUse}">
 							<label for="selectExternalAccountUse" class="form-label">Select an account</label>
 							<select class="form-select" aria-label="Default select" id="selectExternalAccountUse" th:field="*{id}">
 				    			<option th:each="externalAccount : ${externalAccounts}" th:value="${externalAccount.id}" th:text="${externalAccount.label}"></option>
 							</select>
 						</div>
-						<div class="col-12" th:object="${newBankTransferUse}">
-							<label for="amountUse" class="form-label">Enter the amount</label>
+						<div class="col" th:object="${newBankTransferUse}">
+							<label for="amountUse" class="form-label">Enter the amount*</label>
 							<div class="input-group">
 								<div class="input-group-text">€</div>
 								<input type="number" step="any" class="form-control" placeholder="Amount" id="amountUse" th:field="*{amount}">
 							</div>
 						</div>
-						<div class="col-12">
+						<div class="col">
 							<button type="submit" class="btn btn-primary" th:name="bankTransferType" th:value="${T(deronzier.remi.payMyBuddyV2.model.BankTransferType).USE}">Use</button>
 						</div>
 					</form>

@@ -8,10 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,15 +24,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import deronzier.remi.payMyBuddyV2.event.bankFlow.OnBankFlowCompleteEvent;
 import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
 import deronzier.remi.payMyBuddyV2.exception.TransactionSameAccountException;
 import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
 import deronzier.remi.payMyBuddyV2.model.Transaction;
 import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.payMyBuddyV2.security.CustomUser;
 import deronzier.remi.payMyBuddyV2.service.TransactionService;
 import deronzier.remi.payMyBuddyV2.service.UserService;
-import deronzier.remi.payMyBuddyV2.utils.Constants;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
 @Controller
@@ -43,10 +46,16 @@ public class TransactionController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private ApplicationEventPublisher eventPublisher;
+
 	@GetMapping()
 	public String getTransactions(Model model, HttpServletRequest request,
+			@AuthenticationPrincipal CustomUser customUser,
 			@SortDefault(sort = "timeStamp", direction = Sort.Direction.DESC) Pageable pageable)
 			throws UserNotFoundException {
+		final int userId = customUser.getId();
+
 		// Check validation form server side
 		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
 		if (inputFlashMap != null) {
@@ -69,13 +78,14 @@ public class TransactionController {
 		model.addAttribute("newTransaction", newTransaction);
 
 		// Get current user's connections
-		User user1 = userService.findById(Constants.OWNER_USER_ID).get();
-		List<User> connections = user1.getConnections();
+		User user = userService.findUserById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		List<User> connections = user.getConnections();
 		model.addAttribute("connections", connections);
 
 		// Get all current user's transactions
 		Page<Transaction> transactions = transactionService
-				.findAllSentAndReceivedTransactionsForSpecificUser(Constants.OWNER_USER_ID, pageable);
+				.findAllSentAndReceivedTransactionsForSpecificUser(userId, pageable);
 		PageWrapper<Transaction> page = new PageWrapper<Transaction>(transactions, "/transactions");
 		model.addAttribute("page", page);
 
@@ -84,19 +94,25 @@ public class TransactionController {
 
 	@PostMapping("/makeTransaction")
 	public String makeTransaction(@Valid @ModelAttribute("newTransaction") Transaction transaction,
-			BindingResult bindingResult,
+			BindingResult bindingResult, @AuthenticationPrincipal CustomUser customUser,
 			@ModelAttribute("receiver") User receiver, Model model,
 			RedirectAttributes redirectAttributes)
-			throws UserNotFoundException, AccountNotFoundException,
-			TransactionSameAccountException {
+			throws UserNotFoundException, AccountNotFoundException, TransactionSameAccountException {
+		final int userId = customUser.getId();
+		User userLoggedIn = userService.findUserById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+
 		if (bindingResult.hasErrors()) { // if amount is lower than 10€
 			redirectAttributes.addFlashAttribute("tooLowAmountError",
 					bindingResult.getFieldError("amount").getDefaultMessage());
 			return "redirect:/transactions?isNewTransactionMadeSuccessfully=false";
 		}
 		try {
-			transactionService.makeTransaction(Constants.OWNER_USER_ID, receiver.getId(), transaction.getAmount(),
+			transactionService.makeTransaction(userId, receiver.getId(), transaction.getAmount(),
 					transaction.getDescription());
+			if (userLoggedIn.isUsingPhone()) {
+				eventPublisher.publishEvent(new OnBankFlowCompleteEvent(userLoggedIn, transaction.getAmount()));
+			}
 			return "redirect:/transactions?isNewTransactionMadeSuccessfully=true";
 		} catch (AccountNotEnoughMoneyException aneme) {
 			redirectAttributes.addFlashAttribute("accountNotEnoughMoneyException", aneme);

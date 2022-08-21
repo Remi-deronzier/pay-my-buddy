@@ -15,7 +15,7 @@ import deronzier.remi.payMyBuddyV2.service.BankFlowService;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
 @Controller
-@RequestMapping(value = "/bankFlows")
+@RequestMapping(value = "/admin/bankFlows")
 public class BankFlowController {
 
 	@Autowired

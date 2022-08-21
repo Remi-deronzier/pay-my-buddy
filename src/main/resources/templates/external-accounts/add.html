@@ -23,7 +23,7 @@
 				<strong>Error!</strong> Account addition failed
 			</div>
 			<form id="externalAccountForm" action="#" th:action="@{/externalAccounts/add}" th:object="${newExternalAccount}"  method="post">
-				<label for="accountName" class="form-label">Account name</label>
+				<label for="accountName" class="form-label">Account name*</label>
 				<input type="text" class="form-control w-50" name="accountName" id="accountName" placeholder="Account name" th:field="*{label}">
 				<p class="text-danger" th:if="${labelExternalAccountError != null}">Account name is mandatory</p>
 				<p class="text-danger" th:if="${dataIntegrityViolationException != null}">Sorry, you've already registered an account with this name</p>

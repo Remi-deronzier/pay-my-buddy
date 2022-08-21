@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-general}">
+      
+	<head>
+		<title>Settings</title>
+	</head>
+	
+	<body>
+		<th:block layout:fragment="content">
+			<h1>Settings</h1>
+			<div th:if="${(param.isProfileUpdatedSuccessfully != null) and (!param.isProfileUpdatedSuccessfully)}" class="alert alert-danger dismissible fade show" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+				<strong>Error!</strong> Profile updating failed
+			</div>
+			<form class="d-flex align-items-center" id="usgin2FAForm" action="#" th:action="@{'/users/settings/{id}'(id=${userId})}"  th:method="patch">
+				<div class="form-check form-switch me-3">
+				  <input class="form-check-input" type="checkbox" role="switch" id="using2FA" th:name="using2FA" th:checked="${using2FA}">
+				  <input class="form-check-input" type="hidden" th:name="using2FA" th:value="off">
+				  <label class="form-check-label" for="using2FA">Activate 2FA</label>
+				</div>
+		  		<input type="hidden" th:name="userName" th:value="${userName}">
+				<button type="submit" class="btn btn-primary">Save</button>
+			</form>
+	        <a th:href="@{/forgotPassword}" class="btn btn-primary">Reset password</a>
+		</th:block>
+	</body>
+	
+</html>

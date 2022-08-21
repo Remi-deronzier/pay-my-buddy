@@ -8,10 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import deronzier.remi.payMyBuddyV2.event.bankFlow.OnBankFlowCompleteEvent;
 import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotBelongGoodUserException;
 import deronzier.remi.payMyBuddyV2.exception.ExternalAccountNotFoundException;
@@ -33,9 +36,9 @@ import deronzier.remi.payMyBuddyV2.model.BankTransfer;
 import deronzier.remi.payMyBuddyV2.model.BankTransferType;
 import deronzier.remi.payMyBuddyV2.model.ExternalAccount;
 import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.payMyBuddyV2.security.CustomUser;
 import deronzier.remi.payMyBuddyV2.service.BankTransferService;
 import deronzier.remi.payMyBuddyV2.service.UserService;
-import deronzier.remi.payMyBuddyV2.utils.Constants;
 import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
 
 @ControllerAdvice
@@ -49,9 +52,16 @@ public class BankTransferController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private ApplicationEventPublisher eventPublisher;
+
 	@GetMapping()
 	public String getBankTransfers(Model model, HttpServletRequest request,
-			@SortDefault(sort = "timeStamp", direction = Sort.Direction.DESC) Pageable pageable) {
+			@AuthenticationPrincipal CustomUser customUser,
+			@SortDefault(sort = "timeStamp", direction = Sort.Direction.DESC) Pageable pageable)
+			throws UserNotFoundException {
+		final int userId = customUser.getId();
+
 		// Check validation form server side
 		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
 		if (inputFlashMap != null) {
@@ -71,7 +81,8 @@ public class BankTransferController {
 		}
 
 		// Add external accounts of the user
-		User owner = userService.findById(Constants.OWNER_USER_ID).get();
+		User owner = userService.findUserById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
 		List<ExternalAccount> externalAccounts = owner.getExternalAccounts();
 		model.addAttribute("externalAccounts", externalAccounts);
 
@@ -93,7 +104,7 @@ public class BankTransferController {
 
 		// Get all current user's transactions
 		Page<BankTransfer> bankTransfers = bankTransferService
-				.findAllBankTransfersForSpecificUser(Constants.OWNER_USER_ID, pageable);
+				.findAllBankTransfersForSpecificUser(userId, pageable);
 		PageWrapper<BankTransfer> page = new PageWrapper<BankTransfer>(bankTransfers, "/bankTransfers");
 		model.addAttribute("page", page);
 
@@ -103,12 +114,17 @@ public class BankTransferController {
 	@PostMapping("/makeBankTransfer")
 	public String makeBankTransfer(
 			@Valid @ModelAttribute(value = "newBankTransferUse") BankTransfer newBankTransfer,
+			@AuthenticationPrincipal CustomUser customUser,
 			BindingResult bindingResultBankTransfer,
 			@ModelAttribute("externalAccountUse") ExternalAccount externalAccount,
 			Model model, @RequestParam(value = "bankTransferType", required = true) BankTransferType bankTransferType,
 			RedirectAttributes redirectAttributes)
 			throws UserNotFoundException, AccountNotFoundException,
 			ExternalAccountNotFoundException, ExternalAccountNotBelongGoodUserException {
+		final int userId = customUser.getId();
+		User userLoggedIn = userService.findUserById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+
 		try {
 			switch (bankTransferType) {
 			case TOP_UP:
@@ -118,7 +134,7 @@ public class BankTransferController {
 					return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
 				}
 				try {
-					bankTransferService.makeBankTransfer(newBankTransfer.getAmount(), Constants.OWNER_USER_ID,
+					bankTransferService.makeBankTransfer(newBankTransfer.getAmount(), userId,
 							BankTransferType.TOP_UP,
 							externalAccount.getId());
 				} catch (NegativeAmountException nae) {
@@ -133,9 +149,13 @@ public class BankTransferController {
 					return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
 				}
 				try {
-					bankTransferService.makeBankTransfer(newBankTransfer.getAmount(), Constants.OWNER_USER_ID,
+					bankTransferService.makeBankTransfer(newBankTransfer.getAmount(), userId,
 							BankTransferType.USE,
 							externalAccount.getId());
+					if (userLoggedIn.isUsingPhone()) {
+						eventPublisher
+								.publishEvent(new OnBankFlowCompleteEvent(userLoggedIn, newBankTransfer.getAmount()));
+					}
 				} catch (NegativeAmountException nae) {
 					redirectAttributes.addFlashAttribute("negativeAmountExceptionUse", nae);
 					return "redirect:/bankTransfers?isNewBankTransferMadeSuccessfully=false";
