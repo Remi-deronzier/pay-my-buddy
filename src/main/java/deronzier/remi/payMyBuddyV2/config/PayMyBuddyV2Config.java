@@ -1,16 +1,17 @@
-package deronzier.remi.payMyBuddyV2.config;
+package deronzier.remi.paymybuddyv2.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import deronzier.remi.paymybuddyv2.utils.Constants;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 
-@Profile("!test")
+@Profile("!" + Constants.TEST_PROFILE)
 @Configuration
 @EnableScheduling
-public class GeneralConfig {
+public class PayMyBuddyV2Config {
 	@Bean
 	public LayoutDialect layoutDialect() {
 		return new LayoutDialect();

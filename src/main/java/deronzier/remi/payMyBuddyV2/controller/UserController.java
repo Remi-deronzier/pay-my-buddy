@@ -1,5 +1,6 @@
-package deronzier.remi.payMyBuddyV2.controller;
+package deronzier.remi.paymybuddyv2.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,59 +26,74 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
-import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
-import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.service.impl.UserServiceImpl;
-import deronzier.remi.payMyBuddyV2.utils.PageWrapper;
+import deronzier.remi.paymybuddyv2.exception.ConnectionCreationException;
+import deronzier.remi.paymybuddyv2.exception.ConnectionNotFoundException;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.model.UserStatus;
+import deronzier.remi.paymybuddyv2.security.ActiveUserService;
+import deronzier.remi.paymybuddyv2.security.CustomUser;
+import deronzier.remi.paymybuddyv2.service.AuthenticationService;
+import deronzier.remi.paymybuddyv2.service.UserService;
+import deronzier.remi.paymybuddyv2.utils.PageWrapper;
 
 @Controller
 @RequestMapping(value = "/users")
 public class UserController {
 
-	public final static int OWNER_USER_ID = 2;
+	@Autowired
+	private UserService userService;
 
 	@Autowired
-	private UserServiceImpl userService;
+	private ActiveUserService activeUserService;
+
+	@Autowired
+	private AuthenticationService authenticationService;
 
 	@GetMapping(value = "/contact")
-	public String getConnections(Model model) {
-		User user1 = userService.findById(OWNER_USER_ID).get();
-		List<User> connections = user1.getConnections();
+	public String getConnections(Model model, @AuthenticationPrincipal CustomUser customUser)
+			throws UserNotFoundException {
+		final int userId = customUser.getId();
+
+		User user = userService.findUserById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		List<User> connections = user.getConnections();
 		model.addAttribute("connections", connections);
 		return "users/contact";
 	}
 
-	@GetMapping(value = "/{id}")
-	public String getUser(@PathVariable(required = false) final Integer id,
+	@GetMapping(value = "/{userName}")
+	public String getUser(@PathVariable(required = false) final String userName,
 			@RequestParam(required = false) boolean isEditing, Model model,
-			HttpServletRequest request) {
+			HttpServletRequest request, @AuthenticationPrincipal CustomUser customUser) throws UserNotFoundException {
 		// Check validation form server side
 		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
 		if (inputFlashMap != null) {
-			IllegalPhoneNumberException illegalPhoneNumberException = (IllegalPhoneNumberException) inputFlashMap
-					.get("illegalPhoneNumberException");
 			DataIntegrityViolationException dataIntegrityViolationException = (DataIntegrityViolationException) inputFlashMap
 					.get("dataIntegrityViolationException");
 			model.addAttribute("dataIntegrityViolationException", dataIntegrityViolationException);
-			model.addAttribute("illegalPhoneNumberException", illegalPhoneNumberException);
 		}
 
-		User user1 = userService.findById(OWNER_USER_ID).get();
-		List<User> connections = user1.getConnections();
-		User user = userService.findById(id).get();
+		User userLoggedIn = userService.findUserByUsername(customUser.getUsername())
+				.orElseThrow(() -> new UserNotFoundException("User logged in not found"));
+		User user = userService.findUserByUsername(userName)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		List<User> connections = userLoggedIn.getConnections();
 		model.addAttribute("user", user);
 
+		boolean userActive = activeUserService.isUserActive(userName);
+		model.addAttribute("userStatus", userActive ? UserStatus.ACTIVE.getLabel() : UserStatus.AWAY.getLabel());
+
 		if (isEditing) {
-			if (user == user1) { // Check user wants to edit his own profile
+			if (user == userLoggedIn) { // Check user wants to edit his own profile
 				return "users/editProfile";
 			} else {
 				throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 			}
 		} else {
-			if (connections.contains(user) || user == user1) { // Check user is allowed to watch the profile of this
+			if (connections.contains(user)
+					|| user == userLoggedIn) { // Check user is allowed to watch the profile
+												// of this
 				// specific user
 				return "users/profile";
 			} else {
@@ -85,7 +102,7 @@ public class UserController {
 		}
 	}
 
-	@GetMapping(value = "/all")
+	@GetMapping(value = "/admin/all")
 	public String getUsers(Pageable pageable, Model model) {
 		// Add all bank flows to model
 		Page<User> users = userService
@@ -93,45 +110,84 @@ public class UserController {
 		PageWrapper<User> page = new PageWrapper<User>(users, "/users/all");
 		model.addAttribute("page", page);
 
+		List<String> activeUsers = activeUserService.getActiveUsers();
+		model.addAttribute("activeUsers", activeUsers);
+
 		return "users/all";
 	}
 
 	@PatchMapping(value = "/{id}")
 	public String updateProfile(@PathVariable final int id, @ModelAttribute("user") User user,
-			RedirectAttributes redirectAttributes)
+			RedirectAttributes redirectAttributes, @AuthenticationPrincipal CustomUser customUser)
 			throws UserNotFoundException {
-		try {
-			userService.updateProfile(user, id);
-		} catch (IllegalPhoneNumberException ipne) {
-			redirectAttributes.addFlashAttribute("illegalPhoneNumberException", ipne);
-			return "redirect:/users/{id}?isProfileUpdatedSuccessfully=false&isEditing=true";
-		} catch (DataIntegrityViolationException dive) {
-			redirectAttributes.addFlashAttribute("dataIntegrityViolationException", dive);
-			return "redirect:/users/{id}?isProfileUpdatedSuccessfully=false&isEditing=true";
+		if (id == customUser.getId()) { // Check that only logged in user can change his profile
+			final String userName = customUser.getUsername();
+			try {
+				userService.updateProfile(user, id);
+			} catch (DataIntegrityViolationException dive) {
+				redirectAttributes.addFlashAttribute("dataIntegrityViolationException", dive);
+				return "redirect:/users/" + userName + "?isProfileUpdatedSuccessfully=false&isEditing=true";
+			}
+			return "redirect:/users/" + userName + "?isProfileUpdatedSuccessfully=true";
+		} else {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
-		return "redirect:/users/{id}?isProfileUpdatedSuccessfully=true";
 	}
 
 	@GetMapping(value = "/contact/add")
-	public String getAddContact(Model model) throws UserNotFoundException {
+	public String getAddContact(Model model, @AuthenticationPrincipal CustomUser customUser)
+			throws UserNotFoundException {
+		final int userId = customUser.getId();
 		User newConnection = new User();
 		model.addAttribute("newConnection", newConnection);
-		List<User> futurePotentialConnections = userService.findFuturePotentialConnections(OWNER_USER_ID);
+		List<User> futurePotentialConnections = userService.findFuturePotentialConnections(userId);
 		model.addAttribute("futurePotentialConnections", futurePotentialConnections);
 		return "users/addContact";
 	}
 
 	@PostMapping("/contact/add")
-	public String postAddContact(@ModelAttribute("newConnection") User newConnection, Model model)
+	public String postAddContact(@ModelAttribute("newConnection") User newConnection, Model model,
+			@AuthenticationPrincipal CustomUser customUser)
 			throws UserNotFoundException, ConnectionCreationException {
-		userService.addConnection(OWNER_USER_ID, newConnection.getId());
+		final int userId = customUser.getId();
+		userService.addConnection(userId, newConnection.getId());
 		return "redirect:/users/contact?isNewConnectionAddedSuccessfully=true";
 	}
 
+	@GetMapping(value = "/settings/{userName}")
+	public String getSettings(Model model, @PathVariable final String userName)
+			throws UserNotFoundException {
+		User user = userService.findUserByUsername(userName)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		final int userId = user.getId();
+		model.addAttribute("using2FA", user.isUsing2FA());
+		model.addAttribute("userId", userId);
+		model.addAttribute("userName", userName);
+		return "users/settings";
+	}
+
+	@PatchMapping("/settings/{id}")
+	public String patchSettings(@RequestParam(required = true, value = "using2FA") boolean using2FA,
+			@PathVariable final int id, @RequestParam(required = true, value = "userName") String userName,
+			RedirectAttributes redirectAttributes)
+			throws UserNotFoundException, UnsupportedEncodingException {
+		User user = userService.findUserById(id)
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+		authenticationService.updateUsing2FA(using2FA, id);
+		if (using2FA) {
+			redirectAttributes.addAttribute("qrCode", authenticationService.generateQRUrl(user));
+			redirectAttributes.addAttribute("userName", userName);
+			return "redirect:/qrCode";
+		} else {
+			return "redirect:/users/" + userName + "?areSettingsUpdatedSuccessfully=true";
+		}
+	}
+
 	@DeleteMapping("/contact/delete/{connectionId}")
-	public String deleteContact(@PathVariable final int connectionId)
+	public String deleteContact(@PathVariable final int connectionId, @AuthenticationPrincipal CustomUser customUser)
 			throws UserNotFoundException, ConnectionCreationException, ConnectionNotFoundException {
-		userService.deleteConnection(OWNER_USER_ID, connectionId);
+		final int userId = customUser.getId();
+		userService.deleteConnection(userId, connectionId);
 		return "redirect:/users/contact?isConnectionDeletedSuccessfully=true";
 	}
 

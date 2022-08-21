@@ -8,6 +8,7 @@
 		<version>2.7.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	
 	<groupId>deronzier.remi</groupId>
 	<artifactId>payMyBuddyV2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -16,15 +17,30 @@
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+	
 	<dependencies>
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-security</artifactId>-->
-<!--		</dependency>-->
+		<dependency>
+		    <groupId>org.passay</groupId>
+		    <artifactId>passay</artifactId>
+		    <version>1.2.0</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.twilio.sdk</groupId>
+		  <artifactId>twilio</artifactId>
+		  <version>9.0.0-rc.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
@@ -40,12 +56,17 @@
 		<dependency>
  			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
-			<version>3.1.2</version>
+			<version>3.1.2</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.thymeleaf.extras</groupId>-->
-<!--			<artifactId>thymeleaf-extras-springsecurity5</artifactId>-->
-<!--		</dependency>-->
+		<dependency>
+		    <groupId>org.jboss.aerogear</groupId>
+		    <artifactId>aerogear-otp-java</artifactId>
+		    <version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
+		</dependency>
 		<dependency>
 		    <groupId>nz.net.ultraq.thymeleaf</groupId>
 		    <artifactId>thymeleaf-layout-dialect</artifactId>
@@ -91,6 +112,13 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		
+	    <resources>
+	        <resource>
+	            <directory>src/main/resources</directory>
+	            <filtering>true</filtering>
+	        </resource>
+    	</resources>
 	</build>
 
 </project>

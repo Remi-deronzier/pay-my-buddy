@@ -1,13 +1,13 @@
-package deronzier.remi.payMyBuddyV2.service.impl;
+package deronzier.remi.paymybuddyv2.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import deronzier.remi.payMyBuddyV2.model.BankTransfer;
-import deronzier.remi.payMyBuddyV2.model.ExternalAccount;
-import deronzier.remi.payMyBuddyV2.repository.ExternalAccountRepository;
-import deronzier.remi.payMyBuddyV2.service.ExternalAccountService;
+import deronzier.remi.paymybuddyv2.model.BankTransfer;
+import deronzier.remi.paymybuddyv2.model.ExternalAccount;
+import deronzier.remi.paymybuddyv2.repository.ExternalAccountRepository;
+import deronzier.remi.paymybuddyv2.service.ExternalAccountService;
 
 @Service
 @Transactional

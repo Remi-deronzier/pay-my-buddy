@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.service;
+package deronzier.remi.paymybuddyv2.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,26 +17,26 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
-import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.model.Account;
-import deronzier.remi.payMyBuddyV2.model.BankFlow;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.repository.AccountRepository;
-import deronzier.remi.payMyBuddyV2.repository.BankFlowRepository;
-import deronzier.remi.payMyBuddyV2.repository.CommissionRepository;
-import deronzier.remi.payMyBuddyV2.repository.TransactionRepository;
-import deronzier.remi.payMyBuddyV2.repository.UserRepository;
-import deronzier.remi.payMyBuddyV2.service.impl.CommissionServiceImpl;
-import deronzier.remi.payMyBuddyV2.setup.TestSetUp;
+import deronzier.remi.paymybuddyv2.exception.AccountNotEnoughMoneyException;
+import deronzier.remi.paymybuddyv2.exception.NegativeAmountException;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.model.Account;
+import deronzier.remi.paymybuddyv2.model.BankFlow;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.repository.AccountRepository;
+import deronzier.remi.paymybuddyv2.repository.BankFlowRepository;
+import deronzier.remi.paymybuddyv2.repository.CommissionRepository;
+import deronzier.remi.paymybuddyv2.repository.TransactionRepository;
+import deronzier.remi.paymybuddyv2.repository.UserRepository;
+import deronzier.remi.paymybuddyv2.setup.TestSetUp;
+import deronzier.remi.paymybuddyv2.utils.Constants;
 
 @SpringBootTest
-@ActiveProfiles("test")
-public class CommissionServiceImplIntegrationTest {
+@ActiveProfiles(Constants.TEST_PROFILE)
+public class CommissionServiceIntegrationTest {
 
 	@Autowired
-	private CommissionServiceImpl commissionService;
+	private CommissionService commissionService;
 
 	@MockBean
 	private UserRepository userRepository;
@@ -123,11 +123,11 @@ public class CommissionServiceImplIntegrationTest {
 		Mockito.when(userRepository.findAll()).thenReturn(allUsers);
 		Mockito.when(userRepository.findById(TestSetUp.USER1_ID)).thenReturn(optionalUser1);
 		Mockito.when(userRepository.findById(TestSetUp.USER2_ID)).thenReturn(optionalUser2);
-		Mockito.when(userRepository.findById(UserService.PAY_MY_BUDDY_SUPER_USER_ID))
+		Mockito.when(userRepository.findById(Constants.PAY_MY_BUDDY_SUPER_USER_ID))
 				.thenReturn(optionalPayMyBuddySuperUser);
 		Mockito.when(accountRepository.findByUserId(TestSetUp.USER1_ID)).thenReturn(optionalUser1Account);
 		Mockito.when(accountRepository.findByUserId(TestSetUp.USER2_ID)).thenReturn(optionalUser2Account);
-		Mockito.when(accountRepository.findByUserId(UserService.PAY_MY_BUDDY_SUPER_USER_ID))
+		Mockito.when(accountRepository.findByUserId(Constants.PAY_MY_BUDDY_SUPER_USER_ID))
 				.thenReturn(optionalPayMyBuddySuperUserAccount);
 	}
 
@@ -139,13 +139,13 @@ public class CommissionServiceImplIntegrationTest {
 		assertThat(user1Account.getBalance())
 				.isEqualTo(TestSetUp.INITIAL_BALANCE
 						- TestSetUp.BANK_FLOW_AMOUNT * dailyBankFlowsUser1.size()
-								* CommissionService.COMMISSION_PERCENTAGE / 100);
+								* Constants.COMMISSION_PERCENTAGE / 100);
 		assertThat(user2Account.getBalance())
 				.isEqualTo(TestSetUp.INITIAL_BALANCE
 						- TestSetUp.BANK_FLOW_AMOUNT * dailyBankFlowsUser2.size()
-								* CommissionService.COMMISSION_PERCENTAGE / 100);
+								* Constants.COMMISSION_PERCENTAGE / 100);
 		assertThat(totalDailyCommissionAmount).isEqualTo(TestSetUp.BANK_FLOW_AMOUNT * dailyBankFlows.size()
-				* CommissionService.COMMISSION_PERCENTAGE / 100);
+				* Constants.COMMISSION_PERCENTAGE / 100);
 
 	}
 

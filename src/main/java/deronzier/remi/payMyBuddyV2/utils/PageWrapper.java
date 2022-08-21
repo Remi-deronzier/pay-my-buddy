@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.utils;
+package deronzier.remi.paymybuddyv2.utils;
 
 import java.util.ArrayList;
 import java.util.List;

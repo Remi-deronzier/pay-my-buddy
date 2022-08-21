@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.model;
+package deronzier.remi.paymybuddyv2.model;
 
 import java.time.LocalDateTime;
 
@@ -31,6 +31,10 @@ public class BankFlow {
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "sender_id")
 	private User sender;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "receiver_id")
+	private User receiver;
 
 	@Column(nullable = false, updatable = false)
 	private double amount;

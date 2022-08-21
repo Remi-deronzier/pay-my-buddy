@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.service.impl;
+package deronzier.remi.paymybuddyv2.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -16,22 +16,21 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import deronzier.remi.payMyBuddyV2.exception.AccountNotEnoughMoneyException;
-import deronzier.remi.payMyBuddyV2.exception.NegativeAmountException;
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.model.Account;
-import deronzier.remi.payMyBuddyV2.model.BankFlow;
-import deronzier.remi.payMyBuddyV2.model.Commission;
-import deronzier.remi.payMyBuddyV2.model.Transaction;
-import deronzier.remi.payMyBuddyV2.model.User;
-import deronzier.remi.payMyBuddyV2.repository.AccountRepository;
-import deronzier.remi.payMyBuddyV2.repository.BankFlowRepository;
-import deronzier.remi.payMyBuddyV2.repository.CommissionRepository;
-import deronzier.remi.payMyBuddyV2.repository.TransactionRepository;
-import deronzier.remi.payMyBuddyV2.repository.UserRepository;
-import deronzier.remi.payMyBuddyV2.service.CommissionService;
-import deronzier.remi.payMyBuddyV2.service.UserService;
-import deronzier.remi.payMyBuddyV2.utils.Constants;
+import deronzier.remi.paymybuddyv2.exception.AccountNotEnoughMoneyException;
+import deronzier.remi.paymybuddyv2.exception.NegativeAmountException;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.model.Account;
+import deronzier.remi.paymybuddyv2.model.BankFlow;
+import deronzier.remi.paymybuddyv2.model.Commission;
+import deronzier.remi.paymybuddyv2.model.Transaction;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.repository.AccountRepository;
+import deronzier.remi.paymybuddyv2.repository.BankFlowRepository;
+import deronzier.remi.paymybuddyv2.repository.CommissionRepository;
+import deronzier.remi.paymybuddyv2.repository.TransactionRepository;
+import deronzier.remi.paymybuddyv2.repository.UserRepository;
+import deronzier.remi.paymybuddyv2.service.CommissionService;
+import deronzier.remi.paymybuddyv2.utils.Constants;
 
 @Service
 @Transactional
@@ -60,7 +59,7 @@ public class CommissionServiceImpl implements CommissionService {
 	private static final Logger log = LoggerFactory.getLogger(CommissionServiceImpl.class);
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss");
 
-	@Scheduled(cron = "0 0 0 * * *", zone = "Europe/Paris") // every day at midnight
+	@Scheduled(cron = "0 15 0 * * *", zone = "Europe/Paris") // every day at 00:15:00
 	@Override
 	public double monetization() throws AccountNotFoundException, UserNotFoundException, NegativeAmountException,
 			AccountNotEnoughMoneyException {
@@ -88,7 +87,7 @@ public class CommissionServiceImpl implements CommissionService {
 		double dailyCommissionAmount = 0;
 		for (BankFlow dailyBankFlow : dailyBankFlows) {
 			if (dailyBankFlow.getDiscriminatorValue().equals(Constants.TRANSACTION_DISCRIMINATOR)) {
-				if (((Transaction) dailyBankFlow).getReceiver().getId() != UserService.PAY_MY_BUDDY_SUPER_USER_ID) {
+				if (((Transaction) dailyBankFlow).getReceiver().getId() != Constants.PAY_MY_BUDDY_SUPER_USER_ID) {
 					// Avoid counting bank transfers charged by Pay My Buddy
 					dailyCommissionAmount += calculateCommissionFee(dailyBankFlow.getAmount());
 				}
@@ -100,11 +99,11 @@ public class CommissionServiceImpl implements CommissionService {
 	}
 
 	private double calculateCommissionFee(double amount) {
-		return amount * CommissionService.COMMISSION_PERCENTAGE / 100;
+		return amount * Constants.COMMISSION_PERCENTAGE / 100;
 	}
 
 	private double saveTotalDailyCommission() throws AccountNotFoundException, NegativeAmountException {
-		Account payMyBuddySuperUserAccount = accountRepository.findByUserId(UserService.PAY_MY_BUDDY_SUPER_USER_ID)
+		Account payMyBuddySuperUserAccount = accountRepository.findByUserId(Constants.PAY_MY_BUDDY_SUPER_USER_ID)
 				.orElseThrow(() -> new AccountNotFoundException("Pay My Buddy Super user account not found"));
 
 		double totalDailyCommission = calculateTotalDailyCommissionAmount();
@@ -124,10 +123,10 @@ public class CommissionServiceImpl implements CommissionService {
 			throws UserNotFoundException,
 			AccountNotFoundException, NegativeAmountException, AccountNotEnoughMoneyException {
 		Iterable<User> allUsers = userRepository.findAll();
-		User payMyBuddySuperUser = userRepository.findById(UserService.PAY_MY_BUDDY_SUPER_USER_ID)
+		User payMyBuddySuperUser = userRepository.findById(Constants.PAY_MY_BUDDY_SUPER_USER_ID)
 				.orElseThrow(() -> new UserNotFoundException("Pay My Buddy Super user not found"));
 		for (User user : allUsers) {
-			if (user.getId() > UserService.PAY_MY_BUDDY_SUPER_USER_ID) { // Skip Pay My Buddy Super User
+			if (user.getId() > Constants.PAY_MY_BUDDY_SUPER_USER_ID) { // Skip Pay My Buddy Super User
 				collectDailyCommissionForOneUser(user.getId(), payMyBuddySuperUser);
 			}
 		}

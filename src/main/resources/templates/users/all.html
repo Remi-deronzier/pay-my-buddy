@@ -11,6 +11,11 @@
 		<th:block layout:fragment="content">
 			<h1>All users</h1>
 			
+			<div th:if="${(param.isUserDeletedSuccessfully != null) and (param.isUserDeletedSuccessfully)}" class="alert alert-success dismissible fade show w-50" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-lbel="Close"></button>
+				<strong>Success!</strong> User successfully deleted
+			</div>
+			
 			<table th:if="${!page.getContent().isEmpty}" class="table table-striped table-bordered">
 				<thead>
 					<tr class="table-primary">
@@ -33,19 +38,12 @@
 						<td th:text="${user.lastName}"></td>
 						<td th:text="${user.phoneNumber}"></td>
 						<td th:text="${user.dateOfBirth}"></td>
-						<td th:text="${user.status}"></td>
+						<td th:text="${activeUsers.contains(user.userName) ? T(deronzier.remi.paymybuddyv2.model.UserStatus).ACTIVE.label : T(deronzier.remi.paymybuddyv2.model.UserStatus).AWAY.label}"></td>
 						<td th:text="${user.account.balanceNegative} ? 'NEGATIVE' : 'POSITIVE'" th:class="${user.account.balanceNegative} ? 'text-danger' : 'text-success'"></td>
 						<td>
-							<div class="d-flex justify-content-between">
-								<a th:href="@{'/users/{id}'(id=${user.id})}" class="btn btn-primary" role="button">
-									<i class="bi bi-eye text-light"></i> Visit profile
-								</a>
-						        <form th:if="${user.id != 1}" action="#" th:action="@{'/users/contact/delete/{id}'(id=${user.id})}" th:method="delete" >
-							        <button type="submit" class="btn btn-danger">
-							          <i class="bi bi-trash text-light"></i> Delete
-							        </button>
-								</form>
-							</div>
+							<a th:href="@{'/users/{id}'(id=${user.id})}" class="btn btn-primary" role="button">
+								<i class="bi bi-eye"></i> Visit profile
+							</a>
 						</td>
 					</tr>
 				</tbody>

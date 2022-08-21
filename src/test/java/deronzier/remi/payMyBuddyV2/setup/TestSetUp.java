@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.setup;
+package deronzier.remi.paymybuddyv2.setup;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -6,12 +6,12 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.model.BankFlow;
-import deronzier.remi.payMyBuddyV2.model.BankTransfer;
-import deronzier.remi.payMyBuddyV2.model.BankTransferType;
-import deronzier.remi.payMyBuddyV2.model.Transaction;
-import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.model.BankFlow;
+import deronzier.remi.paymybuddyv2.model.BankTransfer;
+import deronzier.remi.paymybuddyv2.model.BankTransferType;
+import deronzier.remi.paymybuddyv2.model.Transaction;
+import deronzier.remi.paymybuddyv2.model.User;
 
 public class TestSetUp {
 

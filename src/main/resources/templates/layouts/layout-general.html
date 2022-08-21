@@ -47,15 +47,21 @@
 		          <a class="nav-link" th:href="@{/users/contact}">Contact</a>
 		        </li>
 		        <li class="nav-item">
-		          <a class="nav-link" th:href="@{/users/2}">Profile</a>
+		          <a class="nav-link" th:href="@{'/users/{userName}'(userName=${#authentication.name})}">Profile</a>
 		        </li>
 		        <li class="nav-item">
-		          <a class="nav-link" th:href="@{/adminPanel}">Admin panel</a>
+		          <a class="nav-link" th:href="@{'/users/settings/{userName}'(userName=${#authentication.name})}">Settings</a>
 		        </li>
-		        <li class="nav-item">
-		          <a class="nav-link">Log off</a>
+		        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+		          <a class="nav-link" th:href="@{/admin/adminPanel}" >Admin panel</a>
 		        </li>
 		      </ul>
+		      		<div class="text-light me-2 fs-3">
+			      		Hi, <span sec:authentication="name">John</span>
+		      		</div>
+			        <form method="POST" th:action="@{/doLogout}">
+			          <button type="submit" class="btn btn-primary">Log out</button>
+			        </form>
 		    </div>
 		  </div>
 		</nav>
@@ -64,7 +70,7 @@
 		<!-- Content Section -->
 		<div class="container mt-3">
 			<section layout:fragment="content">
-				    <p>This is filled by the content template.</p>
+			    <p>This is filled by the content template.</p>
 			</section>
 		</div>
 		

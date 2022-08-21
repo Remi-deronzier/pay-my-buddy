@@ -1,4 +1,4 @@
-package deronzier.remi.payMyBuddyV2.service;
+package deronzier.remi.paymybuddyv2.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,15 +6,17 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import deronzier.remi.payMyBuddyV2.exception.ConnectionCreationException;
-import deronzier.remi.payMyBuddyV2.exception.ConnectionNotFoundException;
-import deronzier.remi.payMyBuddyV2.exception.IllegalPhoneNumberException;
-import deronzier.remi.payMyBuddyV2.exception.UserNotFoundException;
-import deronzier.remi.payMyBuddyV2.model.User;
+import deronzier.remi.paymybuddyv2.exception.ConnectionCreationException;
+import deronzier.remi.paymybuddyv2.exception.ConnectionNotFoundException;
+import deronzier.remi.paymybuddyv2.exception.UserEmailExistsException;
+import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;
+import deronzier.remi.paymybuddyv2.exception.UserUserNameExistsException;
+import deronzier.remi.paymybuddyv2.model.User;
+import deronzier.remi.paymybuddyv2.validation.passwordvalid.ValidPassword;
 
 public interface UserService {
 
-	Optional<User> findById(final int id);
+	Optional<User> findUserById(final int id);
 
 	User addConnection(final int ownerId, final int newConnectionId)
 			throws UserNotFoundException, ConnectionCreationException;
@@ -22,19 +24,23 @@ public interface UserService {
 	User deleteConnection(final int ownerId, final int newConnectionId)
 			throws UserNotFoundException, ConnectionCreationException, ConnectionNotFoundException;
 
-	User create();
-
 	User save(User user);
 
 	void delete(final int id) throws UserNotFoundException;
 
 	List<User> findFuturePotentialConnections(final int ownerId) throws UserNotFoundException;
 
-	User updateProfile(User inputUser, int id) throws UserNotFoundException, IllegalPhoneNumberException;
+	User updateProfile(User inputUser, int id) throws UserNotFoundException;
 
 	Page<User> findAll(Pageable pageable);
 
-	static final double INITIAL_ACCOUNT_BALANCE = 0;
+	User create(User newUser) throws UserEmailExistsException,
+			UserUserNameExistsException;
 
-	public final static int PAY_MY_BUDDY_SUPER_USER_ID = 1;
+	void changeUserPassword(User user, @ValidPassword String password);
+
+	User findUserByEmail(String email) throws UserNotFoundException;
+
+	Optional<User> findUserByUsername(final String userName);
+
 }
