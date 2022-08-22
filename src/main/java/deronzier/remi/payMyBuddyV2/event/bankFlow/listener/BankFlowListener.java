@@ -1,4 +1,4 @@
-package deronzier.remi.paymybuddyv2.event.bankflow.listener;
+package deronzier.remi.paymybuddyv2.event.bankFlow.listener;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.twilio.rest.api.v2010.account.Message;
 
-import deronzier.remi.paymybuddyv2.event.bankflow.OnBankFlowCompleteEvent;
+import deronzier.remi.paymybuddyv2.event.bankFlow.OnBankFlowCompleteEvent;
 
 @Component
 public class BankFlowListener implements ApplicationListener<OnBankFlowCompleteEvent> {
