@@ -90,9 +90,6 @@ public class User {
 	private boolean usingPhone;
 
 	@Column(nullable = false, columnDefinition = "boolean default false")
-	private boolean active;
-
-	@Column(nullable = false, columnDefinition = "boolean default false")
 	private boolean enabled;
 
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
