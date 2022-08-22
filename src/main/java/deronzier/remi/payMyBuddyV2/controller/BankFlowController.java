@@ -34,7 +34,7 @@ public class BankFlowController {
 		// Add all bank flows to model
 		Page<BankFlow> bankFlows = bankFlowService
 				.findAll(pageable);
-		PageWrapper<BankFlow> page = new PageWrapper<BankFlow>(bankFlows, RouteManager.BANK_FLOWS);
+		PageWrapper<BankFlow> page = new PageWrapper<BankFlow>(bankFlows, RouteManager.ADMIN + RouteManager.BANK_FLOWS);
 		model.addAttribute("page", page);
 
 		return "bank-flows/view";

@@ -110,7 +110,7 @@ public class UserController {
 		// Add all bank flows to model
 		Page<User> users = userService
 				.findAll(pageable);
-		PageWrapper<User> page = new PageWrapper<User>(users, "/users/all");
+		PageWrapper<User> page = new PageWrapper<User>(users, "/users/admin/all");
 		model.addAttribute("page", page);
 
 		List<String> activeUsers = activeUserService.getActiveUsers();
