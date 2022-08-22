@@ -26,8 +26,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import deronzier.remi.paymybuddyv2.event.checkphone.OnPhoneCheckCompleteEvent;
-import deronzier.remi.paymybuddyv2.event.forgotpassword.OnForgotPasswordCompleteEvent;
+import deronzier.remi.paymybuddyv2.event.checkPhone.OnPhoneCheckCompleteEvent;
+import deronzier.remi.paymybuddyv2.event.forgotPassword.OnForgotPasswordCompleteEvent;
 import deronzier.remi.paymybuddyv2.event.registration.OnRegistrationCompleteEvent;
 import deronzier.remi.paymybuddyv2.exception.UserEmailExistsException;
 import deronzier.remi.paymybuddyv2.exception.UserNotFoundException;

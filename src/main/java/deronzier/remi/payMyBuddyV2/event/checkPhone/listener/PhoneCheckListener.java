@@ -1,4 +1,4 @@
-package deronzier.remi.paymybuddyv2.event.checkphone.listener;
+package deronzier.remi.paymybuddyv2.event.checkPhone.listener;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.twilio.rest.api.v2010.account.Message;
 
-import deronzier.remi.paymybuddyv2.event.checkphone.OnPhoneCheckCompleteEvent;
+import deronzier.remi.paymybuddyv2.event.checkPhone.OnPhoneCheckCompleteEvent;
 
 @Component
 public class PhoneCheckListener implements ApplicationListener<OnPhoneCheckCompleteEvent> {

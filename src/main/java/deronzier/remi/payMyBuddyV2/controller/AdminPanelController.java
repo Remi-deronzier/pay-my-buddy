@@ -20,6 +20,7 @@ public class AdminPanelController {
 	@GetMapping
 	public String getAdminPanel(Model model) {
 		// Add user account to model
+		System.out.println("coucou");
 		Account payMyBuddySuperUserAccount = accountService.findByUserId(Constants.PAY_MY_BUDDY_SUPER_USER_ID)
 				.get();
 		model.addAttribute("account", payMyBuddySuperUserAccount);

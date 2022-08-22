@@ -41,7 +41,7 @@
 						<td th:text="${activeUsers.contains(user.userName) ? T(deronzier.remi.paymybuddyv2.model.UserStatus).ACTIVE.label : T(deronzier.remi.paymybuddyv2.model.UserStatus).AWAY.label}"></td>
 						<td th:text="${user.account.balanceNegative} ? 'NEGATIVE' : 'POSITIVE'" th:class="${user.account.balanceNegative} ? 'text-danger' : 'text-success'"></td>
 						<td>
-							<a th:href="@{'/users/{id}'(id=${user.id})}" class="btn btn-primary" role="button">
+							<a th:href="@{'/users/{userName}'(userName=${user.userName})}" class="btn btn-primary" role="button">
 								<i class="bi bi-eye"></i> Visit profile
 							</a>
 						</td>

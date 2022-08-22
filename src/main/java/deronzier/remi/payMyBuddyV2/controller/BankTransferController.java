@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import deronzier.remi.paymybuddyv2.event.bankflow.OnBankFlowCompleteEvent;
+import deronzier.remi.paymybuddyv2.event.bankFlow.OnBankFlowCompleteEvent;
 import deronzier.remi.paymybuddyv2.exception.AccountNotEnoughMoneyException;
 import deronzier.remi.paymybuddyv2.exception.ExternalAccountNotBelongGoodUserException;
 import deronzier.remi.paymybuddyv2.exception.ExternalAccountNotFoundException;

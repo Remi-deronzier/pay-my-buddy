@@ -1,4 +1,4 @@
-package deronzier.remi.paymybuddyv2.event.bankflow;
+package deronzier.remi.paymybuddyv2.event.bankFlow;
 
 import org.springframework.context.ApplicationEvent;
 
