@@ -1,4 +1,4 @@
-package deronzier.remi.paymybuddyv2.event.forgotpassword.listener;
+package deronzier.remi.paymybuddyv2.event.forgotPassword.listener;
 
 import java.util.UUID;
 
@@ -8,7 +8,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
-import deronzier.remi.paymybuddyv2.event.forgotpassword.OnForgotPasswordCompleteEvent;
+import deronzier.remi.paymybuddyv2.event.forgotPassword.OnForgotPasswordCompleteEvent;
 import deronzier.remi.paymybuddyv2.model.User;
 import deronzier.remi.paymybuddyv2.service.AuthenticationService;
 

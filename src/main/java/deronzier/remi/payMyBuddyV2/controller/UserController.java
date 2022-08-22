@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -91,7 +92,9 @@ public class UserController {
 				throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 			}
 		} else {
-			if (connections.contains(user)
+			if (customUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+				return "users/profile";
+			} else if (connections.contains(user)
 					|| user == userLoggedIn) { // Check user is allowed to watch the profile
 												// of this
 				// specific user

@@ -1,4 +1,4 @@
-package deronzier.remi.paymybuddyv2.event.checkphone;
+package deronzier.remi.paymybuddyv2.event.checkPhone;
 
 import org.springframework.context.ApplicationEvent;
 
