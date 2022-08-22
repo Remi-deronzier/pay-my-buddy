@@ -9,6 +9,8 @@ INSERT INTO `user` (`email`, `password`, `first_name`, `last_name`, `user_name`,
 ("pierre-andre@gmail.com", "$2a$12$8rRhQWxE.mgJX5.g5RSbVugxAwyPm3vU6UK4TG.u0s3U2leQQlo0e", "pierre-andre", "Crepon", "PeterAndrewX", 1),
 ("elisabeth@gmail.com", "$2a$12$ROUorJmgvfQoqgTEPG15Ge6hQ6e4H/NhX1spFTWqUxGWn8ViCkbrq", "elisabeth", "Crepon", "creponElisabeth", 1),
 ("bruno@gmail.com", "$2a$12$0tdW11OTIGA5RQ.XDly3FuqinPo55d2gest7pWxk5/LLpMd93FxR2", "bruno", "Crepon", "brundig", 1),
+("pierre@gmail.com", "$2a$12$dBIJtx5cgWfA/rtESQuV1eiff5.FSgwTI/48xQJ.iqR8GA79q7AR6", "Pierre", "Crepon", "pierre", 1),
+("eloi@gmail.com", "$2a$12$ODW6TtSL4NUs8y9sXi6kCOxaMEd0w4txArHwjRrnYucFpXDar6khW", "Eloi", "Crepon", "eloi", 1),
 ("clementine@gmail.com", "$2a$12$.lZ2riCaWocbUy5QSFre6OHGgoDyJKNsIaRlBma7aFQcPv6arLeU2", "clementine", "Crepon", "clem78-87", 1);
 
 INSERT INTO `user` (`email`, `password`, `first_name`, `last_name`, `user_name`, `description`, `phone_number`, `date_of_birth`, `enabled`) VALUES
@@ -31,6 +33,7 @@ INSERT INTO `role` (`name`) VALUES
 
 INSERT INTO `user_role` (`user_id`, `role_id`) VALUES
 (1, 1),
+(1, 2),
 (2, 1),
 (3, 1),
 (3, 2),
@@ -61,7 +64,9 @@ INSERT INTO `account` (`balance`, `user_id`) VALUES
 (640, 6),
 (156, 7),
 (356, 8),
-(300, 9);
+(356, 9),
+(356, 10),
+(300, 11);
 
 --
 -- Dumping data for table `external_account`
@@ -103,4 +108,18 @@ INSERT INTO `bank_transfer` (`id`, `bank_transfer_type`, `external_account_id`) 
 INSERT INTO `commission` (`amount`, `date`) VALUES
 (20, "1980-03-05"),
 (30, "1981-03-05"),
+(10, "1982-03-06"),
+(10, "1983-03-06"),
+(10, "1984-03-06"),
+(10, "1985-03-06"),
+(10, "1986-03-06"),
+(10, "1987-03-06"),
+(10, "1988-03-06"),
+(10, "1970-03-06"),
+(10, "1921-03-06"),
+(10, "2003-03-06"),
+(10, "1928-03-06"),
+(10, "1935-03-06"),
+(10, "1937-03-06"),
+(10, "1998-03-06"),
 (10, "1981-03-06");

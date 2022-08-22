@@ -28,7 +28,7 @@ public class CommissionController {
 		// Add all bank flows to model
 		Page<Commission> commissions = commissionService
 				.findAll(pageable);
-		PageWrapper<Commission> page = new PageWrapper<Commission>(commissions, "/commissions");
+		PageWrapper<Commission> page = new PageWrapper<Commission>(commissions, "/admin/commissions");
 		model.addAttribute("page", page);
 
 		return "commissions/view";
