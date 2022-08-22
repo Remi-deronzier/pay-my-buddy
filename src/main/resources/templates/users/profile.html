@@ -29,7 +29,7 @@
 					<p th:if="${user.age != null}"  class="card-text"><small class="text-muted" th:text="${user.age} + ' years old'"></small></p>
 				</div>
 				<ul class="list-group list-group-flush">
-					<li class="list-group-item">
+					<li th:if="${user.userName == #authentication.name or 'PayMyBuddy' == #authentication.name}" class="list-group-item">
 						<strong>Email: </strong>
 						<span th:text="${user.email}"></span>
 					</li>
@@ -41,7 +41,7 @@
 						<strong>Last name: </strong>
 						<span th:text="${user.lastName}"></span>
 					</li>
-					<li class="list-group-item">
+					<li th:if="${user.userName == #authentication.name or 'PayMyBuddy' == #authentication.name}" class="list-group-item">
 						<strong>Phone number: </strong>
 						<span th:text="${user.phoneNumber}"></span>
 					</li>
